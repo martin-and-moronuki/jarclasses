@@ -33,7 +33,7 @@ Jasmine rice, snow peas (frozen, from July), both the radish kimchi and also the
 
 #-day{Friday}
 
-Holy cow, [this hot honey chicken](https://cooking.nytimes.com/recipes/1019790-skillet-hot-honey-chicken-with-hearty-greens?te=1&nl=cooking&emc=edit_fwd_20190927?campaign_id=90&instance_id=12693&segment_id=17405&user_id=5400fbc0a8cde6ae0879fc29a2997338&regi_id=9808337220190927) with greens. I used a mixture of wild and very tough greens, and they needed to be cooked. Cooked them in the chicken fat, with some sliced red onion. Also, for the honey I used honey that I've been fermenting with garlic and Aleppo pepper and #emphatic{oh my god} that was the right move.
+Holy cow, #link[to='https://cooking.nytimes.com/recipes/1019790-skillet-hot-honey-chicken-with-hearty-greens?te=1&nl=cooking&emc=edit_fwd_20190927?campaign_id=90&instance_id=12693&segment_id=17405&user_id=5400fbc0a8cde6ae0879fc29a2997338&regi_id=9808337220190927']{this hot honey chicken} with greens. I used a mixture of wild and very tough greens, and they needed to be cooked. Cooked them in the chicken fat, with some sliced red onion. Also, for the honey I used honey that I've been fermenting with garlic and Aleppo pepper and #emphatic{oh my god} that was the right move.
 
 Ate this with cheese grits and pickles, and we want to eat this again, often. So good.
 
