@@ -239,8 +239,3 @@ printLogs l = forever printOne
   where
     printOne = pop >>= putStrLn
     pop = atomically $ STM.readTChan l
-
--- ---  miscellania  ---
-
--- unsnoc :: [a] -> Maybe ([a], a)
--- unsnoc xs = uncons (reverse xs) >>= \(x, xs') -> Just (reverse xs', x)
