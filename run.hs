@@ -132,9 +132,11 @@ buildResource l r =
 ---  prosidy  ---
 
 proHtml :: Prosidy.Document -> Html
-proHtml doc = HTML.docTypeHtml (head <> body)
+proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
-    head = HTML.head title
+    head = HTML.head $ contentType <> title <> css
+    contentType = HTML.meta ! Attr.httpEquiv "Content-Type" ! Attr.content "text/html; charset=utf-8"
+    css = HTML.link ! Attr.rel "stylesheet" ! Attr.type_ "text/css" ! Attr.href "/style/jarclasses.css"
     title = foldMap (HTML.title . toHtml) (proTitle doc)
     body = HTML.body (proContentHtml doc)
 
