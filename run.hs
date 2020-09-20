@@ -4,7 +4,9 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fdefer-typed-holes #-}
@@ -12,32 +14,48 @@
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe (bracketOnError, finally)
+import Control.Lens
 import qualified Data.Map as Map
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
 import qualified Network.Wai.Handler.Warp as Warp
-import Path (File, Path, Rel)
+import Path (Abs, Dir, File, Path, Rel, reldir)
 import qualified Path
 import qualified Prosidy
 import Relude hiding (head)
+import System.Directory (getCurrentDirectory)
 import qualified System.FSNotify as FSN
-import Text.Blaze.Html (Html, toHtml)
+import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import qualified Text.Blaze.Html5 as HTML
-import Control.Lens
+import qualified Text.Blaze.Html5.Attributes as Attr
+import qualified Data.Text as Text
+
+dirsToWatch :: [Path Rel Dir]
+dirsToWatch = [[reldir|menus|], [reldir|posts|]]
 
 main :: IO ()
 main =
-  atomically STM.newTChan >>= \l ->
-    atomically (STM.newTVar mempty) >>= \rs ->
-      withLogPrinting l $
-        FSN.withManager \man ->
-          withWatches man (react l rs) ["menus", "posts"] $
-            serve l rs
+  (getCurrentDirectory >>= Path.parseAbsDir) >>= \cwd ->
+    atomically STM.newTChan >>= \l ->
+      atomically (STM.newTVar mempty) >>= \rs ->
+        withLogPrinting l $
+          FSN.withManagerConf fsnConfig \man ->
+            withWatches man (react l rs) cwd dirsToWatch $
+              serve l rs
 
-react :: LogHandle -> ResourcesState -> FSN.Event -> IO ()
-react l _rs e = writeToLog l (show e)
+---  response to a file change  ---
+
+react :: LogHandle -> ResourcesState -> Path Rel File -> IO ()
+react l rs fp =
+  do
+    case pathAsResourceInput fp of
+        Nothing -> pure ()
+        Just r -> atomically (clearResourceStatus rs r) *> ensureResourceBuilt l rs r
+    case pathAsResourceOutput fp of
+        Nothing -> pure ()
+        Just r -> atomically (clearResourceStatus rs r)
 
 ---  dev web server  ---
 
@@ -79,11 +97,32 @@ resourceRelFileBase r =
       (Path.parseRelFile . toString) fileText >>= \file ->
         Just $ foldr (Path.</>) file dirs
 
+pathAsResourceInput :: Path Rel File -> Maybe Resource
+pathAsResourceInput =
+  Path.splitExtension >=> \case
+    (p, ".pro") -> Just (relFileBaseResource p)
+    _ -> Nothing
+
+pathAsResourceOutput :: Path Rel File -> Maybe Resource
+pathAsResourceOutput =
+  Path.splitExtension >=> \case
+    (p, ".html") -> Just (relFileBaseResource p)
+    _ -> Nothing
+
+relFileBaseResource :: Path Rel File -> Resource
+relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
+  where
+    f :: Path Rel Dir -> [Text]
+    f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
+    txtFile = toText . Path.toFilePath
+    txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
+
 ---  building a resource  ---
 
 buildResource :: LogHandle -> Resource -> IO ()
 buildResource l r =
   do
+    writeToLog l $ "Building " <> show r
     fpIn <- maybe undefined pure $ resourceInputPath r
     fpOut <- maybe undefined pure $ resourceOutputPath r
     src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
@@ -107,29 +146,29 @@ proContentHtml = foldMap proBlockHtml . view Prosidy.content
 
 proBlockHtml :: Prosidy.Block -> Html
 proBlockHtml = \case
-    Prosidy.BlockLiteral x -> HTML.stringComment (show x)
-    Prosidy.BlockParagraph x -> HTML.p (foldMap proInlineHtml (view Prosidy.content x))
-    Prosidy.BlockTag x -> case (Prosidy.tagName x) of
-        "day" -> HTML.h2 (foldMap proBlockHtml' (view Prosidy.content x))
-        "list" -> proListHtml x
-
-proBlockHtml' :: Prosidy.Block -> Html
-proBlockHtml' = \case
-    Prosidy.BlockParagraph x -> foldMap proInlineHtml (view Prosidy.content x)
+  Prosidy.BlockLiteral x -> HTML.stringComment (show x)
+  Prosidy.BlockParagraph x -> HTML.p (foldMap proInlineHtml (view Prosidy.content x))
+  Prosidy.BlockTag x -> case (Prosidy.tagName x) of
+    "day" -> HTML.h2 (foldMap proBlockHtml (view Prosidy.content x))
+    "list" -> proListHtml x
+    _ -> HTML.stringComment (show x)
 
 proInlineHtml :: Prosidy.Inline -> Html
 proInlineHtml = \case
-    Prosidy.Break -> toHtml (" " :: String)
-    Prosidy.InlineText x -> toHtml (Prosidy.fragmentText x)
-    Prosidy.InlineTag x ->
-        -- todo: switch on the tagName and do interesting things
-        foldMap proInlineHtml (view Prosidy.content x)
+  Prosidy.Break -> toHtml (" " :: String)
+  Prosidy.InlineText x -> toHtml (Prosidy.fragmentText x)
+  Prosidy.InlineTag x -> case (Prosidy.tagName x) of
+    "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
+    "emphatic" -> HTML.span ! Attr.class_ "font-style: italic" $ foldMap proInlineHtml (view Prosidy.content x)
+    "title" -> HTML.span ! Attr.class_ "font-style: italic" $ foldMap proInlineHtml (view Prosidy.content x)
+    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (Prosidy.atSetting "to") x) $ foldMap proInlineHtml (view Prosidy.content x)
+    _ -> HTML.stringComment (show x)
 
 proListHtml :: Prosidy.Tag (Prosidy.Series Prosidy.Block) -> Html
 proListHtml x = HTML.ul $ foldMap itemHtml (view Prosidy.content x)
   where
     itemHtml = \case
-        Prosidy.BlockTag i | Prosidy.tagName i == "item" -> HTML.li $ foldMap proBlockHtml' (view Prosidy.content i)
+      Prosidy.BlockTag i | Prosidy.tagName i == "item" -> HTML.li $ foldMap proBlockHtml (view Prosidy.content i)
 
 ---  build management  ---
 
@@ -162,16 +201,26 @@ lockResourceBuilding rs r = STM.modifyTVar rs $ Map.insert r Building
 
 ---  file watch setup  ---
 
-withWatches :: FSN.WatchManager -> FSN.Action -> [FilePath] -> IO a -> IO a
-withWatches man act = fix \r ->
+fsnConfig :: FSN.WatchConfig
+fsnConfig = FSN.defaultConfig { FSN.confDebounce = FSN.NoDebounce }
+
+withWatches :: FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
+withWatches man act cwd = fix \r ->
   \case
     [] -> id
-    fp : fps -> withWatch man act fp . r fps
+    fp : fps -> withWatch man act cwd fp . r fps
 
-withWatch :: FSN.WatchManager -> FSN.Action -> FilePath -> IO a -> IO a
-withWatch man act fp go =
-  FSN.watchTree man fp (const True) act >>= \stop ->
+withWatch :: FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> Path Rel Dir -> IO a -> IO a
+withWatch man act cwd fp go =
+  FSN.watchTree man (Path.toFilePath (cwd Path.</> fp)) (const True) action >>= \stop ->
     go `finally` stop
+  where
+    action :: FSN.Action
+    action (FSN.Added (g -> Just f) _time False) = act f
+    action (FSN.Modified (g -> Just f) _time False) = act f
+    action _ = pure ()
+
+    g = Path.parseAbsFile >=> Path.stripProperPrefix cwd
 
 ---  logging  ---
 

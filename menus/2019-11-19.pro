@@ -1,3 +1,4 @@
+title: Menu for November 19, 2019
 ---
 
 The week before Thanksgiving! Last week of CSA (a good week, too #dash got more apples, and another cabbage).

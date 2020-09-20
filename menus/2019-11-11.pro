@@ -1,3 +1,4 @@
+title: Menu for November 11, 2019
 ---
 
 One week left of CSA, but we're getting pretty well stocked on storage vegetables. Low on fruits, though.
