@@ -15,7 +15,7 @@ import Clay (Css, (?), (<?))
 import qualified Clay
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
-import Control.Exception.Safe (bracketOnError, finally)
+import Control.Exception.Safe
 import Control.Lens
 import qualified Data.Map as Map
 import qualified Data.Text as Text
@@ -250,7 +250,9 @@ withWatch man act cwd fp go =
   where
     action :: FSN.Action
     action e = case g e of
-        Just f -> act f
+        Just f ->
+            -- https://github.com/haskell-fswatch/hfsnotify/issues/91
+            act f `catchAny` (\e -> writeToLog l (displayException e))
         Nothing -> pure ()
 
     g = (Path.parseAbsFile >=> Path.stripProperPrefix cwd) . FSN.eventPath
