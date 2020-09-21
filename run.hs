@@ -11,7 +11,7 @@
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fdefer-typed-holes #-}
 
-import Clay (Css, (?))
+import Clay (Css, (?), (<?))
 import qualified Clay
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
@@ -33,6 +33,7 @@ import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
+import Relude.Extra.Foldable1
 
 dirsToWatch :: [Path Rel Dir]
 dirsToWatch = [[reldir|menus|], [reldir|posts|]]
@@ -164,14 +165,14 @@ proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
     head = HTML.head $ contentType <> title <> css
     contentType = HTML.meta ! Attr.httpEquiv "Content-Type" ! Attr.content "text/html; charset=utf-8"
     css = HTML.link ! Attr.rel "stylesheet" ! Attr.type_ "text/css" ! Attr.href "/style/jarclasses.css"
-    title = foldMap (HTML.title . toHtml) (proTitle doc)
-    body = HTML.body (proContentHtml doc)
+    title = foldMap (HTML.title . toHtml) $ proTitle doc
+    body = HTML.body content
+    content = HTML.main $ do
+        foldMap (HTML.h1 . toHtml) $ proTitle doc
+        foldMap proBlockHtml $ view Prosidy.content doc
 
 proTitle :: Prosidy.Document -> Maybe Text
 proTitle = view (Prosidy.atSetting "title")
-
-proContentHtml :: Prosidy.Document -> Html
-proContentHtml = foldMap proBlockHtml . view Prosidy.content
 
 proBlockHtml :: Prosidy.Block -> Html
 proBlockHtml = \case
@@ -188,8 +189,8 @@ proInlineHtml = \case
   Prosidy.InlineText x -> toHtml (Prosidy.fragmentText x)
   Prosidy.InlineTag x -> case (Prosidy.tagName x) of
     "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
-    "emphatic" -> HTML.span ! Attr.class_ "font-style: italic" $ foldMap proInlineHtml (view Prosidy.content x)
-    "title" -> HTML.span ! Attr.class_ "font-style: italic" $ foldMap proInlineHtml (view Prosidy.content x)
+    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view Prosidy.content x)
+    "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view Prosidy.content x)
     "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (Prosidy.atSetting "to") x) $ foldMap proInlineHtml (view Prosidy.content x)
     _ -> HTML.stringComment (show x)
 
@@ -248,11 +249,11 @@ withWatch man act cwd fp go =
     go `finally` stop
   where
     action :: FSN.Action
-    action (FSN.Added (g -> Just f) _time False) = act f
-    action (FSN.Modified (g -> Just f) _time False) = act f
-    action _ = pure ()
+    action e = case g e of
+        Just f -> act f
+        Nothing -> pure ()
 
-    g = Path.parseAbsFile >=> Path.stripProperPrefix cwd
+    g = (Path.parseAbsFile >=> Path.stripProperPrefix cwd) . FSN.eventPath
 
 ---  logging  ---
 
@@ -285,7 +286,58 @@ makeStyles dir = writeFileLBS path (encodeUtf8 txt)
 
 jarclassesStyle :: Css
 jarclassesStyle =
-  Clay.body ? Clay.background (Clay.rgb 0xec 0xe4 0xd8)
+  do
+    Clay.p ? do
+        marginAll (Clay.px 0)
+        paddingAll (Clay.px 0)
+    Clay.body ? Clay.background (Clay.rgb 0xec 0xe4 0xd8)
+    Clay.main_ ? do
+        marginVertical (Clay.px 80)
+        (Clay.p <> listTags <> headerTags) <? do
+            Clay.maxWidth (Clay.px 506)
+            marginHorizontal Clay.auto
+        (Clay.p <> listTags) <? do
+            Clay.color (Clay.rgb 0x54 0x49 0x43)
+            Clay.fontSize (Clay.px 15)
+            Clay.lineHeight (Clay.px 22.5)
+            Clay.fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [Clay.serif]
+            foldMap1 (\cls -> Clay.span Clay.# Clay.byClass cls) ("emphatic" :| "title" : []) ? Clay.fontStyle Clay.italic
+            Clay.a ? do
+                Clay.textDecoration Clay.none
+                Clay.color (Clay.rgb 0x41 0x70 0x90)
+                Clay.hover Clay.& Clay.textDecoration Clay.underline
+        Clay.p <? marginVertical (Clay.em 0.7)
+        headerTags <? do
+            Clay.fontFamily ["Open Sans", "Myriad", "Calibri"] [Clay.sansSerif]
+            Clay.fontWeight Clay.bold
+        (Clay.h1 <> Clay.h2) <? do
+            Clay.color (Clay.rgb 0x7c 0x33 0x4f)
+            Clay.borderBottomColor (Clay.rgb 0xd3 0xcc 0xc1)
+            Clay.lineHeight (Clay.unitless 1.2)
+            Clay.paddingBottom (Clay.px 10)
+        Clay.h1 <? do
+            Clay.fontSize (Clay.em 1.85)
+            Clay.fontStyle Clay.italic
+            Clay.textAlign Clay.center
+            Clay.marginTop (Clay.em 1.1)
+            Clay.marginBottom (Clay.em 0.38)
+            Clay.borderBottomStyle Clay.double
+            Clay.borderBottomWidth (Clay.em 0.2)
+        Clay.h2 <? do
+            Clay.fontSize (Clay.em 1.58)
+            Clay.marginTop (Clay.em 0.95)
+            Clay.marginBottom (Clay.em 0.5)
+            Clay.borderBottomStyle Clay.solid
+            Clay.borderBottomWidth (Clay.em 0.1)
+  where
+    marginAll = marginVertical <> marginHorizontal
+    marginVertical = Clay.marginTop <> Clay.marginBottom
+    marginHorizontal = Clay.marginLeft <> Clay.marginRight
+    paddingAll = paddingVertical <> paddingHorizontal
+    paddingVertical = Clay.paddingTop <> Clay.paddingBottom
+    paddingHorizontal = Clay.paddingLeft <> Clay.paddingRight
+    headerTags = Clay.h1 <> Clay.h2 <> Clay.h3 <> Clay.h4 <> Clay.h5 <> Clay.h6
+    listTags = Clay.ul <> Clay.ol
 
 ---  tests  ---
 

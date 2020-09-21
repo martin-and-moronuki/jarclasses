@@ -5,7 +5,7 @@ The week before Thanksgiving! Last week of CSA (a good week, too #dash got more 
 
 This week we're starting to use Mark Bittman's How to Cook Everything ~Fast~ cookbook. Both Chris and the kids want to learn to cook more and be more independent (and more prepared to cook when I'm sick or otherwise unable to), so I'm more in the role of instructor/sous chef for a while (except Thanksgiving cooking, sure), and this cookbook is nice for having the prep steps (cut the onion, mince the garlic, etc) worked into the actual recipe, for maximum parallelization. Since prep steps are also in blue (while the rest of the text is in black), it's therefore really easy to visually divide the process between two people. It's a fantastic idea for a cookbook, and I'm glad we have it. I expect we'll be using it much more heavily from now on. Not exclusively, but frequently, it just makes sharing the recipe and putting me in a position where I can really help them learn so easy. So.
 
-#-day{Monday}
+#-day{Monday?}
 
 #-list:
   #-item{Pasta with squash and ham, risotto style (#title{Fast}, page 322)}
