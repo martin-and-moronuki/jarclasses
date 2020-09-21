@@ -11,16 +11,19 @@
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fdefer-typed-holes #-}
 
+import Clay (Css, (?))
+import qualified Clay
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe (bracketOnError, finally)
 import Control.Lens
 import qualified Data.Map as Map
+import qualified Data.Text as Text
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
 import qualified Network.Wai.Handler.Warp as Warp
-import Path (Abs, Dir, File, Path, Rel, reldir)
+import Path (Abs, Dir, File, Path, Rel, reldir, relfile)
 import qualified Path
 import qualified Prosidy
 import Relude hiding (head)
@@ -30,20 +33,23 @@ import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
-import qualified Data.Text as Text
 
 dirsToWatch :: [Path Rel Dir]
 dirsToWatch = [[reldir|menus|], [reldir|posts|]]
 
 main :: IO ()
 main =
-  (getCurrentDirectory >>= Path.parseAbsDir) >>= \cwd ->
-    atomically STM.newTChan >>= \l ->
+  getCwd >>= \cwd ->
+    initFiles cwd *> withLog \l ->
       atomically (STM.newTVar mempty) >>= \rs ->
-        withLogPrinting l $
-          FSN.withManagerConf fsnConfig \man ->
-            withWatches man (react l rs) cwd dirsToWatch $
-              serve l rs
+        withNotification cwd (react l rs) $
+          serve l rs
+  where
+    getCwd = getCurrentDirectory >>= Path.parseAbsDir
+    initFiles cwd = makeStyles cwd *> writeTestFile cwd
+    withNotification cwd r go =
+      FSN.withManagerConf fsnConfig \man ->
+        withWatches man r cwd dirsToWatch go
 
 ---  response to a file change  ---
 
@@ -51,11 +57,11 @@ react :: LogHandle -> ResourcesState -> Path Rel File -> IO ()
 react l rs fp =
   do
     case pathAsResourceInput fp of
-        Nothing -> pure ()
-        Just r -> atomically (clearResourceStatus rs r) *> ensureResourceBuilt l rs r
+      Nothing -> pure ()
+      Just r -> atomically (clearResourceStatus rs r) *> ensureResourceBuilt l rs r
     case pathAsResourceOutput fp of
-        Nothing -> pure ()
-        Just r -> atomically (clearResourceStatus rs r)
+      Nothing -> pure ()
+      Just r -> atomically (clearResourceStatus rs r)
 
 ---  dev web server  ---
 
@@ -78,17 +84,26 @@ responseResource r =
   resourceOutputPath r >>= \fp ->
     pure $ WAI.responseFile HTTP.ok200 headers (Path.toFilePath fp) Nothing
   where
-    headers = [(HTTP.hContentType, "text/html; charset=utf-8")]
+    headers = [(HTTP.hContentType, resourceContentType r)]
+
+resourceContentType :: Resource -> ByteString
+resourceContentType ("menus" : _) = "text/html; charset=utf-8"
+resourceContentType ("posts" : _) = "text/html; charset=utf-8"
+resourceContentType ("style" : _) = "text/css"
 
 ---  Mappings between resource name, source path, and output file path  ---
 
 type Resource = [Text]
 
 resourceOutputPath :: Resource -> Maybe (Path Rel File)
-resourceOutputPath = resourceRelFileBase >=> Path.addExtension ".html"
+resourceOutputPath [] = Nothing
+resourceOutputPath r@("style" : _) = resourceRelFileBase r
+resourceOutputPath r = (resourceRelFileBase >=> Path.addExtension ".html") r
 
 resourceInputPath :: Resource -> Maybe (Path Rel File)
-resourceInputPath = resourceRelFileBase >=> Path.addExtension ".pro"
+resourceInputPath [] = Nothing
+resourceInputPath ("style" : _) = Nothing
+resourceInputPath r = (resourceRelFileBase >=> Path.addExtension ".pro") r
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
 resourceRelFileBase r =
@@ -116,6 +131,18 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
+
+resourceFileNameTests :: [Text]
+resourceFileNameTests =
+  [ "pathAsResourceInput" <!> quo "./menus/2019-11-11.pro" <!> "=" <!> show (pathAsResourceInput [relfile|menus/2019-11-11.pro|]),
+    "pathAsResourceOutput" <!> quo "./menus/2019-11-11.pro" <!> "=" <!> show (pathAsResourceOutput [relfile|menus/2019-11-11.pro|]),
+    "pathAsResourceInput" <!> quo "./style/jarclasses.css" <!> "=" <!> show (pathAsResourceInput [relfile|style/jarclasses.css|]),
+    "pathAsResourceOutput" <!> quo "./style/jarclasses.css" <!> "=" <!> show (pathAsResourceOutput [relfile|style/jarclasses.css|]),
+    "resourceInputPath" <!> show ["menus", "2019-11-11"] <!> "=" <!> show (resourceInputPath ["menus", "2019-11-11"]),
+    "resourceInputPath" <!> show ["style", "jarclasses.css"] <!> "=" <!> show (resourceInputPath ["style", "jarclasses.css"]),
+    "resourceOutputPath" <!> show ["menus", "2019-11-11"] <!> "=" <!> show (resourceOutputPath ["menus", "2019-11-11"]),
+    "resourceOutputPath" <!> show ["style", "jarclasses.css"] <!> "=" <!> show (resourceOutputPath ["style", "jarclasses.css"])
+  ]
 
 ---  building a resource  ---
 
@@ -179,7 +206,10 @@ data ResourceStatus = Building | Built deriving (Eq, Ord)
 type ResourcesState = TVar (Map Resource ResourceStatus)
 
 ensureResourceBuilt :: LogHandle -> ResourcesState -> Resource -> IO ()
-ensureResourceBuilt l rs r = bracketOnError lock (const clear) go
+ensureResourceBuilt l rs r =
+  if isJust (resourceInputPath r)
+    then bracketOnError lock (const clear) go
+    else pure ()
   where
     lock :: IO Bool =
       atomically $
@@ -204,7 +234,7 @@ lockResourceBuilding rs r = STM.modifyTVar rs $ Map.insert r Building
 ---  file watch setup  ---
 
 fsnConfig :: FSN.WatchConfig
-fsnConfig = FSN.defaultConfig { FSN.confDebounce = FSN.NoDebounce }
+fsnConfig = FSN.defaultConfig {FSN.confDebounce = FSN.NoDebounce}
 
 withWatches :: FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
 withWatches man act cwd = fix \r ->
@@ -228,6 +258,11 @@ withWatch man act cwd fp go =
 
 type LogHandle = STM.TChan String
 
+withLog :: (LogHandle -> IO a) -> IO a
+withLog go =
+  atomically STM.newTChan >>= \l ->
+    withLogPrinting l (go l)
+
 writeToLog :: LogHandle -> String -> IO ()
 writeToLog l s = atomically (STM.writeTChan l s)
 
@@ -239,3 +274,32 @@ printLogs l = forever printOne
   where
     printOne = pop >>= putStrLn
     pop = atomically $ STM.readTChan l
+
+---  style  ---
+
+makeStyles :: Path Abs Dir -> IO ()
+makeStyles dir = writeFileLBS path (encodeUtf8 txt)
+  where
+    path = Path.toFilePath (dir Path.</> [relfile|style/jarclasses.css|])
+    txt = Clay.renderWith Clay.compact [] jarclassesStyle
+
+jarclassesStyle :: Css
+jarclassesStyle =
+  Clay.body ? Clay.background (Clay.rgb 0xec 0xe4 0xd8)
+
+---  tests  ---
+
+writeTestFile :: Path Abs Dir -> IO ()
+writeTestFile dir = writeFileLBS path (encodeUtf8 txt)
+  where
+    path = Path.toFilePath (dir Path.</> [relfile|test.txt|])
+    txt = unlines tests
+
+tests :: [Text]
+tests = resourceFileNameTests
+
+---  string building  ---
+
+a <!> b = a <> " " <> b
+
+quo x = "\"" <> x <> "\""

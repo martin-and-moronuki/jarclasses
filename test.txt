@@ -1,0 +1,8 @@
+pathAsResourceInput "./menus/2019-11-11.pro" = Just ["menus","2019-11-11"]
+pathAsResourceOutput "./menus/2019-11-11.pro" = Nothing
+pathAsResourceInput "./style/jarclasses.css" = Nothing
+pathAsResourceOutput "./style/jarclasses.css" = Nothing
+resourceInputPath ["menus","2019-11-11"] = Just "menus/2019-11-11.pro"
+resourceInputPath ["style","jarclasses.css"] = Nothing
+resourceOutputPath ["menus","2019-11-11"] = Just "menus/2019-11-11.html"
+resourceOutputPath ["style","jarclasses.css"] = Just "style/jarclasses.css"
