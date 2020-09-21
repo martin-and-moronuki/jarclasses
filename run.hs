@@ -30,7 +30,7 @@ import Relude hiding (head)
 import System.Directory (getCurrentDirectory)
 import qualified System.FSNotify as FSN
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
-import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
+import Text.Blaze.Html.Renderer.Pretty (renderHtml)
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 import Relude.Extra.Foldable1
@@ -155,7 +155,7 @@ buildResource l r =
     fpOut <- maybe undefined pure $ resourceOutputPath r
     src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
     doc <- either (fail . show) pure $ Prosidy.parseDocument (Path.toFilePath fpIn) src
-    writeFileLBS (Path.toFilePath fpOut) $ renderHtml $ proHtml doc
+    writeFileLBS (Path.toFilePath fpOut) $ encodeUtf8 $ toText $ renderHtml $ proHtml doc
 
 ---  prosidy  ---
 
@@ -282,7 +282,7 @@ makeStyles :: Path Abs Dir -> IO ()
 makeStyles dir = writeFileLBS path (encodeUtf8 txt)
   where
     path = Path.toFilePath (dir Path.</> [relfile|style/jarclasses.css|])
-    txt = Clay.renderWith Clay.compact [] jarclassesStyle
+    txt = Clay.renderWith Clay.pretty [] jarclassesStyle
 
 jarclassesStyle :: Css
 jarclassesStyle =
