@@ -8,11 +8,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -fdefer-typed-holes #-}
 
-import Clay (Css, (?), (<?))
-import qualified Clay
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
@@ -27,12 +23,13 @@ import Path (Abs, Dir, File, Path, Rel, reldir, relfile)
 import qualified Path
 import qualified Prosidy
 import Relude hiding (head)
+import StringBuilding
+import Style
 import System.Directory (getCurrentDirectory)
 import qualified System.FSNotify as FSN
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
-import Relude.Extra.Foldable1
 import qualified Text.Blaze.Internal as Blaze
 import qualified Text.Blaze.Renderer.String as Blaze
 
@@ -169,8 +166,8 @@ proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
     title = foldMap (HTML.title . toHtml) $ proTitle doc
     body = HTML.body content
     content = HTML.main $ do
-        foldMap (HTML.h1 . HTML.p . toHtml) $ proTitle doc
-        foldMap proBlockHtml $ view Prosidy.content doc
+      foldMap (HTML.h1 . HTML.p . toHtml) $ proTitle doc
+      foldMap proBlockHtml $ view Prosidy.content doc
 
 proTitle :: Prosidy.Document -> Maybe Text
 proTitle = view (Prosidy.atSetting "title")
@@ -215,29 +212,40 @@ renderHtmlIndented = go 0 id
 
     go :: Int -> (String -> String) -> Blaze.MarkupM b -> String -> String
 
-    go i attrs (Blaze.Parent _ open close content) | contentInline open =
-        ind i . Blaze.getString open . attrs . (">" ++) . renderHtmlCompact content . Blaze.getString close .  ('\n' :)
-
+    go i attrs (Blaze.Parent _ open close content)
+      | contentInline open =
+        ind i . Blaze.getString open . attrs . (">" ++) . renderHtmlCompact content . Blaze.getString close . ('\n' :)
     go i attrs (Blaze.Parent _ open close content) =
-        ind i . Blaze.getString open . attrs . (">\n" ++) . go (inc i) id content
-              . ind i . Blaze.getString close .  ('\n' :)
+      ind i . Blaze.getString open . attrs . (">\n" ++) . go (inc i) id content
+        . ind i
+        . Blaze.getString close
+        . ('\n' :)
     go i attrs (Blaze.CustomParent tag content) =
-        ind i . ('<' :) . Blaze.fromChoiceString tag . attrs . (">\n" ++) .
-        go (inc i) id content . ind i . ("</" ++) . Blaze.fromChoiceString tag .
-        (">\n" ++)
+      ind i . ('<' :) . Blaze.fromChoiceString tag . attrs . (">\n" ++)
+        . go (inc i) id content
+        . ind i
+        . ("</" ++)
+        . Blaze.fromChoiceString tag
+        . (">\n" ++)
     go i attrs (Blaze.Leaf _ begin end _) =
-        ind i . Blaze.getString begin . attrs . Blaze.getString end . ('\n' :)
+      ind i . Blaze.getString begin . attrs . Blaze.getString end . ('\n' :)
     go i attrs (Blaze.CustomLeaf tag close _) =
-        ind i . ('<' :) . Blaze.fromChoiceString tag . attrs .
-        ((if close then " />\n" else ">\n") ++)
-    go i attrs (Blaze.AddAttribute _ key value h) = flip (go i) h $
+      ind i . ('<' :) . Blaze.fromChoiceString tag . attrs
+        . ((if close then " />\n" else ">\n") ++)
+    go i attrs (Blaze.AddAttribute _ key value h) =
+      flip (go i) h $
         Blaze.getString key . Blaze.fromChoiceString value . ('"' :) . attrs
-    go i attrs (Blaze.AddCustomAttribute key value h) = flip (go i) h $
-        (' ' : ) . Blaze.fromChoiceString key . ("=\"" ++) . Blaze.fromChoiceString value .
-        ('"' :) .  attrs
+    go i attrs (Blaze.AddCustomAttribute key value h) =
+      flip (go i) h $
+        (' ' :) . Blaze.fromChoiceString key . ("=\"" ++) . Blaze.fromChoiceString value
+          . ('"' :)
+          . attrs
     go i _ (Blaze.Content content _) = ind i . Blaze.fromChoiceString content . ('\n' :)
-    go i _ (Blaze.Comment comment _) = ind i .
-        ("<!-- " ++) . Blaze.fromChoiceString comment . (" -->\n" ++)
+    go i _ (Blaze.Comment comment _) =
+      ind i
+        . ("<!-- " ++)
+        . Blaze.fromChoiceString comment
+        . (" -->\n" ++)
     go i attrs (Blaze.Append h1 h2) = go i attrs h1 . go i attrs h2
     go _ _ (Blaze.Empty _) = id
 
@@ -253,22 +261,27 @@ renderHtmlCompact = go id
   where
     go :: (String -> String) -> Blaze.MarkupM b -> String -> String
     go attrs (Blaze.Parent _ open close content) =
-        Blaze.getString open . attrs . ('>' :) . go id content . Blaze.getString close
+      Blaze.getString open . attrs . ('>' :) . go id content . Blaze.getString close
     go attrs (Blaze.CustomParent tag content) =
-        ('<' :) . Blaze.fromChoiceString tag . attrs . ('>' :) .  go id content .
-        ("</" ++) . Blaze.fromChoiceString tag . ('>' :)
+      ('<' :) . Blaze.fromChoiceString tag . attrs . ('>' :) . go id content
+        . ("</" ++)
+        . Blaze.fromChoiceString tag
+        . ('>' :)
     go attrs (Blaze.Leaf _ begin end _) = Blaze.getString begin . attrs . Blaze.getString end
     go attrs (Blaze.CustomLeaf tag close _) =
-        ('<' :) . Blaze.fromChoiceString tag . attrs .
-        (if close then (" />" ++) else ('>' :))
-    go attrs (Blaze.AddAttribute _ key value h) = flip go h $
+      ('<' :) . Blaze.fromChoiceString tag . attrs
+        . (if close then (" />" ++) else ('>' :))
+    go attrs (Blaze.AddAttribute _ key value h) =
+      flip go h $
         Blaze.getString key . Blaze.fromChoiceString value . ('"' :) . attrs
-    go attrs (Blaze.AddCustomAttribute key value h) = flip go h $
-        (' ' :) . Blaze.fromChoiceString key . ("=\"" ++) . Blaze.fromChoiceString value .
-        ('"' :) .  attrs
+    go attrs (Blaze.AddCustomAttribute key value h) =
+      flip go h $
+        (' ' :) . Blaze.fromChoiceString key . ("=\"" ++) . Blaze.fromChoiceString value
+          . ('"' :)
+          . attrs
     go _ (Blaze.Content content _) = Blaze.fromChoiceString content
     go _ (Blaze.Comment comment _) =
-        ("<!-- " ++) . Blaze.fromChoiceString comment . (" -->" ++)
+      ("<!-- " ++) . Blaze.fromChoiceString comment . (" -->" ++)
     go attrs (Blaze.Append h1 h2) = go attrs h1 . go attrs h2
     go _ (Blaze.Empty _) = id
 
@@ -322,10 +335,10 @@ withWatch l man act cwd fp go =
   where
     action :: FSN.Action
     action e = case g e of
-        Just f ->
-            -- https://github.com/haskell-fswatch/hfsnotify/issues/91
-            act f `catchAny` (\e -> writeToLog l (displayException e))
-        Nothing -> pure ()
+      Just f ->
+        -- https://github.com/haskell-fswatch/hfsnotify/issues/91
+        act f `catchAny` (\e -> writeToLog l (displayException e))
+      Nothing -> pure ()
 
     g = (Path.parseAbsFile >=> Path.stripProperPrefix cwd) . FSN.eventPath
 
@@ -350,69 +363,6 @@ printLogs l = forever printOne
     printOne = pop >>= putStrLn
     pop = atomically $ STM.readTChan l
 
----  style  ---
-
-makeStyles :: Path Abs Dir -> IO ()
-makeStyles dir = writeFileLBS path (encodeUtf8 txt)
-  where
-    path = Path.toFilePath (dir Path.</> [relfile|style/jarclasses.css|])
-    txt = Clay.renderWith Clay.pretty [] jarclassesStyle
-
-jarclassesStyle :: Css
-jarclassesStyle =
-  do
-    Clay.p ? do
-        marginAll (Clay.px 0)
-        paddingAll (Clay.px 0)
-    Clay.body ? Clay.background (Clay.rgb 0xec 0xe4 0xd8)
-    Clay.main_ ? do
-        marginVertical (Clay.px 80)
-        (Clay.p <> listTags <> headerTags) <? do
-            Clay.maxWidth (Clay.px 506)
-            marginHorizontal Clay.auto
-        (Clay.p <> listTags) <? do
-            Clay.color (Clay.rgb 0x54 0x49 0x43)
-            Clay.fontSize (Clay.px 15)
-            Clay.lineHeight (Clay.px 22.5)
-            Clay.fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [Clay.serif]
-            foldMap1 (\cls -> Clay.span Clay.# Clay.byClass cls) ("emphatic" :| "title" : []) ? Clay.fontStyle Clay.italic
-            Clay.a ? do
-                Clay.textDecoration Clay.none
-                Clay.color (Clay.rgb 0x41 0x70 0x90)
-                Clay.hover Clay.& Clay.textDecoration Clay.underline
-        Clay.p <? marginVertical (Clay.em 0.7)
-        headerTags <? do
-            Clay.fontFamily ["Open Sans", "Myriad", "Calibri"] [Clay.sansSerif]
-            Clay.fontWeight Clay.bold
-        (Clay.h1 <> Clay.h2) <? do
-            Clay.color (Clay.rgb 0x7c 0x33 0x4f)
-            Clay.borderBottomColor (Clay.rgb 0xd3 0xcc 0xc1)
-            Clay.lineHeight (Clay.unitless 1.2)
-            Clay.paddingBottom (Clay.px 10)
-        Clay.h1 <? do
-            Clay.fontSize (Clay.em 1.85)
-            Clay.fontStyle Clay.italic
-            Clay.textAlign Clay.center
-            Clay.marginTop (Clay.em 1.1)
-            Clay.marginBottom (Clay.em 0.38)
-            Clay.borderBottomStyle Clay.double
-            Clay.borderBottomWidth (Clay.em 0.2)
-        Clay.h2 <? do
-            Clay.fontSize (Clay.em 1.58)
-            Clay.marginTop (Clay.em 0.95)
-            Clay.marginBottom (Clay.em 0.5)
-            Clay.borderBottomStyle Clay.solid
-            Clay.borderBottomWidth (Clay.em 0.1)
-  where
-    marginAll = marginVertical <> marginHorizontal
-    marginVertical = Clay.marginTop <> Clay.marginBottom
-    marginHorizontal = Clay.marginLeft <> Clay.marginRight
-    paddingAll = paddingVertical <> paddingHorizontal
-    paddingVertical = Clay.paddingTop <> Clay.paddingBottom
-    paddingHorizontal = Clay.paddingLeft <> Clay.paddingRight
-    headerTags = Clay.h1 <> Clay.h2 <> Clay.h3 <> Clay.h4 <> Clay.h5 <> Clay.h6
-    listTags = Clay.ul <> Clay.ol
-
 ---  tests  ---
 
 writeTestFile :: Path Abs Dir -> IO ()
@@ -423,9 +373,3 @@ writeTestFile dir = writeFileLBS path (encodeUtf8 txt)
 
 tests :: [Text]
 tests = resourceFileNameTests
-
----  string building  ---
-
-a <!> b = a <> " " <> b
-
-quo x = "\"" <> x <> "\""

@@ -4,4 +4,4 @@
 import System.Process
 
 main :: IO ()
-main = callProcess "ghcid" ["--command=ghci run.hs", "--run=:main", "--warnings"]
+main = callProcess "ghcid" ["--command=ghci -Wall -fdefer-typed-holes -ilib run.hs", "--run=:main", "--warnings"]

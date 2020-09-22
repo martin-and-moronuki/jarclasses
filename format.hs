@@ -13,7 +13,7 @@ main :: IO ()
 main = traverse_ format files
 
 files :: [FilePath]
-files = ["format.hs", "run.hs"]
+files = ["format.hs", "run.hs", "rerun.hs", "lib/StringBuilding.hs", "lib/Style.hs"]
 
 format :: FilePath -> IO ()
 format fp =
