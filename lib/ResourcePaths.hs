@@ -2,12 +2,12 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module ResourcePaths where
 
 import Relude
 import Path
-import qualified Path
 import qualified Data.Text as Text
 import Control.Lens
 import StringBuilding
@@ -21,16 +21,16 @@ resourceOutputPath [] = Nothing
 resourceOutputPath r@("style" : _) = resourceRelFileBase r
 resourceOutputPath r = (resourceRelFileBase >=> Path.addExtension ".html") r
 
-test_resourceOutputPath :: Resource -> Text
-test_resourceOutputPath x = "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
+test_resourceOutputPath :: Resource -> Seq Text
+test_resourceOutputPath x = one $ "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
 
 resourceInputPath :: Resource -> Maybe (Path Rel File)
 resourceInputPath [] = Nothing
 resourceInputPath ("style" : _) = Nothing
 resourceInputPath r = (resourceRelFileBase >=> Path.addExtension ".pro") r
 
-test_resourceInputPath :: Resource -> Text
-test_resourceInputPath x = "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
+test_resourceInputPath :: Resource -> Seq Text
+test_resourceInputPath x = one $ "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
 resourceRelFileBase r =
@@ -45,8 +45,8 @@ pathAsResourceInput =
     (p, ".pro") -> Just (relFileBaseResource p)
     _ -> Nothing
 
-test_pathAsResourceInput :: Path Rel File -> Text
-test_pathAsResourceInput x = "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
+test_pathAsResourceInput :: Path Rel File -> Seq Text
+test_pathAsResourceInput x = one $ "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
 
 pathAsResourceOutput :: Path Rel File -> Maybe Resource
 pathAsResourceOutput =
@@ -54,8 +54,8 @@ pathAsResourceOutput =
     (p, ".html") -> Just (relFileBaseResource p)
     _ -> Nothing
 
-test_pathAsResourceOutput :: Path Rel File -> Text
-test_pathAsResourceOutput x = "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
+test_pathAsResourceOutput :: Path Rel File -> Seq Text
+test_pathAsResourceOutput x = one $ "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
 
 relFileBaseResource :: Path Rel File -> Resource
 relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
@@ -65,14 +65,24 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
 
-resourceFileNameTests :: [Text]
-resourceFileNameTests =
-  [ test_pathAsResourceInput [relfile|menus/2019-11-11.pro|]
-  , test_pathAsResourceOutput [relfile|menus/2019-11-11.pro|]
-  , test_pathAsResourceInput [relfile|style/jarclasses.css|]
-  , test_pathAsResourceOutput [relfile|style/jarclasses.css|]
-  , test_resourceInputPath ["menus", "2019-11-11"]
-  , test_resourceInputPath ["style", "jarclasses.css"]
-  , test_resourceOutputPath ["menus", "2019-11-11"]
-  , test_resourceOutputPath ["style", "jarclasses.css"]
-  ]
+test_path :: Path Rel File -> Seq Text
+test_path x =
+    test_pathAsResourceInput x <>
+    test_pathAsResourceOutput x
+
+test_resource :: Resource -> Seq Text
+test_resource x =
+    test_resourceInputPath x <>
+    test_resourceOutputPath x
+
+test :: Seq Text
+test =
+    foldMap test_path paths <>
+    foldMap test_resource resources
+  where
+    paths :: Seq (Path Rel File) =
+        one [relfile|menus/2019-11-11.pro|] <>
+        one [relfile|style/jarclasses.css|]
+    resources :: Seq Resource =
+        one ["menus", "2019-11-11"] <>
+        one ["style", "jarclasses.css"]

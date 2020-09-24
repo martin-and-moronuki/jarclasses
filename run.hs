@@ -12,9 +12,7 @@
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
-import Control.Lens
 import qualified Data.Map as Map
-import qualified Data.Text as Text
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
@@ -25,7 +23,6 @@ import qualified Prosidy
 import ProsidyHtml
 import Relude hiding (head)
 import ResourcePaths
-import StringBuilding
 import Style
 import System.Directory (getCurrentDirectory)
 import qualified System.FSNotify as FSN
@@ -183,7 +180,7 @@ writeTestFile :: Path Abs Dir -> IO ()
 writeTestFile dir = writeFileLBS path (encodeUtf8 txt)
   where
     path = Path.toFilePath (dir Path.</> [relfile|test.txt|])
-    txt = unlines tests
+    txt = unlines (toList Main.test)
 
-tests :: [Text]
-tests = resourceFileNameTests
+test :: Seq Text
+test = ResourcePaths.test
