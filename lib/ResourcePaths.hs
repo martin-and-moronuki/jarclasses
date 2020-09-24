@@ -1,3 +1,5 @@
+-- Mappings between resource name, source path, and output file path.
+
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -11,8 +13,6 @@ import Path
 import qualified Data.Text as Text
 import Control.Lens
 import StringBuilding
-
----  Mappings between resource name, source path, and output file path  ---
 
 type Resource = [Text]
 
