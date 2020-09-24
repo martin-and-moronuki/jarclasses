@@ -24,6 +24,7 @@ import qualified Path
 import qualified Prosidy
 import ProsidyHtml
 import Relude hiding (head)
+import ResourcePaths
 import StringBuilding
 import Style
 import System.Directory (getCurrentDirectory)
@@ -85,59 +86,6 @@ resourceContentType :: Resource -> ByteString
 resourceContentType ("menus" : _) = "text/html; charset=utf-8"
 resourceContentType ("posts" : _) = "text/html; charset=utf-8"
 resourceContentType ("style" : _) = "text/css"
-
----  Mappings between resource name, source path, and output file path  ---
-
-type Resource = [Text]
-
-resourceOutputPath :: Resource -> Maybe (Path Rel File)
-resourceOutputPath [] = Nothing
-resourceOutputPath r@("style" : _) = resourceRelFileBase r
-resourceOutputPath r = (resourceRelFileBase >=> Path.addExtension ".html") r
-
-resourceInputPath :: Resource -> Maybe (Path Rel File)
-resourceInputPath [] = Nothing
-resourceInputPath ("style" : _) = Nothing
-resourceInputPath r = (resourceRelFileBase >=> Path.addExtension ".pro") r
-
-resourceRelFileBase :: Resource -> Maybe (Path Rel File)
-resourceRelFileBase r =
-  unsnoc r >>= \(dirTexts, fileText) ->
-    traverse (Path.parseRelDir . toString) dirTexts >>= \dirs ->
-      (Path.parseRelFile . toString) fileText >>= \file ->
-        Just $ foldr (Path.</>) file dirs
-
-pathAsResourceInput :: Path Rel File -> Maybe Resource
-pathAsResourceInput =
-  Path.splitExtension >=> \case
-    (p, ".pro") -> Just (relFileBaseResource p)
-    _ -> Nothing
-
-pathAsResourceOutput :: Path Rel File -> Maybe Resource
-pathAsResourceOutput =
-  Path.splitExtension >=> \case
-    (p, ".html") -> Just (relFileBaseResource p)
-    _ -> Nothing
-
-relFileBaseResource :: Path Rel File -> Resource
-relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
-  where
-    f :: Path Rel Dir -> [Text]
-    f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
-    txtFile = toText . Path.toFilePath
-    txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
-
-resourceFileNameTests :: [Text]
-resourceFileNameTests =
-  [ "pathAsResourceInput" <!> quo "./menus/2019-11-11.pro" <!> "=" <!> show (pathAsResourceInput [relfile|menus/2019-11-11.pro|]),
-    "pathAsResourceOutput" <!> quo "./menus/2019-11-11.pro" <!> "=" <!> show (pathAsResourceOutput [relfile|menus/2019-11-11.pro|]),
-    "pathAsResourceInput" <!> quo "./style/jarclasses.css" <!> "=" <!> show (pathAsResourceInput [relfile|style/jarclasses.css|]),
-    "pathAsResourceOutput" <!> quo "./style/jarclasses.css" <!> "=" <!> show (pathAsResourceOutput [relfile|style/jarclasses.css|]),
-    "resourceInputPath" <!> show ["menus", "2019-11-11"] <!> "=" <!> show (resourceInputPath ["menus", "2019-11-11"]),
-    "resourceInputPath" <!> show ["style", "jarclasses.css"] <!> "=" <!> show (resourceInputPath ["style", "jarclasses.css"]),
-    "resourceOutputPath" <!> show ["menus", "2019-11-11"] <!> "=" <!> show (resourceOutputPath ["menus", "2019-11-11"]),
-    "resourceOutputPath" <!> show ["style", "jarclasses.css"] <!> "=" <!> show (resourceOutputPath ["style", "jarclasses.css"])
-  ]
 
 ---  building a resource  ---
 
