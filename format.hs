@@ -1,22 +1,45 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i runhaskell shell.nix
 
-import qualified Data.ByteString.Lazy as LBS
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+
+module Format where
+
 import Data.Foldable
 import qualified Data.Text.IO as T
-import qualified Data.Text.Lazy.Encoding as LT
-import qualified Data.Text.Lazy.IO as LT
 import Ormolu
+import Path
+import Path.IO
+import Pipes
+import qualified Pipes.Prelude as Pipes
 import Relude
 
 main :: IO ()
-main = traverse_ format files
+main = runEffect $ files >-> Pipes.mapM_ format
 
-files :: [FilePath]
-files = ["format.hs", "run.hs", "rerun.hs", "lib/StringBuilding.hs", "lib/Style.hs"]
+files, rootFiles, libFiles :: Producer (Path Rel File) IO ()
+files = rootFiles *> libFiles
+rootFiles =
+  flip walkDirRel [reldir|.|] \_ _ xs ->
+    do
+      traverse_ (\x -> when (isHs x) (yield x)) xs
+      pure WalkFinish
+libFiles =
+  flip walkDirRel [reldir|lib|] \_ _ xs ->
+    do
+      traverse_ (\x -> when (isHs x) $ yield $ [reldir|lib|] </> x) xs
+      pure $ WalkExclude []
 
-format :: FilePath -> IO ()
+isHs :: Path Rel File -> Bool
+isHs x = fileExtension x == Just ".hs"
+
+format :: Path Rel File -> IO ()
 format fp =
-  T.readFile fp >>= \input ->
-    ormolu defaultConfig fp (toString input) >>= \output ->
-      T.writeFile fp output
+  do
+    putStrLn (toFilePath fp)
+    T.readFile (toFilePath fp) >>= \input ->
+      ormolu defaultConfig (toFilePath fp) (toString input) >>= \output ->
+        T.writeFile (toFilePath fp) output

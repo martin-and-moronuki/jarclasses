@@ -1,9 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module ProsidyHtml where
 
+import Control.Lens
 import qualified Prosidy
 import Relude hiding (head)
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
@@ -11,7 +12,6 @@ import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 import qualified Text.Blaze.Internal as Blaze
 import qualified Text.Blaze.Renderer.String as Blaze
-import Control.Lens
 
 proHtml :: Prosidy.Document -> Html
 proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
@@ -32,21 +32,27 @@ proBlockHtml :: Prosidy.Block -> Html
 proBlockHtml = \case
   Prosidy.BlockLiteral x -> HTML.stringComment (show x)
   Prosidy.BlockParagraph x -> HTML.p (foldMap proInlineHtml (view Prosidy.content x))
-  Prosidy.BlockTag x -> case (Prosidy.tagName x) of
-    "day" -> HTML.h2 (foldMap proBlockHtml (view Prosidy.content x))
-    "list" -> proListHtml x
-    _ -> HTML.stringComment (show x)
+  Prosidy.BlockTag x -> proBlockTagHtml x
+
+proBlockTagHtml :: Prosidy.Tag (Prosidy.Series Prosidy.Block) -> Html
+proBlockTagHtml x = case (Prosidy.tagName x) of
+  "day" -> HTML.h2 (foldMap proBlockHtml (view Prosidy.content x))
+  "list" -> proListHtml x
+  _ -> HTML.stringComment (show x)
 
 proInlineHtml :: Prosidy.Inline -> Html
 proInlineHtml = \case
   Prosidy.Break -> toHtml (" " :: String)
   Prosidy.InlineText x -> toHtml (Prosidy.fragmentText x)
-  Prosidy.InlineTag x -> case (Prosidy.tagName x) of
-    "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
-    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view Prosidy.content x)
-    "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view Prosidy.content x)
-    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (Prosidy.atSetting "to") x) $ foldMap proInlineHtml (view Prosidy.content x)
-    _ -> HTML.stringComment (show x)
+  Prosidy.InlineTag x -> proInlineTagHtml x
+
+proInlineTagHtml :: Prosidy.Tag (Prosidy.Series Prosidy.Inline) -> Html
+proInlineTagHtml x = case (Prosidy.tagName x) of
+  "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
+  "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view Prosidy.content x)
+  "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view Prosidy.content x)
+  "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (Prosidy.atSetting "to") x) $ foldMap proInlineHtml (view Prosidy.content x)
+  _ -> HTML.stringComment (show x)
 
 proListHtml :: Prosidy.Tag (Prosidy.Series Prosidy.Block) -> Html
 proListHtml x = HTML.ul $ foldMap itemHtml (view Prosidy.content x)

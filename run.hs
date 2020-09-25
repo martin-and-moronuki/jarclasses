@@ -9,6 +9,8 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
+module Run where
+
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
@@ -180,7 +182,7 @@ writeTestFile :: Path Abs Dir -> IO ()
 writeTestFile dir = writeFileLBS path (encodeUtf8 txt)
   where
     path = Path.toFilePath (dir Path.</> [relfile|test.txt|])
-    txt = unlines (toList Main.test)
+    txt = unlines (toList Run.test)
 
 test :: Seq Text
 test = ResourcePaths.test

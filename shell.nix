@@ -2,7 +2,7 @@ let
     pkgs = (import (import ./versions.nix).nixpkgs) {};
     haskell = pkgs.haskellPackages.ghcWithPackages hsPackageSelection;
     hsPackageSelection = haskellPackages: with haskellPackages; [
-        aeson aeson-optics aeson-pretty async blaze-html bytestring clay filemanip fsnotify http-conduit lens ormolu path prosidy relude safe-exceptions stm text unordered-containers wai warp
+        aeson aeson-optics aeson-pretty async blaze-html bytestring clay fsnotify http-conduit lens ormolu path path-io pipes prosidy relude safe-exceptions stm text unordered-containers wai warp
     ];
     ghcid = pkgs.haskellPackages.ghcid;
 in

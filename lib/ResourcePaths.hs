@@ -1,36 +1,41 @@
 -- Mappings between resource name, source path, and output file path.
-
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module ResourcePaths where
 
-import Relude
-import Path
-import qualified Data.Text as Text
 import Control.Lens
+import qualified Data.Text as Text
+import Path
+import Relude
 import StringBuilding
 
 type Resource = [Text]
 
 resourceOutputPath :: Resource -> Maybe (Path Rel File)
-resourceOutputPath [] = Nothing
-resourceOutputPath r@("style" : _) = resourceRelFileBase r
-resourceOutputPath r = (resourceRelFileBase >=> Path.addExtension ".html") r
+resourceOutputPath = \case
+  [] -> Nothing
+  r@("style" : _) -> resourceRelFileBase r
+  r -> (resourceRelFileBase >=> Path.addExtension ".html") r
 
 test_resourceOutputPath :: Resource -> Seq Text
-test_resourceOutputPath x = one $ "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
+test_resourceOutputPath x =
+  one $
+    "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
 
 resourceInputPath :: Resource -> Maybe (Path Rel File)
-resourceInputPath [] = Nothing
-resourceInputPath ("style" : _) = Nothing
-resourceInputPath r = (resourceRelFileBase >=> Path.addExtension ".pro") r
+resourceInputPath = \case
+  [] -> Nothing
+  ("style" : _) -> Nothing
+  r -> (resourceRelFileBase >=> Path.addExtension ".pro") r
 
 test_resourceInputPath :: Resource -> Seq Text
-test_resourceInputPath x = one $ "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
+test_resourceInputPath x =
+  one $
+    "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
 resourceRelFileBase r =
@@ -46,7 +51,9 @@ pathAsResourceInput =
     _ -> Nothing
 
 test_pathAsResourceInput :: Path Rel File -> Seq Text
-test_pathAsResourceInput x = one $ "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
+test_pathAsResourceInput x =
+  one $
+    "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
 
 pathAsResourceOutput :: Path Rel File -> Maybe Resource
 pathAsResourceOutput =
@@ -55,7 +62,9 @@ pathAsResourceOutput =
     _ -> Nothing
 
 test_pathAsResourceOutput :: Path Rel File -> Seq Text
-test_pathAsResourceOutput x = one $ "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
+test_pathAsResourceOutput x =
+  one $
+    "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
 
 relFileBaseResource :: Path Rel File -> Resource
 relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
@@ -67,22 +76,22 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
 
 test_path :: Path Rel File -> Seq Text
 test_path x =
-    test_pathAsResourceInput x <>
-    test_pathAsResourceOutput x
+  test_pathAsResourceInput x
+    <> test_pathAsResourceOutput x
 
 test_resource :: Resource -> Seq Text
 test_resource x =
-    test_resourceInputPath x <>
-    test_resourceOutputPath x
+  test_resourceInputPath x
+    <> test_resourceOutputPath x
 
 test :: Seq Text
 test =
-    foldMap test_path paths <>
-    foldMap test_resource resources
+  foldMap test_path paths
+    <> foldMap test_resource resources
   where
     paths :: Seq (Path Rel File) =
-        one [relfile|menus/2019-11-11.pro|] <>
-        one [relfile|style/jarclasses.css|]
+      one [relfile|menus/2019-11-11.pro|]
+        <> one [relfile|style/jarclasses.css|]
     resources :: Seq Resource =
-        one ["menus", "2019-11-11"] <>
-        one ["style", "jarclasses.css"]
+      one ["menus", "2019-11-11"]
+        <> one ["style", "jarclasses.css"]
