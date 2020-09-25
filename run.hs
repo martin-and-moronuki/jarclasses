@@ -11,6 +11,7 @@
 
 module Run where
 
+import BlazeHtmlRendering
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
