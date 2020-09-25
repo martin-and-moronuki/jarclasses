@@ -15,6 +15,10 @@ makeStyles d = writeFileLBS path (encodeUtf8 txt)
     path = Path.toFilePath (d Path.</> [relfile|style/jarclasses.css|])
     txt = renderWith pretty [] jarclassesStyle
 
+contentFontFamily, headerFontFamily :: Css
+headerFontFamily = fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
+contentFontFamily = fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
+
 jarclassesStyle :: Css
 jarclassesStyle =
   do
@@ -31,7 +35,7 @@ jarclassesStyle =
         color (rgb 0x54 0x49 0x43)
         fontSize (px 15)
         lineHeight (px 22.5)
-        fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
+        contentFontFamily
         foldMap1 (\cls -> span # byClass cls) ("emphatic" :| "title" : []) ? fontStyle italic
         a ? do
           textDecoration none
@@ -39,7 +43,7 @@ jarclassesStyle =
           hover & textDecoration underline
       p <? marginVertical (em 0.7)
       headerTags <? do
-        fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
+        headerFontFamily
         fontWeight bold
       (h1 <> h2) <? do
         color (rgb 0x7c 0x33 0x4f)
