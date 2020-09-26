@@ -15,7 +15,6 @@ import BlazeHtmlRendering
 import Control.Concurrent.Async (withAsync)
 import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
-import qualified Data.Map as Map
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
@@ -26,6 +25,7 @@ import qualified Prosidy
 import ProsidyHtml
 import Relude hiding (head)
 import ResourcePaths
+import qualified StmContainers.Map as STM.Map
 import Style
 import System.Directory (getCurrentDirectory)
 import qualified System.FSNotify as FSN
@@ -37,7 +37,7 @@ main :: IO ()
 main =
   getCwd >>= \cwd ->
     initFiles cwd *> withLog \l ->
-      atomically (STM.newTVar mempty) >>= \rs ->
+      atomically STM.Map.new >>= \rs ->
         withNotification l cwd (react l rs) $
           serve l rs
   where
@@ -103,7 +103,7 @@ buildResource l r =
 
 data ResourceStatus = Building | Built deriving (Eq, Ord)
 
-type ResourcesState = TVar (Map Resource ResourceStatus)
+type ResourcesState = STM.Map.Map Resource ResourceStatus
 
 ensureResourceBuilt :: LogHandle -> ResourcesState -> Resource -> IO ()
 ensureResourceBuilt l rs r =
@@ -113,7 +113,7 @@ ensureResourceBuilt l rs r =
   where
     lock :: IO Bool =
       atomically $
-        readTVar rs >>= \m -> case (Map.lookup r m) of
+        STM.Map.lookup r rs >>= \case
           Nothing -> lockResourceBuilding rs r *> pure True
           Just Built -> pure False
           Just Building -> STM.retry
@@ -123,13 +123,13 @@ ensureResourceBuilt l rs r =
       True -> buildResource l r *> atomically (recordResourceBuilt rs r)
 
 clearResourceStatus :: ResourcesState -> Resource -> STM ()
-clearResourceStatus rs r = STM.modifyTVar rs $ Map.delete r
+clearResourceStatus rs r = STM.Map.delete r rs
 
 recordResourceBuilt :: ResourcesState -> Resource -> STM ()
-recordResourceBuilt rs r = STM.modifyTVar rs $ Map.insert r Built
+recordResourceBuilt rs r = STM.Map.insert Built r rs
 
 lockResourceBuilding :: ResourcesState -> Resource -> STM ()
-lockResourceBuilding rs r = STM.modifyTVar rs $ Map.insert r Building
+lockResourceBuilding rs r = STM.Map.insert Building r rs
 
 ---  file watch setup  ---
 
