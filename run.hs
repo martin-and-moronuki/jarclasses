@@ -4,7 +4,6 @@
 module Run where
 
 import BlazeHtmlRendering
-import Control.Exception.Safe
 import FileWatch
 import Logging
 import qualified Network.HTTP.Types as HTTP
@@ -36,7 +35,6 @@ main =
   where
     getCwd = getCurrentDirectory >>= Path.parseAbsDir
     initFiles cwd = makeStyles cwd *> writeTestFile cwd
-    logException l = writeToLog l . displayException
 
 ---  response to a file change  ---
 

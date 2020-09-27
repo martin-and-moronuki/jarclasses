@@ -22,3 +22,6 @@ printLogs l = forever printOne
   where
     printOne = pop >>= putStrLn
     pop = atomically $ STM.readTChan l
+
+logException :: Exception e => LogHandle -> e -> IO ()
+logException l = writeToLog l . displayException
