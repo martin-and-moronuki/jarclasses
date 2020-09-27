@@ -4,9 +4,8 @@
 module Run where
 
 import BlazeHtmlRendering
-import Control.Concurrent.Async (withAsync)
-import qualified Control.Concurrent.STM as STM
 import Control.Exception.Safe
+import Logging
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
@@ -123,27 +122,6 @@ withWatch l man act cwd fp go =
       Nothing -> pure ()
 
     g = (Path.parseAbsFile >=> Path.stripProperPrefix cwd) . FSN.eventPath
-
----  logging  ---
-
-type LogHandle = STM.TChan String
-
-withLog :: (LogHandle -> IO a) -> IO a
-withLog go =
-  atomically STM.newTChan >>= \l ->
-    withLogPrinting l (go l)
-
-writeToLog :: LogHandle -> String -> IO ()
-writeToLog l s = atomically (STM.writeTChan l s)
-
-withLogPrinting :: LogHandle -> IO a -> IO a
-withLogPrinting l go = withAsync (printLogs l) \_ -> go
-
-printLogs :: LogHandle -> IO a
-printLogs l = forever printOne
-  where
-    printOne = pop >>= putStrLn
-    pop = atomically $ STM.readTChan l
 
 ---  tests  ---
 
