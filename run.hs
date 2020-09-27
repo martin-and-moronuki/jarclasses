@@ -1,14 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i runhaskell shell.nix
 
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE ViewPatterns #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Run where
 
 import BlazeHtmlRendering

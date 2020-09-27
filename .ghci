@@ -1,0 +1,8 @@
+:set -XBlockArguments
+:set -XConstraintKinds
+:set -XLambdaCase
+:set -XNoImplicitPrelude
+:set -XOverloadedStrings
+:set -XQuasiQuotes
+:set -XScopedTypeVariables
+:set -XViewPatterns
