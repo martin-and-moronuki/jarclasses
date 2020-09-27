@@ -6,10 +6,6 @@ module Run where
 import BlazeHtmlRendering
 import FileWatch
 import Logging
-import qualified Network.HTTP.Types as HTTP
-import Network.Wai (Request, Response)
-import qualified Network.Wai as WAI
-import qualified Network.Wai.Handler.Warp as Warp
 import Path (Abs, Dir, File, Path, Rel, reldir, relfile)
 import qualified Path
 import qualified Prosidy
@@ -21,6 +17,7 @@ import qualified StateOfResources
 import qualified StmContainers.Map as STM.Map
 import Style
 import System.Directory (getCurrentDirectory)
+import WebServer
 
 dirsToWatch :: [Path Rel Dir]
 dirsToWatch = [[reldir|menus|], [reldir|posts|]]
@@ -31,7 +28,7 @@ main =
     initFiles cwd *> withLog \l ->
       atomically STM.Map.new >>= \rs ->
         fileWatch (logException l) (react l rs) cwd dirsToWatch $
-          serve l rs
+          serve (ensureResourceBuilt l rs)
   where
     getCwd = getCurrentDirectory >>= Path.parseAbsDir
     initFiles cwd = makeStyles cwd *> writeTestFile cwd
@@ -47,34 +44,6 @@ react l rs fp =
     case pathAsResourceOutput fp of
       Nothing -> pure ()
       Just r -> atomically (StateOfResources.clearResourceStatus rs r)
-
----  dev web server  ---
-
-serve :: LogHandle -> StateOfResources Resource -> IO ()
-serve l rs = Warp.runEnv 8000 (webapp l rs)
-
-webapp :: LogHandle -> StateOfResources Resource -> WAI.Application
-webapp l rs request respond = ensureResourceBuilt l rs r *> go
-  where
-    r = requestResource request
-    go = case (responseResource r) of
-      Just response -> respond response
-      Nothing -> undefined
-
-requestResource :: Request -> Resource
-requestResource = WAI.pathInfo
-
-responseResource :: Resource -> Maybe Response
-responseResource r =
-  resourceOutputPath r >>= \fp ->
-    pure $ WAI.responseFile HTTP.ok200 headers (Path.toFilePath fp) Nothing
-  where
-    headers = [(HTTP.hContentType, resourceContentType r)]
-
-resourceContentType :: Resource -> ByteString
-resourceContentType ("menus" : _) = "text/html; charset=utf-8"
-resourceContentType ("posts" : _) = "text/html; charset=utf-8"
-resourceContentType ("style" : _) = "text/css"
 
 ---  building a resource  ---
 
