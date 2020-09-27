@@ -25,6 +25,8 @@ import qualified Prosidy
 import ProsidyHtml
 import Relude hiding (head)
 import ResourcePaths
+import StateOfResources (StateOfResources)
+import qualified StateOfResources
 import qualified StmContainers.Map as STM.Map
 import Style
 import System.Directory (getCurrentDirectory)
@@ -49,22 +51,22 @@ main =
 
 ---  response to a file change  ---
 
-react :: LogHandle -> ResourcesState -> Path Rel File -> IO ()
+react :: LogHandle -> StateOfResources Resource -> Path Rel File -> IO ()
 react l rs fp =
   do
     case pathAsResourceInput fp of
       Nothing -> pure ()
-      Just r -> atomically (clearResourceStatus rs r) *> ensureResourceBuilt l rs r
+      Just r -> atomically (StateOfResources.clearResourceStatus rs r) *> ensureResourceBuilt l rs r
     case pathAsResourceOutput fp of
       Nothing -> pure ()
-      Just r -> atomically (clearResourceStatus rs r)
+      Just r -> atomically (StateOfResources.clearResourceStatus rs r)
 
 ---  dev web server  ---
 
-serve :: LogHandle -> ResourcesState -> IO ()
+serve :: LogHandle -> StateOfResources Resource -> IO ()
 serve l rs = Warp.runEnv 8000 (webapp l rs)
 
-webapp :: LogHandle -> ResourcesState -> WAI.Application
+webapp :: LogHandle -> StateOfResources Resource -> WAI.Application
 webapp l rs request respond = ensureResourceBuilt l rs r *> go
   where
     r = requestResource request
@@ -89,6 +91,12 @@ resourceContentType ("style" : _) = "text/css"
 
 ---  building a resource  ---
 
+ensureResourceBuilt :: LogHandle -> StateOfResources Resource -> Resource -> IO ()
+ensureResourceBuilt l rs r =
+  if isJust (resourceInputPath r)
+    then StateOfResources.ensureResourceBuilt (buildResource l r) rs r
+    else pure ()
+
 buildResource :: LogHandle -> Resource -> IO ()
 buildResource l r =
   do
@@ -98,38 +106,6 @@ buildResource l r =
     src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
     doc <- either (fail . show) pure $ Prosidy.parseDocument (Path.toFilePath fpIn) src
     writeFileLBS (Path.toFilePath fpOut) $ encodeUtf8 $ toText $ renderHtml $ proHtml doc
-
----  build management  ---
-
-data ResourceStatus = Building | Built deriving (Eq, Ord)
-
-type ResourcesState = STM.Map.Map Resource ResourceStatus
-
-ensureResourceBuilt :: LogHandle -> ResourcesState -> Resource -> IO ()
-ensureResourceBuilt l rs r =
-  if isJust (resourceInputPath r)
-    then bracketOnError lock (const clear) go
-    else pure ()
-  where
-    lock :: IO Bool =
-      atomically $
-        STM.Map.lookup r rs >>= \case
-          Nothing -> lockResourceBuilding rs r *> pure True
-          Just Built -> pure False
-          Just Building -> STM.retry
-    clear :: IO () = atomically (clearResourceStatus rs r)
-    go :: Bool -> IO () = \case
-      False -> pure ()
-      True -> buildResource l r *> atomically (recordResourceBuilt rs r)
-
-clearResourceStatus :: ResourcesState -> Resource -> STM ()
-clearResourceStatus rs r = STM.Map.delete r rs
-
-recordResourceBuilt :: ResourcesState -> Resource -> STM ()
-recordResourceBuilt rs r = STM.Map.insert Built r rs
-
-lockResourceBuilding :: ResourcesState -> Resource -> STM ()
-lockResourceBuilding rs r = STM.Map.insert Building r rs
 
 ---  file watch setup  ---
 
