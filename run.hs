@@ -5,6 +5,7 @@ module Run where
 
 import BlazeHtmlRendering
 import Control.Exception.Safe
+import FileWatch
 import Logging
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
@@ -38,7 +39,7 @@ main =
     initFiles cwd = makeStyles cwd *> writeTestFile cwd
     withNotification l cwd r go =
       FSN.withManagerConf fsnConfig \man ->
-        withWatches l man r cwd dirsToWatch go
+        withWatches (\e -> writeToLog l (displayException e)) man r cwd dirsToWatch go
 
 ---  response to a file change  ---
 
@@ -97,31 +98,6 @@ buildResource l r =
     src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
     doc <- either (fail . show) pure $ Prosidy.parseDocument (Path.toFilePath fpIn) src
     writeFileLBS (Path.toFilePath fpOut) $ encodeUtf8 $ toText $ renderHtml $ proHtml doc
-
----  file watch setup  ---
-
-fsnConfig :: FSN.WatchConfig
-fsnConfig = FSN.defaultConfig {FSN.confDebounce = FSN.NoDebounce}
-
-withWatches :: LogHandle -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
-withWatches l man act cwd = fix \r ->
-  \case
-    [] -> id
-    fp : fps -> withWatch l man act cwd fp . r fps
-
-withWatch :: LogHandle -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> Path Rel Dir -> IO a -> IO a
-withWatch l man act cwd fp go =
-  FSN.watchTree man (Path.toFilePath (cwd Path.</> fp)) (const True) action >>= \stop ->
-    go `finally` stop
-  where
-    action :: FSN.Action
-    action e = case g e of
-      Just f ->
-        -- https://github.com/haskell-fswatch/hfsnotify/issues/91
-        act f `catchAny` (\e -> writeToLog l (displayException e))
-      Nothing -> pure ()
-
-    g = (Path.parseAbsFile >=> Path.stripProperPrefix cwd) . FSN.eventPath
 
 ---  tests  ---
 
