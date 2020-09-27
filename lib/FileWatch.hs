@@ -1,22 +1,25 @@
 module FileWatch where
 
 import Control.Exception.Safe
-import Relude
-import qualified System.FSNotify as FSN
 import Path (Abs, Dir, File, Path, Rel)
 import qualified Path
+import Relude
+import qualified System.FSNotify as FSN
 
 fsnConfig :: FSN.WatchConfig
 fsnConfig = FSN.defaultConfig {FSN.confDebounce = FSN.NoDebounce}
 
-withWatches :: (SomeException -> IO ()) -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
-withWatches l man act cwd = fix \r ->
+fileWatch :: (SomeException -> IO ()) -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
+fileWatch l act cwd fps go = FSN.withManagerConf fsnConfig \man -> fileWatchN l man act cwd fps go
+
+fileWatchN :: (SomeException -> IO ()) -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> [Path Rel Dir] -> IO a -> IO a
+fileWatchN l man act cwd = fix \r ->
   \case
     [] -> id
-    fp : fps -> withWatch l man act cwd fp . r fps
+    fp : fps -> fileWatch1 l man act cwd fp . r fps
 
-withWatch :: (SomeException -> IO ()) -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> Path Rel Dir -> IO a -> IO a
-withWatch l man act cwd fp go =
+fileWatch1 :: (SomeException -> IO ()) -> FSN.WatchManager -> (Path Rel File -> IO ()) -> Path Abs Dir -> Path Rel Dir -> IO a -> IO a
+fileWatch1 l man act cwd fp go =
   FSN.watchTree man (Path.toFilePath (cwd Path.</> fp)) (const True) action >>= \stop ->
     go `finally` stop
   where

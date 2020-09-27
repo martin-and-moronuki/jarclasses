@@ -22,7 +22,6 @@ import qualified StateOfResources
 import qualified StmContainers.Map as STM.Map
 import Style
 import System.Directory (getCurrentDirectory)
-import qualified System.FSNotify as FSN
 
 dirsToWatch :: [Path Rel Dir]
 dirsToWatch = [[reldir|menus|], [reldir|posts|]]
@@ -32,14 +31,12 @@ main =
   getCwd >>= \cwd ->
     initFiles cwd *> withLog \l ->
       atomically STM.Map.new >>= \rs ->
-        withNotification l cwd (react l rs) $
+        fileWatch (logException l) (react l rs) cwd dirsToWatch $
           serve l rs
   where
     getCwd = getCurrentDirectory >>= Path.parseAbsDir
     initFiles cwd = makeStyles cwd *> writeTestFile cwd
-    withNotification l cwd r go =
-      FSN.withManagerConf fsnConfig \man ->
-        withWatches (\e -> writeToLog l (displayException e)) man r cwd dirsToWatch go
+    logException l = writeToLog l . displayException
 
 ---  response to a file change  ---
 
