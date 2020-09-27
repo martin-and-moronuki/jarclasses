@@ -7,6 +7,7 @@ import qualified Data.Text as Text
 import Path
 import Relude
 import StringBuilding
+import TestFramework
 
 type Resource = [Text]
 
@@ -16,7 +17,7 @@ resourceOutputPath = \case
   r@("style" : _) -> resourceRelFileBase r
   r -> (resourceRelFileBase >=> Path.addExtension ".html") r
 
-test_resourceOutputPath :: Resource -> Seq Text
+test_resourceOutputPath :: Resource -> Test
 test_resourceOutputPath x =
   one $
     "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
@@ -27,7 +28,7 @@ resourceInputPath = \case
   ("style" : _) -> Nothing
   r -> (resourceRelFileBase >=> Path.addExtension ".pro") r
 
-test_resourceInputPath :: Resource -> Seq Text
+test_resourceInputPath :: Resource -> Test
 test_resourceInputPath x =
   one $
     "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
@@ -45,7 +46,7 @@ pathAsResourceInput =
     (p, ".pro") -> Just (relFileBaseResource p)
     _ -> Nothing
 
-test_pathAsResourceInput :: Path Rel File -> Seq Text
+test_pathAsResourceInput :: Path Rel File -> Test
 test_pathAsResourceInput x =
   one $
     "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
@@ -56,7 +57,7 @@ pathAsResourceOutput =
     (p, ".html") -> Just (relFileBaseResource p)
     _ -> Nothing
 
-test_pathAsResourceOutput :: Path Rel File -> Seq Text
+test_pathAsResourceOutput :: Path Rel File -> Test
 test_pathAsResourceOutput x =
   one $
     "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
@@ -69,17 +70,17 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
 
-test_path :: Path Rel File -> Seq Text
+test_path :: Path Rel File -> Test
 test_path x =
   test_pathAsResourceInput x
     <> test_pathAsResourceOutput x
 
-test_resource :: Resource -> Seq Text
+test_resource :: Resource -> Test
 test_resource x =
   test_resourceInputPath x
     <> test_resourceOutputPath x
 
-test :: Seq Text
+test :: Test
 test =
   foldMap test_path paths
     <> foldMap test_resource resources
