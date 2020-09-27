@@ -1,7 +1,7 @@
 module Test where
 
-import TestFramework
 import qualified ResourcePaths
+import TestFramework
 
 test :: Test
 test = ResourcePaths.test

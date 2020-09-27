@@ -1,7 +1,7 @@
 module TestFramework where
 
-import Relude
 import Path
+import Relude
 
 type Test = Seq Text
 

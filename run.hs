@@ -14,11 +14,10 @@ import Relude hiding (head)
 import ResourcePaths
 import StateOfResources (StateOfResources)
 import qualified StateOfResources
-import qualified StmContainers.Map as STM.Map
 import Style
 import System.Directory (getCurrentDirectory)
-import TestFramework
 import Test
+import TestFramework
 import WebServer
 
 dirsToWatch :: [Path Rel Dir]
@@ -28,7 +27,7 @@ main :: IO ()
 main =
   getCwd >>= \cwd ->
     initFiles cwd *> withLog \l ->
-      atomically STM.Map.new >>= \rs ->
+      StateOfResources.new >>= \rs ->
         fileWatch (logException l) (react l rs) cwd dirsToWatch $
           serve (ensureResourceBuilt l rs)
   where

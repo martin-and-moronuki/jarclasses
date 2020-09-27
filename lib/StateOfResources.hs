@@ -11,6 +11,9 @@ type StateOfResources r = STM.Map.Map r ResourceStatus
 
 type IsResource r = (Eq r, Hashable r)
 
+new :: IO (StateOfResources r)
+new = atomically STM.Map.new
+
 ensureResourceBuilt :: IsResource r => IO () -> StateOfResources r -> r -> IO ()
 ensureResourceBuilt buildResource rs r = bracketOnError lock (const clear) go
   where
