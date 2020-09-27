@@ -11,10 +11,6 @@ makeStyles d = writeFileLBS path (encodeUtf8 txt)
     path = Path.toFilePath (d Path.</> [relfile|style/jarclasses.css|])
     txt = renderWith pretty [] jarclassesStyle
 
-contentFontFamily, headerFontFamily :: Css
-headerFontFamily = fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
-contentFontFamily = fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
-
 jarclassesStyle :: Css
 jarclassesStyle =
   do
@@ -60,12 +56,19 @@ jarclassesStyle =
         marginBottom (em 0.5)
         borderBottomStyle solid
         borderBottomWidth (em 0.1)
-  where
-    marginAll = marginVertical <> marginHorizontal
-    marginVertical = marginTop <> marginBottom
-    marginHorizontal = marginLeft <> marginRight
-    paddingAll = paddingVertical <> paddingHorizontal
-    paddingVertical = paddingTop <> paddingBottom
-    paddingHorizontal = paddingLeft <> paddingRight
-    headerTags = h1 <> h2 <> h3 <> h4 <> h5 <> h6
-    listTags = ul <> ol
+
+contentFontFamily, headerFontFamily :: Css
+headerFontFamily = fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
+contentFontFamily = fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
+
+marginAll, marginVertical, marginHorizontal, paddingAll, paddingVertical, paddingHorizontal :: Size a -> Css
+marginAll = marginVertical <> marginHorizontal
+marginVertical = marginTop <> marginBottom
+marginHorizontal = marginLeft <> marginRight
+paddingAll = paddingVertical <> paddingHorizontal
+paddingVertical = paddingTop <> paddingBottom
+paddingHorizontal = paddingLeft <> paddingRight
+
+headerTags, listTags :: Selector
+headerTags = h1 <> h2 <> h3 <> h4 <> h5 <> h6
+listTags = ul <> ol
