@@ -13,7 +13,7 @@ renderHtmlIndented :: Blaze.MarkupM b -> String -> String
 renderHtmlIndented = go 0 id
   where
     contentInline :: Blaze.StaticString -> Bool
-    contentInline open = Blaze.getString open "" `elem` ["<p", "<title"]
+    contentInline open = Blaze.getString open "" `elem` (["<p", "<title"] ++ map (\n -> "<h" <> show n) (enumFromTo 1 6 :: [Int]))
 
     go :: Int -> (String -> String) -> Blaze.MarkupM b -> String -> String
 

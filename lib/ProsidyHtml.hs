@@ -16,7 +16,7 @@ proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
     title = foldMap (HTML.title . toHtml) $ proTitle doc
     body = HTML.body main
     main = HTML.main $ do
-      foldMap (HTML.h1 . HTML.p . toHtml) $ proTitle doc
+      foldMap (HTML.h1 . toHtml) $ proTitle doc
       foldMap proBlockHtml $ view content doc
 
 proTitle :: Document -> Maybe Text
@@ -30,7 +30,7 @@ proBlockHtml = \case
 
 proBlockTagHtml :: Tag (Series Block) -> Html
 proBlockTagHtml x = case (tagName x) of
-  "day" -> HTML.h2 (foldMap proBlockHtml (view content x))
+  "day" -> HTML.h2 (foldMap (\case BlockParagraph y -> foldMap proInlineHtml (view content y)) (view content x))
   "list" -> proListHtml x
   _ -> HTML.stringComment (show x)
 
