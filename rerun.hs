@@ -10,4 +10,4 @@ command :: String
 command = "nix-shell --command \"" <> ghciCommand <> "\""
 
 ghciCommand :: String
-ghciCommand = "ghci -Wall -fdefer-typed-holes -ilib run.hs format.hs"
+ghciCommand = "ghci -Wall -fdefer-typed-holes -ilib run.hs buildAll.hs format.hs"

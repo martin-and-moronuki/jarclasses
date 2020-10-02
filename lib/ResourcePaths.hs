@@ -8,6 +8,8 @@ import Path
 import Relude
 import StringBuilding
 import TestFramework
+import Pipes
+import Path.IO
 
 type Resource = [Text]
 
@@ -85,6 +87,15 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
+
+findProHtmlResources :: Scheme -> Producer Resource IO ()
+findProHtmlResources s =
+  for_ (scheme_proHtmlDirs s) \d ->
+    flip walkDirRel d \_ _ xs ->
+      do
+        for_ xs \x ->
+          for_ (pathAsResourceInput s (d </> x)) yield
+        pure $ WalkExclude []
 
 test_path :: Scheme -> Path Rel File -> Test
 test_path s x =
