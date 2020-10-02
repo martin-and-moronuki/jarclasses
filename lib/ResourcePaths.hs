@@ -11,27 +11,41 @@ import TestFramework
 
 type Resource = [Text]
 
-resourceOutputPath :: Resource -> Maybe (Path Rel File)
-resourceOutputPath = \case
-  [] -> Nothing
-  r@("style" : _) -> resourceRelFileBase r
-  r -> (resourceRelFileBase >=> Path.addExtension ".html") r
+data Scheme = Scheme
+  { scheme_proHtmlDirs :: Set (Path Rel Dir),
+    scheme_styleDirs :: Set (Path Rel Dir)
+  }
+  deriving (Show)
 
-test_resourceOutputPath :: Resource -> Test
-test_resourceOutputPath x =
+inStyleDir :: Scheme -> Path Rel t -> Bool
+inStyleDir s p = any (\d -> d `Path.isProperPrefixOf` p) (scheme_styleDirs s)
+
+inProHtmlDir :: Scheme -> Path Rel t -> Bool
+inProHtmlDir s p = any (\d -> d `Path.isProperPrefixOf` p) (scheme_proHtmlDirs s)
+
+resourceOutputPath :: Scheme -> Resource -> Maybe (Path Rel File)
+resourceOutputPath s r =
+  resourceRelFileBase r >>= \p ->
+    if inStyleDir s p
+      then resourceRelFileBase r
+      else resourceRelFileBase r >>= Path.addExtension ".html"
+
+test_resourceOutputPath :: Scheme -> Resource -> Test
+test_resourceOutputPath s x =
   one $
-    "resourceOutputPath" <!> show x <!> "=" <!> show (resourceOutputPath x)
+    "resourceOutputPath" <!> show s <!> show x <!> "=" <!> show (resourceOutputPath s x)
 
-resourceInputPath :: Resource -> Maybe (Path Rel File)
-resourceInputPath = \case
-  [] -> Nothing
-  ("style" : _) -> Nothing
-  r -> (resourceRelFileBase >=> Path.addExtension ".pro") r
+resourceInputPath :: Scheme -> Resource -> Maybe (Path Rel File)
+resourceInputPath s r =
+  resourceRelFileBase r >>= \p ->
+    if inProHtmlDir s p
+      then Path.addExtension ".pro" p
+      else Nothing
 
-test_resourceInputPath :: Resource -> Test
-test_resourceInputPath x =
+test_resourceInputPath :: Scheme -> Resource -> Test
+test_resourceInputPath s x =
   one $
-    "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath x)
+    "resourceInputPath" <!> show s <!> show x <!> "=" <!> show (resourceInputPath s x)
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
 resourceRelFileBase r =
@@ -40,27 +54,29 @@ resourceRelFileBase r =
       (Path.parseRelFile . toString) fileText >>= \file ->
         Just $ foldr (Path.</>) file dirs
 
-pathAsResourceInput :: Path Rel File -> Maybe Resource
-pathAsResourceInput =
-  Path.splitExtension >=> \case
-    (p, ".pro") -> Just (relFileBaseResource p)
-    _ -> Nothing
+pathAsResourceInput :: Scheme -> Path Rel File -> Maybe Resource
+pathAsResourceInput s p =
+  guard (inProHtmlDir s p)
+    *> Path.splitExtension p >>= \case
+      (p', ".pro") -> Just (relFileBaseResource p')
+      _ -> Nothing
 
-test_pathAsResourceInput :: Path Rel File -> Test
-test_pathAsResourceInput x =
+test_pathAsResourceInput :: Scheme -> Path Rel File -> Test
+test_pathAsResourceInput s x =
   one $
-    "pathAsResourceInput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceInput x)
+    "pathAsResourceInput" <!> show s <!> show x <!> "=" <!> show (pathAsResourceInput s x)
 
-pathAsResourceOutput :: Path Rel File -> Maybe Resource
-pathAsResourceOutput =
-  Path.splitExtension >=> \case
-    (p, ".html") -> Just (relFileBaseResource p)
-    _ -> Nothing
+pathAsResourceOutput :: Scheme -> Path Rel File -> Maybe Resource
+pathAsResourceOutput s p =
+  guard (inProHtmlDir s p)
+    *> Path.splitExtension p >>= \case
+      (p', ".html") -> Just (relFileBaseResource p')
+      _ -> Nothing
 
-test_pathAsResourceOutput :: Path Rel File -> Test
-test_pathAsResourceOutput x =
+test_pathAsResourceOutput :: Scheme -> Path Rel File -> Test
+test_pathAsResourceOutput s x =
   one $
-    "pathAsResourceOutput" <!> quo (toText (toFilePath x)) <!> "=" <!> show (pathAsResourceOutput x)
+    "pathAsResourceOutput" <!> show s <!> show x <!> "=" <!> show (pathAsResourceOutput s x)
 
 relFileBaseResource :: Path Rel File -> Resource
 relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
@@ -70,20 +86,20 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
 
-test_path :: Path Rel File -> Test
-test_path x =
-  test_pathAsResourceInput x
-    <> test_pathAsResourceOutput x
+test_path :: Scheme -> Path Rel File -> Test
+test_path s x =
+  test_pathAsResourceInput s x
+    <> test_pathAsResourceOutput s x
 
-test_resource :: Resource -> Test
-test_resource x =
-  test_resourceInputPath x
-    <> test_resourceOutputPath x
+test_resource :: Scheme -> Resource -> Test
+test_resource s x =
+  test_resourceInputPath s x
+    <> test_resourceOutputPath s x
 
-test :: Test
-test =
-  foldMap test_path paths
-    <> foldMap test_resource resources
+test :: Scheme -> Test
+test s =
+  foldMap (test_path s) paths
+    <> foldMap (test_resource s) resources
   where
     paths :: Seq (Path Rel File) =
       one [relfile|menus/2019-11-11.pro|]

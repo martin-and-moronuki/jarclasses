@@ -1,8 +1,8 @@
-pathAsResourceInput "menus/2019-11-11.pro" = Just ["menus","2019-11-11"]
-pathAsResourceOutput "menus/2019-11-11.pro" = Nothing
-pathAsResourceInput "style/jarclasses.css" = Nothing
-pathAsResourceOutput "style/jarclasses.css" = Nothing
-resourceInputPath ["menus","2019-11-11"] = Just "menus/2019-11-11.pro"
-resourceOutputPath ["menus","2019-11-11"] = Just "menus/2019-11-11.html"
-resourceInputPath ["style","jarclasses.css"] = Nothing
-resourceOutputPath ["style","jarclasses.css"] = Just "style/jarclasses.css"
+pathAsResourceInput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "menus/2019-11-11.pro" = Just ["menus","2019-11-11"]
+pathAsResourceOutput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "menus/2019-11-11.pro" = Nothing
+pathAsResourceInput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "style/jarclasses.css" = Nothing
+pathAsResourceOutput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "style/jarclasses.css" = Nothing
+resourceInputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["menus","2019-11-11"] = Just "menus/2019-11-11.pro"
+resourceOutputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["menus","2019-11-11"] = Just "menus/2019-11-11.html"
+resourceInputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["style","jarclasses.css"] = Nothing
+resourceOutputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["style","jarclasses.css"] = Just "style/jarclasses.css"

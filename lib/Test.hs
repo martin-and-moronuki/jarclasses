@@ -3,5 +3,5 @@ module Test where
 import qualified ResourcePaths
 import TestFramework
 
-test :: Test
-test = ResourcePaths.test
+test :: ResourcePaths.Scheme -> Test
+test s = ResourcePaths.test s
