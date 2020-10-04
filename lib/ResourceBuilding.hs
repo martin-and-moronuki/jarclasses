@@ -1,13 +1,13 @@
 module ResourceBuilding where
 
-import Relude
-import StateOfResources
-import ResourcePaths
+import BlazeHtmlRendering
 import qualified Path
 import qualified Prosidy
-import Scheme
-import BlazeHtmlRendering
 import ProsidyHtml
+import Relude
+import ResourcePaths
+import Scheme
+import StateOfResources
 
 ensureResourceBuilt :: (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt l rs r =

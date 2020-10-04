@@ -11,12 +11,12 @@ import qualified Path
 import qualified Prosidy
 import ProsidyHtml
 import Relude hiding (head)
+import ResourceBuilding
 import ResourcePaths
+import Scheme
 import StateOfResources (StateOfResources)
 import qualified StateOfResources
-import ResourceBuilding
 import Style
-import Scheme
 import System.Directory (getCurrentDirectory)
 import Test
 import TestFramework

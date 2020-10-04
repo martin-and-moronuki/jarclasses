@@ -5,11 +5,11 @@ module ResourcePaths where
 import Control.Lens
 import qualified Data.Text as Text
 import Path
+import Path.IO
+import Pipes
 import Relude
 import StringBuilding
 import TestFramework
-import Pipes
-import Path.IO
 
 type Resource = [Text]
 

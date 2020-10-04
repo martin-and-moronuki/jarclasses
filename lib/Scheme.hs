@@ -1,8 +1,8 @@
 module Scheme where
 
-import ResourcePaths
-import Relude
 import Path
+import Relude
+import ResourcePaths
 
 scheme :: Scheme
 scheme =
