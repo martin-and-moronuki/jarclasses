@@ -1,6 +1,7 @@
 let
     pkgs = (import (import ./versions.nix).nixpkgs) {};
-    inherit (pkgs) cacert nix;
+    inherit (pkgs) cacert nix rsync;
+    ssh = pkgs.openssh;
     haskell = pkgs.haskellPackages.ghcWithPackages hsPackageSelection;
     hsPackageSelection = haskellPackages: with haskellPackages; [
         aeson aeson-optics aeson-pretty async blaze-html bytestring clay fsnotify http-conduit lens optics ormolu path path-io pipes prosidy relude safe-exceptions stm stm-containers text unordered-containers wai warp
@@ -8,7 +9,7 @@ let
     ghcid = pkgs.haskellPackages.ghcid;
 in
     pkgs.mkShell {
-        buildInputs = [ haskell ghcid nix cacert ];
+        buildInputs = [ haskell ghcid nix cacert rsync ssh ];
         LC_ALL = "en_US.UTF-8";
         LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
     }
