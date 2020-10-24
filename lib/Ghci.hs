@@ -11,7 +11,7 @@ main :: IO ()
 main =
   getArgs >>= \args ->
     getTargets >>= \targets ->
-      callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib"] <> extensionFlags <> targets <> args)
+      callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib", "-ferror-spans", "-fdiagnostics-color=always"] <> extensionFlags <> targets <> args)
 
 getTargets :: IO [String]
 getTargets = fmap (\(_, xs) -> mapMaybe pathModule xs) $ listDirRecurRel [reldir|lib|]
