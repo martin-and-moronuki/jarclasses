@@ -6,11 +6,13 @@ languageExtensions :: [String]
 languageExtensions =
   [ "BlockArguments",
     "ConstraintKinds",
+    "DerivingVia",
     "LambdaCase",
     "NoImplicitPrelude",
     "OverloadedStrings",
     "QuasiQuotes",
     "ScopedTypeVariables",
+    "TypeFamilies",
     "ViewPatterns"
   ]
 

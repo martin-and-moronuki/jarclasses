@@ -19,6 +19,9 @@ data Scheme = Scheme
   }
   deriving (Show)
 
+testLine :: Text -> Test
+testLine line = one ([relfile|ResourcePaths.txt|], line)
+
 inStyleDir :: Scheme -> Path Rel t -> Bool
 inStyleDir s p = any (\d -> d `Path.isProperPrefixOf` p) (scheme_styleDirs s)
 
@@ -34,7 +37,7 @@ resourceOutputPath s r =
 
 test_resourceOutputPath :: Scheme -> Resource -> Test
 test_resourceOutputPath s x =
-  one $
+  testLine $
     "resourceOutputPath" <!> show s <!> show x <!> "=" <!> show (resourceOutputPath s x)
 
 resourceInputPath :: Scheme -> Resource -> Maybe (Path Rel File)
@@ -46,7 +49,7 @@ resourceInputPath s r =
 
 test_resourceInputPath :: Scheme -> Resource -> Test
 test_resourceInputPath s x =
-  one $
+  testLine $
     "resourceInputPath" <!> show s <!> show x <!> "=" <!> show (resourceInputPath s x)
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
@@ -65,7 +68,7 @@ pathAsResourceInput s p =
 
 test_pathAsResourceInput :: Scheme -> Path Rel File -> Test
 test_pathAsResourceInput s x =
-  one $
+  testLine $
     "pathAsResourceInput" <!> show s <!> show x <!> "=" <!> show (pathAsResourceInput s x)
 
 pathAsResourceOutput :: Scheme -> Path Rel File -> Maybe Resource
@@ -77,7 +80,7 @@ pathAsResourceOutput s p =
 
 test_pathAsResourceOutput :: Scheme -> Path Rel File -> Test
 test_pathAsResourceOutput s x =
-  one $
+  testLine $
     "pathAsResourceOutput" <!> show s <!> show x <!> "=" <!> show (pathAsResourceOutput s x)
 
 relFileBaseResource :: Path Rel File -> Resource
