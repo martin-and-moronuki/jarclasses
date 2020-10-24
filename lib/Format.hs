@@ -1,11 +1,3 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i runhaskell shell.nix
-
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Format where
 
 import Data.Foldable

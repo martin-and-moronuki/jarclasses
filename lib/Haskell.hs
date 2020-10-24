@@ -1,6 +1,8 @@
 module Haskell where
 
-languageExtensions :: String
+import Relude
+
+languageExtensions :: [String]
 languageExtensions =
   [ "BlockArguments",
     "ConstraintKinds",
@@ -12,4 +14,5 @@ languageExtensions =
     "ViewPatterns"
   ]
 
+extensionFlags :: [String]
 extensionFlags = map ("-X" <>) languageExtensions

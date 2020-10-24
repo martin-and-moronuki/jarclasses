@@ -1,8 +1,7 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i "runhaskell -no-user-package-db" shell.nix
-
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+
+module Update where
 
 import Data.Aeson
 import Data.Aeson.Encode.Pretty

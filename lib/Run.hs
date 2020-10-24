@@ -1,15 +1,9 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i runhaskell shell.nix
-
 module Run where
 
-import BlazeHtmlRendering
 import FileWatch
 import Logging
 import Path (Dir, File, Path, Rel, reldir)
 import qualified Path
-import qualified Prosidy
-import ProsidyHtml
 import Relude hiding (head)
 import ResourceBuilding
 import ResourcePaths

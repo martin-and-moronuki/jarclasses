@@ -1,6 +1,3 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i ./runhaskell.hs shell.nix
-
 module BuildAll where
 
 import Pipes
