@@ -1,0 +1,2 @@
+#! /usr/bin/env nix-shell
+#! nix-shell shell.nix --pure --run "runhaskell -ilib RunHaskell BuildAll"
