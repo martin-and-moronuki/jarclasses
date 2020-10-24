@@ -4,6 +4,11 @@ import Clay
 import Path
 import Relude hiding ((&))
 import Relude.Extra.Foldable1
+import ResourcePaths
+import Pipes
+
+styleResources :: Producer Resource IO ()
+styleResources = yield ["style", "jarclasses.css"]
 
 makeStyles :: Path Abs Dir -> IO ()
 makeStyles d = writeFileLBS path (encodeUtf8 txt)

@@ -1,0 +1,122 @@
+
+p
+{
+  margin-top     : 0px;
+  margin-bottom  : 0px;
+  margin-left    : 0px;
+  margin-right   : 0px;
+  padding-top    : 0px;
+  padding-bottom : 0px;
+  padding-left   : 0px;
+  padding-right  : 0px;
+}
+
+body
+{
+  background : #ece4d8;
+}
+
+main
+{
+  margin-top    : 80px;
+  margin-bottom : 80px;
+}
+
+main > p,
+main > ul,
+main > ol,
+main > h1,
+main > h2,
+main > h3,
+main > h4,
+main > h5,
+main > h6
+{
+  max-width    : 506px;
+  margin-left  : auto;
+  margin-right : auto;
+}
+
+main > p,
+main > ul,
+main > ol
+{
+  color       : #544943;
+  font-size   : 15px;
+  line-height : 22.5px;
+  font-family : "Georgia","Palatino","Palatino Linotype","Times","Times New Roman", serif;
+}
+
+main > p span.emphatic,
+main > p span.title,
+main > ul span.emphatic,
+main > ul span.title,
+main > ol span.emphatic,
+main > ol span.title
+{
+  font-style : italic;
+}
+
+main > p a,
+main > ul a,
+main > ol a
+{
+  text-decoration : none;
+  color           : #417090;
+}
+
+main > p a:hover,
+main > ul a:hover,
+main > ol a:hover
+{
+  text-decoration : underline;
+}
+
+main > p
+{
+  margin-top    : 0.69999em;
+  margin-bottom : 0.69999em;
+}
+
+main > h1,
+main > h2,
+main > h3,
+main > h4,
+main > h5,
+main > h6
+{
+  font-family : "Open Sans","Myriad","Calibri", sans-serif;
+  font-weight : bold;
+}
+
+main > h1,
+main > h2
+{
+  color               : #7c334f;
+  border-bottom-color : #d3ccc1;
+  line-height         : 1.19999;
+  padding-bottom      : 10px;
+}
+
+main > h1
+{
+  font-size           : 1.85em;
+  font-style          : italic;
+  text-align          : center;
+  margin-top          : 1.1em;
+  margin-bottom       : 0.38em;
+  border-bottom-style : double;
+  border-bottom-width : 0.2em;
+}
+
+main > h2
+{
+  font-size           : 1.58em;
+  margin-top          : 0.94999em;
+  margin-bottom       : 0.5em;
+  border-bottom-style : solid;
+  border-bottom-width : 0.1em;
+}
+
+
+/* Generated with Clay, http://fvisser.nl/clay */
