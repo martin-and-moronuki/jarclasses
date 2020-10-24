@@ -9,4 +9,6 @@ let
 in
     pkgs.mkShell {
         buildInputs = [ haskell ghcid nix cacert ];
+        LC_ALL = "en_US.UTF-8";
+        LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
     }

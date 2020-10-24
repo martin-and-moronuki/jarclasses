@@ -1,2 +1,2 @@
 #! /usr/bin/env nix-shell
-#! nix-shell shell.nix --pure --keep NIX_PATH --run "runhaskell -ilib RunHaskell Ghcid"
+#! nix-shell shell.nix --pure --keep NIX_PATH --keep TERM --run "runhaskell -ilib RunHaskell Ghcid"

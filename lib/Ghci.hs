@@ -4,10 +4,14 @@ import Haskell
 import Path
 import Path.IO
 import Relude
+import System.Environment
 import System.Process
 
 main :: IO ()
-main = getTargets >>= \targets -> callProcess "ghci" (["-ignore-dot-ghci", "-Wall", "-fdefer-typed-holes", "-ilib"] <> extensionFlags <> targets)
+main =
+  getArgs >>= \args ->
+    getTargets >>= \targets ->
+      callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib"] <> extensionFlags <> targets <> args)
 
 getTargets :: IO [String]
 getTargets = fmap (\(_, xs) -> mapMaybe pathModule xs) $ listDirRecurRel [reldir|lib|]
