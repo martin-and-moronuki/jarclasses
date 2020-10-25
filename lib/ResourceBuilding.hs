@@ -1,7 +1,7 @@
 module ResourceBuilding where
 
 import BlazeHtmlRendering
-import qualified Path
+import Path
 import qualified Prosidy
 import ProsidyHtml
 import Relude
@@ -11,16 +11,15 @@ import StateOfResources
 
 ensureResourceBuilt :: (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt l rs r =
-  if isJust (resourceInputPath scheme r)
-    then StateOfResources.ensureResourceBuilt (buildResource l r) rs r
-    else pure ()
+  maybe (pure ()) id $
+    do
+      r' <- resourceAsProHtml scheme r
+      Just (StateOfResources.ensureResourceBuilt (buildProHtmlResource l r') rs r)
 
-buildResource :: (String -> IO ()) -> Resource -> IO ()
-buildResource l r =
+buildProHtmlResource :: (String -> IO ()) -> ProHtmlResource -> IO ()
+buildProHtmlResource l (ProHtmlResource r fpIn fpOut) =
   do
     l $ "Building " <> show r
-    fpIn <- maybe undefined pure $ resourceInputPath scheme r
-    fpOut <- maybe undefined pure $ resourceOutputPath scheme r
     src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
     doc <- either (fail . show) pure $ Prosidy.parseDocument (Path.toFilePath fpIn) src
     writeFileLBS (Path.toFilePath fpOut) $ encodeUtf8 $ toText $ renderHtml $ proHtml doc

@@ -6,7 +6,7 @@ import Pipes
 import qualified Pipes.Prelude as Pipes
 import Relude
 import ResourceBuilding
-import ResourcePaths (Resource, findProHtmlResources, resourceOutputPath)
+import ResourcePaths hiding (test)
 import Scheme
 import Style
 import System.Directory (getCurrentDirectory)
@@ -29,10 +29,14 @@ main =
 
     runEffect $
       findProHtmlResources scheme
-        >-> Pipes.mapM_ (buildResource putStrLn)
+        >-> Pipes.mapM_ (buildProHtmlResource putStrLn)
 
     runEffect $
-      (findProHtmlResources scheme *> styleResources)
+      ( ( findProHtmlResources scheme
+            >-> Pipes.map (\(ProHtmlResource r _ _) -> r)
+        )
+          *> styleResources
+      )
         >-> Pipes.mapM_ copyResource
 
 copyResource :: Resource -> IO ()

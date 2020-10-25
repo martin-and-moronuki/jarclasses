@@ -83,6 +83,20 @@ test_pathAsResourceOutput s x =
   testLine $
     "pathAsResourceOutput" <!> show s <!> show x <!> "=" <!> show (pathAsResourceOutput s x)
 
+pathAsProHtmlInput :: Scheme -> Path Rel File -> Maybe ProHtmlResource
+pathAsProHtmlInput s p =
+  do
+    r <- pathAsResourceOutput s p
+    p' <- resourceOutputPath s r
+    Just (ProHtmlResource r p p')
+
+resourceAsProHtml :: Scheme -> Resource -> Maybe ProHtmlResource
+resourceAsProHtml s r =
+  do
+    p <- resourceInputPath s r
+    p' <- resourceOutputPath s r
+    Just (ProHtmlResource r p p')
+
 relFileBaseResource :: Path Rel File -> Resource
 relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
   where
@@ -91,13 +105,19 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
 
-findProHtmlResources :: Scheme -> Producer Resource IO ()
+data ProHtmlResource
+  = ProHtmlResource
+      Resource
+      (Path Rel File) -- input
+      (Path Rel File) -- output
+
+findProHtmlResources :: Scheme -> Producer ProHtmlResource IO ()
 findProHtmlResources s =
   for_ (scheme_proHtmlDirs s) \d ->
     flip walkDirRel d \_ _ xs ->
       do
         for_ xs \x ->
-          for_ (pathAsResourceInput s (d </> x)) yield
+          for_ (pathAsProHtmlInput s (d </> x)) yield
         pure $ WalkExclude []
 
 test_path :: Scheme -> Path Rel File -> Test
