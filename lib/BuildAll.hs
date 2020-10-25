@@ -9,9 +9,9 @@ import ResourceBuilding
 import ResourcePaths (Resource, findProHtmlResources, resourceOutputPath)
 import Scheme
 import Style
+import System.Directory (getCurrentDirectory)
 import Test (test)
 import TestFramework (writeTestFiles)
-import System.Directory (getCurrentDirectory)
 
 outDir :: Path Rel Dir
 outDir = [reldir|all|]

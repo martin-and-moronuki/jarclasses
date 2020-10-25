@@ -11,8 +11,15 @@ proHtml :: Document -> Html
 proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
     head = HTML.head $ contentType <> title <> css
-    contentType = HTML.meta ! Attr.httpEquiv "Content-Type" ! Attr.content "text/html; charset=utf-8"
-    css = HTML.link ! Attr.rel "stylesheet" ! Attr.type_ "text/css" ! Attr.href "/style/jarclasses.css"
+    contentType =
+      HTML.meta
+        ! Attr.httpEquiv "Content-Type"
+        ! Attr.content "text/html; charset=utf-8"
+    css =
+      HTML.link
+        ! Attr.rel "stylesheet"
+        ! Attr.type_ "text/css"
+        ! Attr.href "/style/jarclasses.css"
     title = foldMap (HTML.title . toHtml) $ proTitle doc
     body = HTML.body main
     main = HTML.main $ do
@@ -23,33 +30,47 @@ proTitle :: Document -> Maybe Text
 proTitle = view (atSetting "title")
 
 proBlockHtml :: Block -> Html
-proBlockHtml = \case
-  BlockLiteral x -> HTML.stringComment (show x)
-  BlockParagraph x -> HTML.p (foldMap proInlineHtml (view content x))
-  BlockTag x -> proBlockTagHtml x
+proBlockHtml =
+  \case
+    BlockLiteral x -> HTML.stringComment (show x)
+    BlockParagraph x -> HTML.p (foldMap proInlineHtml (view content x))
+    BlockTag x -> proBlockTagHtml x
 
 proBlockTagHtml :: Tag (Series Block) -> Html
-proBlockTagHtml x = case (tagName x) of
-  "day" -> HTML.h2 (foldMap (\case BlockParagraph y -> foldMap proInlineHtml (view content y)) (view content x))
-  "list" -> proListHtml x
-  _ -> HTML.stringComment (show x)
+proBlockTagHtml x =
+  case (tagName x) of
+    "day" ->
+      HTML.h2 $
+        foldMap
+          \case
+            BlockParagraph y ->
+              foldMap proInlineHtml (view content y)
+            y -> HTML.stringComment (show y)
+          (view content x)
+    "list" -> proListHtml x
+    _ -> HTML.stringComment (show x)
 
 proInlineHtml :: Inline -> Html
-proInlineHtml = \case
-  Break -> toHtml (" " :: String)
-  InlineText x -> toHtml (fragmentText x)
-  InlineTag x -> proInlineTagHtml x
+proInlineHtml =
+  \case
+    Break -> toHtml (" " :: String)
+    InlineText x -> toHtml (fragmentText x)
+    InlineTag x -> proInlineTagHtml x
 
 proInlineTagHtml :: Tag (Series Inline) -> Html
-proInlineTagHtml x = case (tagName x) of
-  "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
-  "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view content x)
-  "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view content x)
-  "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ foldMap proInlineHtml (view content x)
-  _ -> HTML.stringComment (show x)
+proInlineTagHtml x =
+  case (tagName x) of
+    "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
+    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view content x)
+    "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view content x)
+    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ foldMap proInlineHtml (view content x)
+    _ -> HTML.stringComment (show x)
 
 proListHtml :: Tag (Series Block) -> Html
 proListHtml x = HTML.ul $ foldMap itemHtml (view content x)
   where
-    itemHtml = \case
-      BlockTag i | tagName i == "item" -> HTML.li $ foldMap proBlockHtml (view content i)
+    itemHtml =
+      \case
+        BlockTag i | tagName i == "item" ->
+          HTML.li $ foldMap proBlockHtml (view content i)
+        y -> HTML.stringComment (show y)
