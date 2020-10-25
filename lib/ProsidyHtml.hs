@@ -71,6 +71,7 @@ proListHtml x = HTML.ul $ foldMap itemHtml (view content x)
   where
     itemHtml =
       \case
-        BlockTag i | tagName i == "item" ->
-          HTML.li $ foldMap proBlockHtml (view content i)
+        BlockTag i
+          | tagName i == "item" ->
+            HTML.li $ foldMap proBlockHtml (view content i)
         y -> HTML.stringComment (show y)
