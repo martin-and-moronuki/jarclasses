@@ -20,7 +20,7 @@ import System.Process
 main :: IO ()
 main = read file >>= either fail pure >>= traverse update >>= write file
   where
-    file = "versions.json"
+    file = "versions/versions.json"
 
 read :: FilePath -> IO (Either String (Map Text Value))
 read = eitherDecodeFileStrict

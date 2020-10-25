@@ -1,5 +1,5 @@
 let
-    pkgs = (import (import ./versions.nix).nixpkgs) {};
+    pkgs = (import (import ./versions/versions.nix).nixpkgs) {};
     inherit (pkgs) cacert nix rsync;
     ssh = pkgs.openssh;
     haskell = pkgs.haskellPackages.ghcWithPackages hsPackageSelection;
