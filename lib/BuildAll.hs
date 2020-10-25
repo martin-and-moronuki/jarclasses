@@ -6,9 +6,12 @@ import Pipes
 import qualified Pipes.Prelude as Pipes
 import Relude
 import ResourceBuilding
-import ResourcePaths
+import ResourcePaths (Resource, findProHtmlResources, resourceOutputPath)
 import Scheme
 import Style
+import Test (test)
+import TestFramework (writeTestFiles)
+import System.Directory (getCurrentDirectory)
 
 outDir :: Path Rel Dir
 outDir = [reldir|all|]
@@ -16,7 +19,13 @@ outDir = [reldir|all|]
 main :: IO ()
 main =
   do
+    cwd <- getCurrentDirectory >>= Path.parseAbsDir
+
     ensureDirGone outDir
+
+    makeStyles cwd
+
+    writeTestFiles test cwd
 
     runEffect $
       findProHtmlResources scheme

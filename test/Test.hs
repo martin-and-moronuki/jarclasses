@@ -1,7 +1,16 @@
 module Test where
 
+import Path
+import Relude
 import qualified ResourcePaths
+import System.Directory (getCurrentDirectory)
 import TestFramework
+import Scheme
 
-test :: ResourcePaths.Scheme -> Test
-test s = ResourcePaths.test s
+test :: Test
+test = ResourcePaths.test scheme
+
+main :: IO ()
+main = getCwd >>= \cwd -> writeTestFiles test cwd
+  where
+    getCwd = getCurrentDirectory >>= parseAbsDir

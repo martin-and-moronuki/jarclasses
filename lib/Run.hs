@@ -28,7 +28,7 @@ main =
           serve scheme (ensureResourceBuilt (writeToLog l) rs)
   where
     getCwd = getCurrentDirectory >>= Path.parseAbsDir
-    initFiles cwd = makeStyles cwd *> writeTestFiles (Test.test scheme) cwd
+    initFiles cwd = makeStyles cwd *> writeTestFiles Test.test cwd
 
 ---  response to a file change  ---
 
