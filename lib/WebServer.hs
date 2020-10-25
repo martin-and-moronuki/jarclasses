@@ -27,10 +27,11 @@ responseResource s r =
   resourceOutputPath s r >>= \fp ->
     pure $ WAI.responseFile HTTP.ok200 headers (Path.toFilePath fp) Nothing
   where
-    headers = [(HTTP.hContentType, resourceContentType r)]
+    headers = maybe [] (\ct -> [(HTTP.hContentType, ct)]) $ resourceContentType r
 
-resourceContentType :: Resource -> ByteString
+resourceContentType :: Resource -> Maybe ByteString
 resourceContentType = \case
-  ("menus" : _) -> "text/html; charset=utf-8"
-  ("posts" : _) -> "text/html; charset=utf-8"
-  ("style" : _) -> "text/css"
+  ("menus" : _) -> Just "text/html; charset=utf-8"
+  ("posts" : _) -> Just "text/html; charset=utf-8"
+  ("style" : _) -> Just "text/css"
+  _ -> Nothing
