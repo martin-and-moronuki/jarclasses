@@ -8,10 +8,13 @@ import qualified Text.Blaze.Renderer.String as Blaze
 renderHtml :: Html -> String
 renderHtml html = renderHtmlIndented html ""
 
--- forked from Text.Blaze.Renderer.Pretty
+-- Forked from Text.Blaze.Renderer.Pretty.
+--
+-- This function renders HTML in a hybrid of indented and compact style. Block-level elements are printed with line breaks and indentation, whereas inline content within paragraphs is rendered compactly. This resembles the style in which one would typically write HTML by hand.
 renderHtmlIndented :: Blaze.MarkupM b -> String -> String
 renderHtmlIndented = go 0 id
   where
+    -- This function checks the beginning of the tag to see what kind of element it is. It is used below. If it's an element normally found at the boundary between block and inline content, then we switch from indented to compact rendering.
     contentInline :: Blaze.StaticString -> Bool
     contentInline open = Blaze.getString open "" `elem` (["<p", "<title"] ++ map (\n -> "<h" <> show n) (enumFromTo 1 6 :: [Int]))
 
