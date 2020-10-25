@@ -2,6 +2,7 @@ module Format where
 
 import Data.Foldable
 import qualified Data.Text.IO as T
+import Haskell
 import Ormolu
 import Path
 import Path.IO
@@ -20,10 +21,11 @@ rootFiles =
       traverse_ (\x -> when (isHs x) (yield x)) xs
       pure WalkFinish
 libFiles =
-  flip walkDirRel [reldir|lib|] \_ _ xs ->
-    do
-      traverse_ (\x -> when (isHs x) $ yield $ [reldir|lib|] </> x) xs
-      pure $ WalkExclude []
+  for_ hsSourceDirs \lib ->
+    flip walkDirRel lib \_ _ xs ->
+      do
+        traverse_ (\x -> when (isHs x) $ yield $ lib </> x) xs
+        pure $ WalkExclude []
 
 isHs :: Path Rel File -> Bool
 isHs x = fileExtension x == Just ".hs"
