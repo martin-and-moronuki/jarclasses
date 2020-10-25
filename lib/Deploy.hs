@@ -1,8 +1,8 @@
 module Deploy where
 
+import qualified BuildAll
 import Relude
 import System.Process
-import qualified BuildAll
 
 main :: IO ()
 main = BuildAll.main *> deploy

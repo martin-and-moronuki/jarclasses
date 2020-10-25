@@ -19,11 +19,11 @@ main =
     ensureDirGone outDir
 
     runEffect $
-        findProHtmlResources scheme
+      findProHtmlResources scheme
         >-> Pipes.mapM_ (buildResource putStrLn)
 
     runEffect $
-        (findProHtmlResources scheme *> styleResources)
+      (findProHtmlResources scheme *> styleResources)
         >-> Pipes.mapM_ copyResource
 
 copyResource :: Resource -> IO ()

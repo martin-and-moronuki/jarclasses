@@ -9,9 +9,18 @@ import System.Process
 
 main :: IO ()
 main =
+  getTargets >>= \targets ->
+    callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib", "-ferror-spans", "-fdiagnostics-color=always"] <> extensionFlags <> targets)
+
+mainForGhcidInNixShell :: IO ()
+mainForGhcidInNixShell =
   getArgs >>= \args ->
-    getTargets >>= \targets ->
-      callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib", "-ferror-spans", "-fdiagnostics-color=always"] <> extensionFlags <> targets <> args)
+    callProcess "nix-shell" ["shell.nix", "--pure", "--command", "runhaskell -ilib RunHaskell Ghci mainForGhcid"]
+
+mainForGhcid :: IO ()
+mainForGhcid =
+  getTargets >>= \targets ->
+    callProcess "ghci" (["-Wall", "-fdefer-typed-holes", "-ilib", "-ferror-spans", "-fdiagnostics-color=always", "-ignore-dot-ghci"] <> extensionFlags <> targets)
 
 getTargets :: IO [String]
 getTargets = fmap (\(_, xs) -> mapMaybe pathModule xs) $ listDirRecurRel [reldir|lib|]
