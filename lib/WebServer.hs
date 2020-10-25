@@ -1,10 +1,12 @@
 module WebServer where
 
+import qualified ASCII.QuasiQuoters as ASCII
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
 import qualified Network.Wai.Handler.Warp as Warp
 import Path
+import Path.IO
 import Relude
 import ResourcePaths
 
@@ -15,24 +17,33 @@ webapp :: Scheme -> (Resource -> IO ()) -> WAI.Application
 webapp s build request respond = build r *> go
   where
     r = requestResource request
-    go = case (responseResource s r) of
+    go = responseResource s r >>= \case
       Just response -> respond response
-      Nothing -> undefined
+      Nothing -> respond notFound
+
+notFound :: Response
+notFound = WAI.responseLBS HTTP.notFound404 headers body
+  where
+    headers = [(HTTP.hContentType, [ASCII.string|text/plain; charset=us-ascii|])]
+    body = [ASCII.string|Not found|]
 
 requestResource :: Request -> Resource
 requestResource = WAI.pathInfo
 
-responseResource :: Scheme -> Resource -> Maybe Response
+responseResource :: Scheme -> Resource -> IO (Maybe Response)
 responseResource s r =
-  resourceOutputPath s r >>= \fp ->
-    pure $ WAI.responseFile HTTP.ok200 (headers s fp) (Path.toFilePath fp) Nothing
+  case resourceOutputPath s r of
+    Nothing -> pure Nothing
+    Just fp -> doesFileExist fp >>= \case
+      True -> pure $ Just $ WAI.responseFile HTTP.ok200 (resourceHeaders s fp) (Path.toFilePath fp) Nothing
+      False -> pure Nothing
 
-headers :: Scheme -> Path Rel t -> [(HTTP.HeaderName, ByteString)]
-headers s fp =
+resourceHeaders :: Scheme -> Path Rel t -> [(HTTP.HeaderName, ByteString)]
+resourceHeaders s fp =
   maybe [] (\ct -> [(HTTP.hContentType, ct)]) (resourceContentType s fp)
 
 resourceContentType :: Scheme -> Path Rel t -> Maybe ByteString
 resourceContentType s fp
-  | inProHtmlDir s fp = Just "text/html; charset=utf-8"
-  | inStyleDir s fp = Just "text/css"
+  | inProHtmlDir s fp = Just [ASCII.string|text/html; charset=utf-8|]
+  | inStyleDir s fp = Just [ASCII.string|text/css|]
   | otherwise = Nothing
