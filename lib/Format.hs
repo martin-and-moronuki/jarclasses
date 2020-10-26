@@ -35,5 +35,8 @@ format fp =
   do
     putStrLn (toFilePath fp)
     T.readFile (toFilePath fp) >>= \input ->
-      ormolu defaultConfig (toFilePath fp) (toString input) >>= \output ->
+      ormolu config (toFilePath fp) (toString input) >>= \output ->
         T.writeFile (toFilePath fp) output
+
+config :: Config RegionIndices
+config = defaultConfig {cfgDynOptions = map DynOption extensionFlags}
