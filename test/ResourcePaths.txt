@@ -1,8 +1,14 @@
-pathAsResourceInput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "menus/2019-11-11.pro" = Just ["menus","2019-11-11"]
-pathAsResourceOutput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "menus/2019-11-11.pro" = Nothing
-pathAsResourceInput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "style/jarclasses.css" = Nothing
-pathAsResourceOutput Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} "style/jarclasses.css" = Nothing
-resourceInputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["menus","2019-11-11"] = Just "menus/2019-11-11.pro"
-resourceOutputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["menus","2019-11-11"] = Just "menus/2019-11-11.html"
-resourceInputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["style","jarclasses.css"] = Nothing
-resourceOutputPath Scheme {scheme_proHtmlDirs = fromList ["menus/","posts/"], scheme_styleDirs = fromList ["style/"]} ["style","jarclasses.css"] = Just "style/jarclasses.css"
+pathAsResourceInput InputPath "menus/2019-11-11.pro" = Just ["menus","2019-11-11"]
+pathAsResourceOutput OutputPath "menus/2019-11-11.pro" = Nothing
+pathAsResourceInput InputPath "style/jarclasses.css" = Nothing
+pathAsResourceOutput OutputPath "style/jarclasses.css" = Nothing
+pathAsResourceInput InputPath "home/home.pro" = Just []
+pathAsResourceOutput OutputPath "home/home.pro" = Nothing
+resourceInputPath ["menus","2019-11-11"] = Just (InputPath "menus/2019-11-11.pro")
+resourceOutputPath ["menus","2019-11-11"] = Just (OutputPath "menus/2019-11-11.html")
+resourceInputPath ["style","jarclasses.css"] = Nothing
+resourceOutputPath ["style","jarclasses.css"] = Just (OutputPath "style/jarclasses.css")
+resourceInputPath [] = Just (InputPath "home/home.pro")
+resourceOutputPath [] = Just (OutputPath "home/home.html")
+resourceInputPath ["menus"] = Just (InputPath "menus/menus.pro")
+resourceOutputPath ["menus"] = Just (OutputPath "menus/menus.html")

@@ -17,9 +17,10 @@ ensureResourceBuilt l rs r =
       Just (StateOfResources.ensureResourceBuilt (buildProHtmlResource l r') rs r)
 
 buildProHtmlResource :: (String -> IO ()) -> ProHtmlResource -> IO ()
-buildProHtmlResource l (ProHtmlResource r fpIn fpOut) =
+buildProHtmlResource l (ProHtmlResource r (InputPath fpIn) (OutputPath fpOut) _) =
   do
-    l $ "Building " <> show r
-    src <- decodeUtf8 <$> readFileBS (Path.toFilePath fpIn)
-    doc <- either (fail . show) pure $ Prosidy.parseDocument (Path.toFilePath fpIn) src
-    writeFileLBS (Path.toFilePath fpOut) $ encodeUtf8 $ toText $ renderHtml $ proHtml doc
+    l ("Building " <> show r)
+    src <- readFileBS (Path.toFilePath fpIn)
+    writeFileLBS (Path.toFilePath fpOut) (f src)
+  where
+    f = encodeUtf8 . toText . renderHtml . proHtml . Prosidy.parseDocument (Path.toFilePath fpIn) . decodeUtf8

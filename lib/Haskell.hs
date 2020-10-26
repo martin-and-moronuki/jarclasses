@@ -47,6 +47,7 @@ languageExtensions =
     "OverloadedStrings",
     "QuasiQuotes",
     "ScopedTypeVariables",
+    "TypeApplications",
     "TypeFamilies",
     "ViewPatterns"
   ]

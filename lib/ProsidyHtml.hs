@@ -7,7 +7,7 @@ import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 
-proHtml :: Document -> Html
+proHtml :: Either Prosidy.Failure Document -> Html
 proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
     head = HTML.head $ contentType <> title <> css
@@ -24,10 +24,10 @@ proHtml doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
     body = HTML.body main
     main = HTML.main $ do
       foldMap (HTML.h1 . toHtml) $ proTitle doc
-      foldMap proBlockHtml $ view content doc
+      either (HTML.stringComment . show) (foldMap proBlockHtml . view content) doc
 
-proTitle :: Document -> Maybe Text
-proTitle = view (atSetting "title")
+proTitle :: Either Prosidy.Failure Document -> Maybe Text
+proTitle = either (const Nothing) (view (atSetting "title"))
 
 proBlockHtml :: Block -> Html
 proBlockHtml =

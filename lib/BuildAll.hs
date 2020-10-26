@@ -33,7 +33,7 @@ main =
 
     runEffect $
       ( ( findProHtmlResources scheme
-            >-> Pipes.map (\(ProHtmlResource r _ _) -> r)
+            >-> Pipes.map (\(ProHtmlResource r _ _ _) -> r)
         )
           *> styleResources
       )
@@ -41,11 +41,12 @@ main =
 
 copyResource :: Resource -> IO ()
 copyResource r =
-  for_ (resourceOutputPath scheme r) \p ->
-    do
-      let p' = outDir </> p
-      createDirIfMissing True (parent p')
-      copyFile p p'
+  for_ @Maybe (resourceOutputPath scheme r) \(OutputPath outputPath) ->
+    for_ @Maybe (resourceDeployPath scheme r) \(DeployPath deployPath) ->
+      do
+        let deployPath' = outDir </> deployPath
+        createDirIfMissing True (parent deployPath')
+        copyFile outputPath deployPath'
 
 ensureDirGone :: Path Rel Dir -> IO ()
 ensureDirGone d = doesDirExist d >>= \x -> when x $ removeDirRecur d
