@@ -1,11 +1,11 @@
 module Style where
 
 import Clay
+import FileLayout
 import Path
 import Pipes
 import Relude hiding ((&))
 import Relude.Extra.Foldable1
-import ResourcePaths
 
 styleResources :: Producer Resource IO ()
 styleResources = yield ["style", "jarclasses.css"]

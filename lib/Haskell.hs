@@ -28,7 +28,8 @@ import qualified Prelude
 -- Directories containing Haskell source files
 hsSourceDirs :: [Path Rel Dir]
 hsSourceDirs =
-  [ [reldir|lib|],
+  [ [reldir|file-layout|],
+    [reldir|lib|],
     [reldir|style|],
     [reldir|test|],
     [reldir|versions|]

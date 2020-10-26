@@ -1,6 +1,7 @@
 module WebServer where
 
 import qualified ASCII.QuasiQuoters as ASCII
+import FileLayout
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response)
 import qualified Network.Wai as WAI
@@ -8,7 +9,6 @@ import qualified Network.Wai.Handler.Warp as Warp
 import Path
 import Path.IO
 import Relude
-import ResourcePaths
 
 serve :: Scheme -> (Resource -> IO ()) -> IO ()
 serve s build = Warp.runEnv 8000 (webapp s build)

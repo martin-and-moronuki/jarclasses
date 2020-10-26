@@ -1,16 +1,16 @@
 module BuildAll where
 
+import FileLayout
+import FileLayoutPro
 import Path
 import Path.IO
 import Pipes
 import qualified Pipes.Prelude as Pipes
 import Relude
 import ResourceBuilding
-import ResourcePaths hiding (test)
-import Scheme
 import Style
 import System.Directory (getCurrentDirectory)
-import Test (test)
+import qualified Test
 import TestFramework (writeTestFiles)
 
 outDir :: Path Rel Dir
@@ -25,7 +25,9 @@ main =
 
     makeStyles cwd
 
-    writeTestFiles test cwd
+    scheme <- getScheme
+
+    writeTestFiles (Test.test scheme) cwd
 
     runEffect $
       findProHtmlResources scheme
@@ -37,10 +39,10 @@ main =
         )
           *> styleResources
       )
-        >-> Pipes.mapM_ copyResource
+        >-> Pipes.mapM_ (copyResource scheme)
 
-copyResource :: Resource -> IO ()
-copyResource r =
+copyResource :: Scheme -> Resource -> IO ()
+copyResource scheme r =
   for_ @Maybe (resourceOutputPath scheme r) \(OutputPath outputPath) ->
     for_ @Maybe (resourceDeployPath scheme r) \(DeployPath deployPath) ->
       do

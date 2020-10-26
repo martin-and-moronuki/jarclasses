@@ -1,16 +1,17 @@
 module Test where
 
+import FileLayout (Scheme)
+import qualified FileLayout
+import FileLayoutPro
 import Path
 import Relude
-import qualified ResourcePaths
-import Scheme
 import System.Directory (getCurrentDirectory)
 import TestFramework
 
-test :: Test
-test = ResourcePaths.test scheme
+test :: Scheme -> Test
+test = FileLayout.test
 
 main :: IO ()
-main = getCwd >>= \cwd -> writeTestFiles test cwd
+main = getCwd >>= \cwd -> getScheme >>= \scheme -> writeTestFiles (test scheme) cwd
   where
     getCwd = getCurrentDirectory >>= parseAbsDir

@@ -1,6 +1,4 @@
--- Mappings between resource name, source path, and output file path.
-
-module ResourcePaths where
+module FileLayout where
 
 import Control.Lens
 import qualified Data.Set as Set
@@ -13,6 +11,10 @@ import StringBuilding
 import TestFramework
 
 type Resource = [Text]
+
+data ProHtmlResource
+  = ProHtmlResource Resource InputPath OutputPath DeployPath
+  deriving stock (Eq, Ord, Show)
 
 newtype InputPath = InputPath (Path Rel File)
   deriving stock (Eq, Ord, Show)
@@ -29,6 +31,13 @@ data Scheme = Scheme
     scheme_otherProHtmlResources :: Set ProHtmlResource
   }
   deriving (Show)
+
+instance Semigroup Scheme where
+  Scheme a b c <> Scheme a2 b2 c2 =
+    Scheme (a <> a2) (b <> b2) (c <> c2)
+
+instance Monoid Scheme where
+  mempty = Scheme mempty mempty mempty
 
 dirsToWatch :: Scheme -> [Path Rel Dir]
 dirsToWatch s = toList $ scheme_proHtmlDirs s <> scheme_styleDirs s
@@ -171,10 +180,6 @@ relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename fi
     f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
-
-data ProHtmlResource
-  = ProHtmlResource Resource InputPath OutputPath DeployPath
-  deriving stock (Eq, Ord, Show)
 
 findProHtmlResources :: Scheme -> Producer ProHtmlResource IO ()
 findProHtmlResources s =

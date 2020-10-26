@@ -1,16 +1,15 @@
 module ResourceBuilding where
 
 import BlazeHtmlRendering
+import FileLayout
 import Path
 import qualified Prosidy
 import ProsidyHtml
 import Relude
-import ResourcePaths
-import Scheme
 import StateOfResources
 
-ensureResourceBuilt :: (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
-ensureResourceBuilt l rs r =
+ensureResourceBuilt :: Scheme -> (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
+ensureResourceBuilt scheme l rs r =
   maybe (pure ()) id $
     do
       r' <- resourceAsProHtml scheme r
@@ -23,4 +22,4 @@ buildProHtmlResource l (ProHtmlResource r (InputPath fpIn) (OutputPath fpOut) _)
     src <- readFileBS (Path.toFilePath fpIn)
     writeFileLBS (Path.toFilePath fpOut) (f src)
   where
-    f = encodeUtf8 . toText . renderHtml . proHtml . Prosidy.parseDocument (Path.toFilePath fpIn) . decodeUtf8
+    f = encodeUtf8 . toText . renderHtml . proHtml . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
