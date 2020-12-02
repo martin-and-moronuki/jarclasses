@@ -17,11 +17,15 @@ defaultOpts = ProHtmlOpts (const Nothing)
 proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> Html
 proHtml opts doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
-    head = HTML.head $ contentType <> title <> css
+    head = HTML.head $ contentType <> viewport <> title <> css
     contentType =
       HTML.meta
         ! Attr.httpEquiv "Content-Type"
         ! Attr.content "text/html; charset=utf-8"
+    viewport =
+      HTML.meta
+        ! Attr.name "viewport"
+        ! Attr.content "width=device-width, initial-scale=1"
     css =
       HTML.link
         ! Attr.rel "stylesheet"
