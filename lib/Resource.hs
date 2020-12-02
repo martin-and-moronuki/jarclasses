@@ -38,5 +38,8 @@ res =
       quoteDec = const $ fail "Cannot be used in a declaration context."
     }
 
+resourceUrl :: Resource -> Text
+resourceUrl = ("/" <>) . T.intercalate "/" . (\(ResourceSlashList x) -> x)
+
 resourceHref :: Resource -> HTML.Attribute
-resourceHref = Attr.href . HTML.toValue . foldMap ("/" <>) . (\(ResourceSlashList x) -> x)
+resourceHref = Attr.href . HTML.toValue . resourceUrl

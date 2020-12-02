@@ -10,17 +10,17 @@ import Relude
 import Resource
 import StateOfResources
 
-ensureResourceBuilt :: Scheme -> (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
+ensureResourceBuilt :: Scheme -> (Text -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt scheme l rs r =
   maybe (pure ()) id $
     do
       r' <- resourceAsProHtml scheme r
       Just (StateOfResources.ensureResourceBuilt (buildProHtmlResource scheme l r') rs r)
 
-buildProHtmlResource :: Scheme -> (String -> IO ()) -> ProHtmlResource -> IO ()
+buildProHtmlResource :: Scheme -> (Text -> IO ()) -> ProHtmlResource -> IO ()
 buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fpOut) _) =
   do
-    l ("Building " <> show r)
+    l ("Building " <> resourceUrl r)
 
     src <- readFileBS (Path.toFilePath fpIn)
 
