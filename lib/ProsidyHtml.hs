@@ -1,6 +1,7 @@
 module ProsidyHtml where
 
 import Control.Lens
+import qualified HTML
 import Prosidy
 import Relude hiding (head)
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
@@ -17,20 +18,8 @@ defaultOpts = ProHtmlOpts (const Nothing)
 proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> Html
 proHtml opts doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
-    head = HTML.head $ contentType <> viewport <> title <> css
-    contentType =
-      HTML.meta
-        ! Attr.httpEquiv "Content-Type"
-        ! Attr.content "text/html; charset=utf-8"
-    viewport =
-      HTML.meta
-        ! Attr.name "viewport"
-        ! Attr.content "width=device-width, initial-scale=1"
-    css =
-      HTML.link
-        ! Attr.rel "stylesheet"
-        ! Attr.type_ "text/css"
-        ! Attr.href "/style/jarclasses.css"
+    head = HTML.head $ HTML.utf8htmlMeta <> HTML.viewportMeta <> title <> css
+    css = HTML.stylesheet "/style/jarclasses.css"
     title = foldMap (HTML.title . toHtml) $ proTitle doc
     body = HTML.body main
     main = HTML.main $ do
