@@ -2,6 +2,7 @@ module ResourceBuilding where
 
 import BlazeHtmlRendering
 import FileLayout
+import Home
 import Path
 import qualified Prosidy
 import ProsidyHtml
@@ -23,4 +24,7 @@ buildProHtmlResource l (ProHtmlResource r (InputPath fpIn) (OutputPath fpOut) _)
     src <- readFileBS (Path.toFilePath fpIn)
     writeFileLBS (Path.toFilePath fpOut) (f src)
   where
-    f = encodeUtf8 . toText . renderHtml . proHtml . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
+    f = encodeUtf8 . toText . renderHtml . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
+    opts
+      | r == [res||] = defaultOpts {extraBlockTags = \x -> case (Prosidy.tagName x) of "list-of-content-on-the-home-page" -> Just Home.listOfContent; _ -> Nothing}
+      | otherwise = defaultOpts
