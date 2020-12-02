@@ -18,6 +18,9 @@ data ProHtmlResource
 proHtmlResourceId :: ProHtmlResource -> Resource
 proHtmlResourceId (ProHtmlResource x _ _ _) = x
 
+proHtmlInputPath :: ProHtmlResource -> InputPath
+proHtmlInputPath (ProHtmlResource _ x _ _) = x
+
 newtype InputPath = InputPath (Path Rel File)
   deriving stock (Eq, Ord, Show)
 
