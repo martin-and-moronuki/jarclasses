@@ -7,14 +7,6 @@ This module is used to boot other modules, and so there are a few limitations:
 
 -}
 {-# LANGUAGE QuasiQuotes #-}
-{-
-
-This module is used to boot other modules, and so there are a few limitations:
-
-  - Language pragmas are required for any extensions used in this module.
-  - This module should only import from packages; it should not import any local modules.
-
--}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Haskell where
@@ -29,6 +21,7 @@ import qualified Prelude
 hsSourceDirs :: [Path Rel Dir]
 hsSourceDirs =
   [ [reldir|file-layout|],
+    [reldir|home|],
     [reldir|lib|],
     [reldir|style|],
     [reldir|test|],
@@ -42,6 +35,8 @@ languageExtensions :: [String]
 languageExtensions =
   [ "BlockArguments",
     "ConstraintKinds",
+    "DeriveAnyClass",
+    "DeriveGeneric",
     "DerivingVia",
     "LambdaCase",
     "NoImplicitPrelude",

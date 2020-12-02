@@ -29,7 +29,7 @@ notFound = WAI.responseLBS HTTP.notFound404 headers body
     body = [ASCII.string|Not found|]
 
 requestResource :: Request -> Resource
-requestResource = WAI.pathInfo
+requestResource = ResourceSlashList . WAI.pathInfo
 
 responseResource :: Scheme -> Resource -> IO (Maybe Response)
 responseResource s r =

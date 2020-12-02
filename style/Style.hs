@@ -8,7 +8,7 @@ import Relude hiding ((&))
 import Relude.Extra.Foldable1
 
 styleResources :: Producer Resource IO ()
-styleResources = yield ["style", "jarclasses.css"]
+styleResources = yield (ResourceSlashList ["style", "jarclasses.css"])
 
 makeStyles :: Path Abs Dir -> IO ()
 makeStyles d = writeFileLBS path (encodeUtf8 txt)

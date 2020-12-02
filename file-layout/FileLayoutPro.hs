@@ -87,7 +87,7 @@ blockPage x =
     _ -> Nothing
 
 urlResource :: Text -> Maybe Resource
-urlResource = r . toString
+urlResource = fmap ResourceSlashList . r . toString
   where
     r ['/'] = Just []
     r ('/' : x) =

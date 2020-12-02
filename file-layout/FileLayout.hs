@@ -10,7 +10,10 @@ import Relude
 import StringBuilding
 import TestFramework
 
-type Resource = [Text]
+-- A "resource" is anything that a client might request from our web server, such as an HTML page, a CSS stylesheet, or an image.
+newtype Resource = ResourceSlashList [Text]
+  deriving stock (Eq, Ord, Show, Generic)
+  deriving anyclass (Hashable)
 
 data ProHtmlResource
   = ProHtmlResource Resource InputPath OutputPath DeployPath
@@ -105,7 +108,7 @@ test_resourceInputPath s x =
     "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath s x)
 
 resourceRelFileBase :: Resource -> Maybe (Path Rel File)
-resourceRelFileBase r =
+resourceRelFileBase (ResourceSlashList r) =
   unsnoc r >>= \(dirTexts, fileText) ->
     traverse (Path.parseRelDir . toString) dirTexts >>= \dirs ->
       (Path.parseRelFile . toString) fileText >>= \file ->
@@ -174,7 +177,7 @@ resourceDeployPath s r =
       Just (OutputPath x) -> Just (DeployPath x)
 
 relFileBaseResource :: Path Rel File -> Resource
-relFileBaseResource file = f (Path.parent file) `snoc` txtFile (Path.filename file)
+relFileBaseResource file = ResourceSlashList $ f (Path.parent file) `snoc` txtFile (Path.filename file)
   where
     f :: Path Rel Dir -> [Text]
     f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
@@ -212,7 +215,7 @@ test s =
         <> one [relfile|style/jarclasses.css|]
         <> one [relfile|home/home.pro|]
     resources :: Seq Resource =
-      one ["menus", "2019-11-11"]
-        <> one ["style", "jarclasses.css"]
-        <> one []
-        <> one ["menus"]
+      one (ResourceSlashList ["menus", "2019-11-11"])
+        <> one (ResourceSlashList ["style", "jarclasses.css"])
+        <> one (ResourceSlashList [])
+        <> one (ResourceSlashList ["menus"])

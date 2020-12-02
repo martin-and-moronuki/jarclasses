@@ -1,6 +1,7 @@
 module ProsidyHtml where
 
 import Control.Lens
+import Home
 import Prosidy
 import Relude hiding (head)
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
@@ -48,6 +49,7 @@ proBlockTagHtml x =
             y -> HTML.stringComment (show y)
           (view content x)
     "list" -> proListHtml x
+    "list-of-content-on-the-home-page" -> Home.listOfContent
     _ -> HTML.stringComment (show x)
 
 proInlineHtml :: Inline -> Html
