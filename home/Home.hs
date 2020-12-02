@@ -19,6 +19,3 @@ listOfContent scheme =
       HTML.ul $
         for_ rs \r ->
           HTML.li $ HTML.a ! resourceHref r $ HTML.toHtml (show r :: Text)
-
-resourceHref :: Resource -> HTML.Attribute
-resourceHref = Attr.href . toValue . foldMap ("/" <>) . (\(ResourceSlashList x) -> x)

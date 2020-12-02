@@ -5,6 +5,8 @@ import qualified Data.Text as T
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
 import Relude
+import qualified Text.Blaze.Html5 as HTML
+import qualified Text.Blaze.Html5.Attributes as Attr
 import Text.Show
 
 -- A "resource" is anything that a client might request from our web server, such as an HTML page, a CSS stylesheet, or an image.
@@ -35,3 +37,6 @@ res =
       quoteType = const $ fail "Cannot be used in a type context.",
       quoteDec = const $ fail "Cannot be used in a declaration context."
     }
+
+resourceHref :: Resource -> HTML.Attribute
+resourceHref = Attr.href . HTML.toValue . foldMap ("/" <>) . (\(ResourceSlashList x) -> x)
