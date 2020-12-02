@@ -136,4 +136,18 @@ main > h2
 }
 
 
+main > p.horizontalList > *
+{
+  display     : inline-block;
+  white-space : nowrap;
+}
+
+main > p.horizontalList > :not(:first-child)::before
+{
+  content       : "·";
+  padding-left  : 0.5em;
+  padding-right : 0.5em;
+}
+
+
 /* Generated with Clay, http://fvisser.nl/clay */

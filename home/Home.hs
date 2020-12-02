@@ -25,4 +25,4 @@ displayContent :: [Content] -> Html
 displayContent rs = HTML.ul $ traverse_ displayOne rs
 
 displayOne :: Content -> Html
-displayOne (Content r title) = HTML.li $ HTML.a ! resourceHref r $ fromMaybe (HTML.stringComment "no title") title
+displayOne (Content r title) = HTML.li $ HTML.p $ HTML.a ! resourceHref r $ fromMaybe (HTML.stringComment "no title") title

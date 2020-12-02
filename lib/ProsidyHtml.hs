@@ -46,16 +46,21 @@ proBlockHtml opts =
 proBlockTagHtml :: ProHtmlOpts -> Tag (Series Block) -> Html
 proBlockTagHtml opts x =
   case (tagName x) of
-    "day" ->
-      HTML.h2 $
-        foldMap
-          \case
-            BlockParagraph y ->
-              foldMap proInlineHtml (view content y)
-            y -> HTML.stringComment (show y)
-          (view content x)
+    "day" -> h2 x
+    "h2" -> h2 x
     "list" -> proListHtml opts x
     _ -> fromMaybe (HTML.stringComment (show x)) (extraBlockTags opts x)
+
+h2 :: Tag (Series Block) -> Html
+h2 = HTML.h2 . requireInlineOnly . view content
+
+requireInlineOnly :: Series Block -> Html
+requireInlineOnly =
+  foldMap
+    \case
+      BlockParagraph y ->
+        foldMap proInlineHtml (view content y)
+      y -> HTML.stringComment (show y)
 
 proInlineHtml :: Inline -> Html
 proInlineHtml =
@@ -74,11 +79,16 @@ proInlineTagHtml x =
     _ -> HTML.stringComment (show x)
 
 proListHtml :: ProHtmlOpts -> Tag (Series Block) -> Html
-proListHtml opts x = HTML.ul $ foldMap itemHtml (view content x)
+proListHtml opts x
+  | isHorizontal = HTML.p ! Attr.class_ "horizontalList" $ foldMap itemHtml (view content x)
+  | otherwise = HTML.ul $ foldMap itemHtml (view content x)
   where
+    isHorizontal = view (hasProperty "horizontal") x
     itemHtml =
       \case
         BlockTag i
           | tagName i == "item" ->
-            HTML.li $ foldMap (proBlockHtml opts) (view content i)
+            if
+                | isHorizontal -> HTML.span $ requireInlineOnly (view content i)
+                | otherwise -> HTML.li $ foldMap (proBlockHtml opts) (view content i)
         y -> HTML.stringComment (show y)

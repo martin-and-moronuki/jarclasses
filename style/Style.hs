@@ -1,10 +1,10 @@
 module Style where
 
-import Clay hiding (bold, italic)
+import Clay hiding (bold, inlineBlock, italic, nowrap)
 import qualified Clay
 import Path
 import Pipes
-import Relude hiding ((&))
+import Relude hiding (intersperse, not, (&))
 import Relude.Extra.Foldable1
 import Resource
 
@@ -50,6 +50,11 @@ jarclassesStyle =
         fontSize (em 1.58)
         marginTop (em 2) <> marginBottom (em 0.5)
         borderBottomStyle solid <> borderBottomWidth (em 0.1)
+      p # byClass "horizontalList" <? do
+        star <? inlineBlock <> nowrap
+        intersperse do
+          content (stringContent "·")
+          paddingHorizontal (em 0.5)
 
 contentWidthPx :: Double
 contentWidthPx = 650
@@ -58,12 +63,14 @@ contentFontFamily, headerFontFamily :: Css
 headerFontFamily = fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
 contentFontFamily = fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
 
-noMargin, noPadding, hoverUnderline, bold, italic :: Css
+noMargin, noPadding, hoverUnderline, bold, italic, nowrap, inlineBlock :: Css
 noMargin = marginAll (px 0)
 noPadding = paddingAll (px 0)
 hoverUnderline = hover & textDecoration underline
 bold = fontWeight Clay.bold
 italic = fontStyle Clay.italic
+nowrap = whiteSpace Clay.nowrap
+inlineBlock = display Clay.inlineBlock
 
 marginAll, marginVertical, marginHorizontal, paddingAll, paddingVertical, paddingHorizontal :: Size a -> Css
 marginAll = marginVertical <> marginHorizontal
@@ -76,3 +83,9 @@ paddingHorizontal = paddingLeft <> paddingRight
 headerTags, listTags :: Selector
 headerTags = h1 <> h2 <> h3 <> h4 <> h5 <> h6
 listTags = ul <> ol
+
+intersperse :: Css -> Css
+intersperse x = star # not (star # firstChild) # before <? x
+
+-- notNormalList :: Css
+-- notNormalList = listStyleType none
