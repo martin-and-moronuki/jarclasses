@@ -13,7 +13,7 @@ p
 
 body
 {
-  background : #ece4d8;
+  background : #f0e8e8;
 }
 
 main
@@ -32,7 +32,6 @@ main > h4,
 main > h5,
 main > h6
 {
-  max-width    : 506px;
   margin-left  : auto;
   margin-right : auto;
 }
@@ -41,9 +40,27 @@ main > p,
 main > ul,
 main > ol
 {
-  color       : #544943;
-  font-size   : 15px;
-  line-height : 22.5px;
+  max-width : 650px;
+}
+
+main > h1,
+main > h2,
+main > h3,
+main > h4,
+main > h5,
+main > h6
+{
+  max-width : 690px;
+}
+
+main > p,
+main > ul,
+main > ol
+{
+  color       : #342923;
+  font-size   : 17px;
+  line-height : 1.6;
+  text-align  : justify;
   font-family : "Georgia","Palatino","Palatino Linotype","Times","Times New Roman", serif;
 }
 
@@ -104,7 +121,7 @@ main > h1
   font-style          : italic;
   text-align          : center;
   margin-top          : 1.1em;
-  margin-bottom       : 0.38em;
+  margin-bottom       : 1.5em;
   border-bottom-style : double;
   border-bottom-width : 0.2em;
 }
@@ -112,7 +129,7 @@ main > h1
 main > h2
 {
   font-size           : 1.58em;
-  margin-top          : 0.94999em;
+  margin-top          : 2em;
   margin-bottom       : 0.5em;
   border-bottom-style : solid;
   border-bottom-width : 0.1em;

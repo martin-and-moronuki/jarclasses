@@ -16,22 +16,26 @@ makeStyles d = writeFileLBS path (encodeUtf8 txt)
     path = Path.toFilePath (d Path.</> [relfile|style/jarclasses.css|])
     txt = renderWith pretty [] jarclassesStyle
 
+contentWidthPx :: Double
+contentWidthPx = 650
+
 jarclassesStyle :: Css
 jarclassesStyle =
   do
     p ? do
       marginAll (px 0)
       paddingAll (px 0)
-    body ? background (rgb 0xec 0xe4 0xd8)
+    body ? background (rgb 0xf0 0xe8 0xe8)
     main_ ? do
       marginVertical (px 80)
-      (p <> listTags <> headerTags) <? do
-        maxWidth (px 506)
-        marginHorizontal auto
+      (p <> listTags <> headerTags) <? marginHorizontal auto
+      (p <> listTags) <? maxWidth (px contentWidthPx)
+      headerTags <? maxWidth (px (contentWidthPx + 40))
       (p <> listTags) <? do
-        color (rgb 0x54 0x49 0x43)
-        fontSize (px 15)
-        lineHeight (px 22.5)
+        color (rgb 0x34 0x29 0x23)
+        fontSize (px 17)
+        lineHeight (unitless 1.6)
+        textAlign justify
         contentFontFamily
         foldMap1 (\cls -> span # byClass cls) ("emphatic" :| "title" : []) ? fontStyle italic
         a ? do
@@ -52,12 +56,12 @@ jarclassesStyle =
         fontStyle italic
         textAlign center
         marginTop (em 1.1)
-        marginBottom (em 0.38)
+        marginBottom (em 1.5)
         borderBottomStyle double
         borderBottomWidth (em 0.2)
       h2 <? do
         fontSize (em 1.58)
-        marginTop (em 0.95)
+        marginTop (em 2)
         marginBottom (em 0.5)
         borderBottomStyle solid
         borderBottomWidth (em 0.1)
