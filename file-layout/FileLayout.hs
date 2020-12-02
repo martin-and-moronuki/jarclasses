@@ -7,13 +7,9 @@ import Path
 import Path.IO
 import Pipes
 import Relude
+import Resource
 import StringBuilding
 import TestFramework
-
--- A "resource" is anything that a client might request from our web server, such as an HTML page, a CSS stylesheet, or an image.
-newtype Resource = ResourceSlashList [Text]
-  deriving stock (Eq, Ord, Show, Generic)
-  deriving anyclass (Hashable)
 
 data ProHtmlResource
   = ProHtmlResource Resource InputPath OutputPath DeployPath
@@ -215,7 +211,7 @@ test s =
         <> one [relfile|style/jarclasses.css|]
         <> one [relfile|home/home.pro|]
     resources :: Seq Resource =
-      one (ResourceSlashList ["menus", "2019-11-11"])
-        <> one (ResourceSlashList ["style", "jarclasses.css"])
-        <> one (ResourceSlashList [])
-        <> one (ResourceSlashList ["menus"])
+      one [res|menus/2019-11-11|]
+        <> one [res|style/jarclasses.css|]
+        <> one [res||]
+        <> one [res|menus|]

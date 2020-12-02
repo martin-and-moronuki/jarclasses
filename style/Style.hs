@@ -1,14 +1,14 @@
 module Style where
 
 import Clay
-import FileLayout
 import Path
 import Pipes
 import Relude hiding ((&))
 import Relude.Extra.Foldable1
+import Resource
 
 styleResources :: Producer Resource IO ()
-styleResources = yield (ResourceSlashList ["style", "jarclasses.css"])
+styleResources = yield [res|style/jarclasses.css|]
 
 makeStyles :: Path Abs Dir -> IO ()
 makeStyles d = writeFileLBS path (encodeUtf8 txt)

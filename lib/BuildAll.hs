@@ -7,6 +7,7 @@ import Path.IO
 import Pipes
 import qualified Pipes.Prelude as Pipes
 import Relude
+import Resource
 import ResourceBuilding
 import Style
 import System.Directory (getCurrentDirectory)

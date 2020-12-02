@@ -9,6 +9,7 @@ import qualified Network.Wai.Handler.Warp as Warp
 import Path
 import Path.IO
 import Relude
+import Resource
 
 serve :: Scheme -> (Resource -> IO ()) -> IO ()
 serve s build = Warp.runEnv 8000 (webapp s build)

@@ -6,6 +6,7 @@ import Path
 import qualified Prosidy
 import ProsidyHtml
 import Relude
+import Resource
 import StateOfResources
 
 ensureResourceBuilt :: Scheme -> (String -> IO ()) -> StateOfResources Resource -> Resource -> IO ()

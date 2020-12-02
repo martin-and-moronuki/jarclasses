@@ -36,6 +36,7 @@ languageExtensions =
   [ "BlockArguments",
     "ConstraintKinds",
     "DeriveAnyClass",
+    "DeriveDataTypeable",
     "DeriveGeneric",
     "DerivingVia",
     "LambdaCase",
@@ -43,6 +44,7 @@ languageExtensions =
     "OverloadedStrings",
     "QuasiQuotes",
     "ScopedTypeVariables",
+    "TemplateHaskell",
     "TypeApplications",
     "TypeFamilies",
     "ViewPatterns"

@@ -6,6 +6,7 @@ import FileWatch
 import Logging
 import Path
 import Relude hiding (head)
+import Resource
 import ResourceBuilding
 import StateOfResources (StateOfResources)
 import qualified StateOfResources

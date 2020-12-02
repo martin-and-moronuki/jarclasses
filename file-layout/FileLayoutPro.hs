@@ -6,6 +6,7 @@ import FileLayout
 import Path
 import Prosidy
 import Relude
+import Resource
 import StringBuilding
 
 layoutProPath :: Path Rel File
