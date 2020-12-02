@@ -22,6 +22,9 @@ foldMappings = Pipes.fold insert Map.empty id
   where
     insert m (a, b) = Map.insertWith (<>) a (one b) m
 
+resourceDay :: Scheme -> Resource -> IO (Maybe Day)
+resourceDay scheme = maybe (pure Nothing) proHtmlResourceDay . resourceAsProHtml scheme
+
 proHtmlResourceDay :: ProHtmlResource -> IO (Maybe Day)
 proHtmlResourceDay phr = pure $ dateFromResourceId $ proHtmlResourceId phr
 
@@ -48,3 +51,4 @@ parseDay txt = join $ RE.match e (toString txt)
         <*> RE.decimal
         <*> (RE.sym '-' *> RE.decimal)
         <*> (RE.sym '-' *> RE.decimal)
+        <* many (RE.sym '-' <* many RE.anySym)
