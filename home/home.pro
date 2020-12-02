@@ -4,7 +4,7 @@ Hello!
 
 #-h2{Recent posts}
 
-#-list-of-content-on-the-home-page
+#-list-of-content
 
 #-h2{Our other websites}
 

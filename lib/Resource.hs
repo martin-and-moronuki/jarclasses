@@ -1,6 +1,7 @@
 module Resource where
 
 import Data.Data (Data)
+import qualified Data.List as List
 import qualified Data.Text as T
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
@@ -43,3 +44,6 @@ resourceUrl = ("/" <>) . T.intercalate "/" . (\(ResourceSlashList x) -> x)
 
 resourceHref :: Resource -> HTML.Attribute
 resourceHref = Attr.href . HTML.toValue . resourceUrl
+
+isPrefixOf :: Resource -> Resource -> Bool
+ResourceSlashList a `isPrefixOf` ResourceSlashList b = a `List.isPrefixOf` b

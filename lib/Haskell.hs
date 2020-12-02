@@ -23,6 +23,7 @@ hsSourceDirs =
   [ [reldir|file-layout|],
     [reldir|home|],
     [reldir|lib|],
+    [reldir|menus|],
     [reldir|style|],
     [reldir|test|],
     [reldir|versions|]

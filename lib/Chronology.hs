@@ -11,8 +11,8 @@ import Resource
 import qualified Text.Regex.Applicative as RE
 import qualified Text.Regex.Applicative.Common as RE
 
-findRecentResources :: Scheme -> Producer Resource IO ()
-findRecentResources scheme = Pipes.lift (getResourceDayMap scheme) >>= yieldFromSetMapDesc
+findRecentResources :: Scheme -> (Resource -> Bool) -> Producer Resource IO ()
+findRecentResources scheme resourcePredicate = Pipes.lift (getResourceDayMap scheme resourcePredicate) >>= yieldFromSetMapDesc
 
 pipeMapMaybeM :: Monad m => (a -> m (Maybe b)) -> Pipe a b m r
 pipeMapMaybeM f = forever $ await >>= (Pipes.lift . f) >>= traverse_ yield
@@ -25,11 +25,14 @@ foldMappings = Pipes.fold insert Map.empty id
 proHtmlResourceDay :: ProHtmlResource -> IO (Maybe Day)
 proHtmlResourceDay phr = pure $ dateFromResourceId $ proHtmlResourceId phr
 
-getResourceDayMap :: Scheme -> IO (Map Day (Set Resource))
-getResourceDayMap scheme = foldMappings $ findProHtmlResources scheme >-> pipeMapMaybeM f
+getResourceDayMap :: Scheme -> (Resource -> Bool) -> IO (Map Day (Set Resource))
+getResourceDayMap scheme resourcePredicate = foldMappings $ findProHtmlResources scheme >-> pipeMapMaybeM f
   where
     f :: ProHtmlResource -> IO (Maybe (Day, Resource))
-    f r = (fmap . fmap) (\d -> (d, proHtmlResourceId r)) (proHtmlResourceDay r)
+    f r
+      | resourcePredicate (proHtmlResourceId r) =
+        (fmap . fmap) (\d -> (d, proHtmlResourceId r)) (proHtmlResourceDay r)
+      | otherwise = pure Nothing
 
 yieldFromSetMapDesc :: Monad m => Map a (Set b) -> Producer b m ()
 yieldFromSetMapDesc = traverse_ (traverse_ yield . Set.toDescList . snd) . Map.toDescList

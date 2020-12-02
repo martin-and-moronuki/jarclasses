@@ -1,4 +1,4 @@
-module Home where
+module Menus where
 
 import Chronology
 import Control.Lens
@@ -16,7 +16,7 @@ listOfContent scheme = fmap displayContent $ getContent scheme
 data Content = Content Resource (Maybe Html)
 
 getContent :: Scheme -> IO [Content]
-getContent scheme = Pipes.toListM (findRecentResources scheme (const True)) >>= traverse (resourceContent scheme)
+getContent scheme = Pipes.toListM (findRecentResources scheme ([res|menus|] `Resource.isPrefixOf`)) >>= traverse (resourceContent scheme)
 
 resourceContent :: Scheme -> Resource -> IO Content
 resourceContent scheme r = Content r <$> resourceTitleHtml scheme r

@@ -2,7 +2,8 @@ module ResourceBuilding where
 
 import BlazeHtmlRendering
 import FileLayout
-import Home
+import qualified Home
+import qualified Menus
 import Path
 import qualified Prosidy
 import ProsidyHtml
@@ -33,7 +34,17 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                 defaultOpts
                   { extraBlockTags = \x ->
                       case (Prosidy.tagName x) of
-                        "list-of-content-on-the-home-page" -> Just list
+                        "list-of-content" -> Just list
+                        _ -> Nothing
+                  }
+          | r == [res|menus|] ->
+            do
+              list <- Menus.listOfContent scheme
+              pure
+                defaultOpts
+                  { extraBlockTags = \x ->
+                      case (Prosidy.tagName x) of
+                        "list-of-content" -> Just list
                         _ -> Nothing
                   }
           | otherwise -> pure defaultOpts
