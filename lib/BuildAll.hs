@@ -32,7 +32,7 @@ main =
 
     runEffect $
       findProHtmlResources scheme
-        >-> Pipes.mapM_ (buildProHtmlResource putStrLn)
+        >-> Pipes.mapM_ (buildProHtmlResource scheme putStrLn)
 
     runEffect $
       ( ( findProHtmlResources scheme

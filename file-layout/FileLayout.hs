@@ -15,6 +15,9 @@ data ProHtmlResource
   = ProHtmlResource Resource InputPath OutputPath DeployPath
   deriving stock (Eq, Ord, Show)
 
+proHtmlResourceId :: ProHtmlResource -> Resource
+proHtmlResourceId (ProHtmlResource x _ _ _) = x
+
 newtype InputPath = InputPath (Path Rel File)
   deriving stock (Eq, Ord, Show)
 

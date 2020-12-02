@@ -40,6 +40,7 @@ languageExtensions =
     "DeriveGeneric",
     "DerivingVia",
     "LambdaCase",
+    "MultiWayIf",
     "NoImplicitPrelude",
     "OverloadedStrings",
     "QuasiQuotes",
