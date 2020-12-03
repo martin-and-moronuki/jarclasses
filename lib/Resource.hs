@@ -1,10 +1,12 @@
 module Resource where
 
+import Control.Lens
 import Data.Data (Data)
 import qualified Data.List as List
 import qualified Data.Text as T
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
+import Path
 import Relude
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
@@ -47,3 +49,10 @@ resourceHref = Attr.href . HTML.toValue . resourceUrl
 
 isPrefixOf :: Resource -> Resource -> Bool
 ResourceSlashList a `isPrefixOf` ResourceSlashList b = a `List.isPrefixOf` b
+
+resourceRelFile :: Resource -> Maybe (Path Rel File)
+resourceRelFile (ResourceSlashList r) =
+  unsnoc r >>= \(dirTexts, fileText) ->
+    traverse (Path.parseRelDir . toString) dirTexts >>= \dirs ->
+      (Path.parseRelFile . toString) fileText >>= \file ->
+        Just $ foldr (Path.</>) file dirs

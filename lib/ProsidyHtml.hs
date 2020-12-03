@@ -4,22 +4,24 @@ import Control.Lens
 import qualified HTML
 import Prosidy
 import Relude hiding (head)
+import Resource
 import Text.Blaze.Html (Html, toHtml, toValue, (!))
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 
 data ProHtmlOpts = ProHtmlOpts
-  { extraBlockTags :: Tag (Series Block) -> Maybe Html
+  { extraBlockTags :: Tag (Series Block) -> Maybe Html,
+    extraStyle :: [Resource]
   }
 
 defaultOpts :: ProHtmlOpts
-defaultOpts = ProHtmlOpts (const Nothing)
+defaultOpts = ProHtmlOpts (const Nothing) []
 
 proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> Html
 proHtml opts doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
   where
     head = HTML.head $ HTML.utf8htmlMeta <> HTML.viewportMeta <> title <> css
-    css = HTML.stylesheet "/style/jarclasses.css"
+    css = foldMap HTML.stylesheet (one [res|style/jarclasses.css|] ++ extraStyle opts)
     title = foldMap (HTML.title . toHtml) $ proTitle doc
     body = HTML.body main
     main = HTML.main $ do

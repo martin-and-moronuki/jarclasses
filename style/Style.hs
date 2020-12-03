@@ -2,20 +2,30 @@ module Style where
 
 import Clay hiding (bold, inlineBlock, italic, nowrap)
 import qualified Clay
+import Data.Maybe (fromJust)
 import Path
 import Pipes
 import Relude hiding (intersperse, not, (&))
 import Relude.Extra.Foldable1
 import Resource
 
+styles :: [(Resource, Css)]
+styles =
+  [ ([res|style/jarclasses.css|], jarclassesStyle),
+    ([res|style/home.css|], homeStyle)
+  ]
+
 styleResources :: Producer Resource IO ()
-styleResources = yield [res|style/jarclasses.css|]
+styleResources = traverse_ (yield . fst) styles
 
 makeStyles :: Path Abs Dir -> IO ()
-makeStyles d = writeFileLBS path (encodeUtf8 txt)
+makeStyles d = traverse_ (uncurry (make d)) styles
+
+make :: Path Abs Dir -> Resource -> Css -> IO ()
+make d r css = writeFileLBS path (encodeUtf8 txt)
   where
-    path = Path.toFilePath (d Path.</> [relfile|style/jarclasses.css|])
-    txt = renderWith pretty [] jarclassesStyle
+    path = Path.toFilePath (d Path.</> fromJust (resourceRelFile r))
+    txt = renderWith pretty [] css
 
 jarclassesStyle :: Css
 jarclassesStyle =
@@ -56,6 +66,11 @@ jarclassesStyle =
           content (stringContent "·")
           paddingHorizontal (em 0.5)
 
+homeStyle :: Css
+homeStyle =
+  do
+    star # byClass "day" ? float floatRight <> color gray
+
 contentWidthPx :: Double
 contentWidthPx = 650
 
@@ -86,6 +101,3 @@ listTags = ul <> ol
 
 intersperse :: Css -> Css
 intersperse x = star # not (star # firstChild) # before <? x
-
--- notNormalList :: Css
--- notNormalList = listStyleType none

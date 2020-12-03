@@ -35,7 +35,8 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                   { extraBlockTags = \x ->
                       case (Prosidy.tagName x) of
                         "list-of-content" -> Just list
-                        _ -> Nothing
+                        _ -> Nothing,
+                    extraStyle = one [res|style/home.css|]
                   }
           | r == [res|menus|] ->
             do

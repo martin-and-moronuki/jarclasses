@@ -1,7 +1,7 @@
 module HTML where
 
-import Relude
-import Text.Blaze.Html (Html, toValue, (!))
+import Resource
+import Text.Blaze.Html (Html, (!))
 import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 
@@ -18,9 +18,9 @@ utf8htmlMeta =
     ! Attr.httpEquiv "Content-Type"
     ! Attr.content "text/html; charset=utf-8"
 
-stylesheet :: Text -> Html
+stylesheet :: Resource -> Html
 stylesheet x =
   HTML.link
     ! Attr.rel "stylesheet"
     ! Attr.type_ "text/css"
-    ! Attr.href (toValue x)
+    ! resourceHref x

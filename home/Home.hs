@@ -30,5 +30,5 @@ displayOne :: Content -> Html
 displayOne (Content r title day) =
   HTML.li $
     HTML.p $ do
-      maybe (HTML.stringComment "no day") ((HTML.span ! Attr.style "float: right; color: gray") . toHtml @Text . show) day
+      maybe (HTML.stringComment "no day") ((HTML.span ! Attr.class_ "day") . toHtml @Text . show) day
       HTML.a ! resourceHref r $ fromMaybe (HTML.stringComment "no title") title

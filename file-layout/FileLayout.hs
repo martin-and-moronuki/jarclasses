@@ -70,15 +70,15 @@ resourceOutputPath s r = other <|> css <|> html
   where
     css =
       fmap OutputPath $
-        resourceRelFileBase r >>= \p ->
+        resourceRelFile r >>= \p ->
           if inStyleDir s p
-            then resourceRelFileBase r
+            then resourceRelFile r
             else Nothing
     html =
       fmap OutputPath $
-        resourceRelFileBase r >>= \p ->
+        resourceRelFile r >>= \p ->
           if inProHtmlDir s p
-            then resourceRelFileBase r >>= Path.addExtension ".html"
+            then resourceRelFile r >>= Path.addExtension ".html"
             else Nothing
     other =
       getFirst $
@@ -96,7 +96,7 @@ resourceInputPath s r = other <|> pro
   where
     pro =
       fmap InputPath $
-        resourceRelFileBase r >>= \p ->
+        resourceRelFile r >>= \p ->
           if inProHtmlDir s p then Path.addExtension ".pro" p else Nothing
     other =
       getFirst $
@@ -108,13 +108,6 @@ test_resourceInputPath :: Scheme -> Resource -> Test
 test_resourceInputPath s x =
   testLine $
     "resourceInputPath" <!> show x <!> "=" <!> show (resourceInputPath s x)
-
-resourceRelFileBase :: Resource -> Maybe (Path Rel File)
-resourceRelFileBase (ResourceSlashList r) =
-  unsnoc r >>= \(dirTexts, fileText) ->
-    traverse (Path.parseRelDir . toString) dirTexts >>= \dirs ->
-      (Path.parseRelFile . toString) fileText >>= \file ->
-        Just $ foldr (Path.</>) file dirs
 
 pathAsResourceInput :: Scheme -> InputPath -> Maybe Resource
 pathAsResourceInput s ip@(InputPath p) = other <|> inDir
