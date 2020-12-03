@@ -1,7 +1,7 @@
 module ResourceBuilding where
 
-import Control.Lens
 import BlazeHtmlRendering
+import Control.Lens
 import FileLayout
 import qualified Home
 import qualified Menus
@@ -38,12 +38,12 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                   { extraBlockTags = \x ->
                       case (Prosidy.tagName x) of
                         "list-of-content" -> Just $
-                            case view (Prosidy.atSetting "limit") x of
-                                Nothing -> list Nothing
-                                Just t ->
-                                    case readMaybe @Natural (toString t) of
-                                        Nothing -> HTML.stringComment $ "limit must be a Natural, but is" <!> show t
-                                        Just n -> list (Just n)
+                          case view (Prosidy.atSetting "limit") x of
+                            Nothing -> list Nothing
+                            Just t ->
+                              case readMaybe @Natural (toString t) of
+                                Nothing -> HTML.stringComment $ "limit must be a Natural, but is" <!> show t
+                                Just n -> list (Just n)
                         _ -> Nothing,
                     extraStyle = one [res|style/home.css|]
                   }
