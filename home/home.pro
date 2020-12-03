@@ -4,7 +4,7 @@ Hello!
 
 #-h2{Recent posts}
 
-#-list-of-content
+#-list-of-content[limit='10']
 
 #-h2{Our other websites}
 

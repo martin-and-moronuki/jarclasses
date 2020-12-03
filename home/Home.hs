@@ -12,8 +12,8 @@ import qualified Text.Blaze.Html5 as HTML
 import qualified Text.Blaze.Html5.Attributes as Attr
 import Title
 
-listOfContent :: Scheme -> IO Html
-listOfContent scheme = fmap displayContent $ getContent scheme
+listOfContent :: Scheme -> IO (Maybe Natural -> Html)
+listOfContent scheme = fmap (\xs n -> displayContent $ maybe id genericTake n xs) $ getContent scheme
 
 data Content = Content Resource (Maybe Html) (Maybe Day)
 

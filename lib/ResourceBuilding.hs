@@ -1,5 +1,6 @@
 module ResourceBuilding where
 
+import Control.Lens
 import BlazeHtmlRendering
 import FileLayout
 import qualified Home
@@ -10,6 +11,8 @@ import ProsidyHtml
 import Relude
 import Resource
 import StateOfResources
+import StringBuilding
+import qualified Text.Blaze.Html5 as HTML
 
 ensureResourceBuilt :: Scheme -> (Text -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt scheme l rs r =
@@ -34,7 +37,13 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                 defaultOpts
                   { extraBlockTags = \x ->
                       case (Prosidy.tagName x) of
-                        "list-of-content" -> Just list
+                        "list-of-content" -> Just $
+                            case view (Prosidy.atSetting "limit") x of
+                                Nothing -> list Nothing
+                                Just t ->
+                                    case readMaybe @Natural (toString t) of
+                                        Nothing -> HTML.stringComment $ "limit must be a Natural, but is" <!> show t
+                                        Just n -> list (Just n)
                         _ -> Nothing,
                     extraStyle = one [res|style/home.css|]
                   }
