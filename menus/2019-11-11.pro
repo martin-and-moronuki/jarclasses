@@ -16,9 +16,9 @@ No particular recipes.
 
 #-day{Tuesday}
 
-Spaghetti squash fideos, more or less based on #link[to='https://www.rickbayless.com/recipe/spaghetti-squash-fideos-with-chipotle-chorizo-crema-and-avocado/']{this recipe} with some mods. It was way too soupy for our taste #dash I think next time (because we do want to eat it again; it was a very pleasant mixture of spicy with slight sweetness from the squash) I need to drain the squash better and only add chicken broth if it seems to be needed. Did not have chorizo, so I made my own (without packing it into casings, of course) based on #link[to='https://honest-food.net/mexican-chorizo-recipe/']{this recipe}. Used way more meat than Bayless's recipe called for, and I think it would be too bland and insubstantial without the extra chorizo.
+Spaghetti squash fideos, more or less based on #link[to='https://www.rickbayless.com/recipe/spaghetti-squash-fideos-with-chipotle-chorizo-crema-and-avocado/']{this recipe} with some mods. It was way too soupy for our taste #dash I think next time (because we do want to eat it again; it was a very pleasant mixture of spicy with slight sweetness from the squash) I need to drain the squash better and only add chicken broth if it seems to be needed. Did not have chorizo, so I made my own (without packing it into casings, of course) based on #link[to='https://honest-food.net/mexican-chorizo-recipe/']{this recipe}.
 
-Served with tortillas, refried beans, and cortido rojo (fermented).
+Served with tortillas, refried beans, and curtido rojo (fermented).
 
 #-day{Wednesday}
 
