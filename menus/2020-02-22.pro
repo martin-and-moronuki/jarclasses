@@ -81,6 +81,7 @@ Our local cooperative brewery, bless them, is hosting an outdoors block party, a
 
 #-list:
   #-item{Pizza}
+  #-item{Leftover cake, maybe this time with peaches (frozen or canned)}
 #:
 
 We're trying a thing where every Saturday is pizza night, because we have a social event on Saturday nights, and pizza is easy to get done in time and good enough to still eat cold if you are still hungry when we've returned home. There is pepperoni in the freezer from my big order from Zoe's Meats last year. I think we're out of mozzarella (other than freeze-dried) so it will be Monterey Jack cheese, sure, why not. There will also be freeze dried olives from #link[to='https://therottenfruitbox.com/pages/our-story']{Rotten Fruit}, pickled peppers, dried zucchini, thawed and drained kale from the freezer. Plenty of pizza toppings around; one merely has to look. I would like to make one pepperoni pizza and one maybe "Thai" with a peanut sauce and chicken, but we'll see if I still feel like that on Saturday. Getting the chicken ready would be an extra bit of prep. But we also have a ton of Thai basil growing in our AeroGarden right now, so it would be cool to use some of it on this pizza.
@@ -94,7 +95,7 @@ Sunday mornings I often like to make muffins or pancakes; this week's will proba
   #-item{Sesame brown rice, in the Instant Pot}
   #-item{Lettuce leaves or bok choy if we still have some after this terrible freeze; otherwise, some spinach from frozen}
   #-item{Red-cooked squash, from Lucky Peach}
-  #-item{Leftover cake, maybe this time with peaches (frozen or canned)}
+  #-item{Chocolate cake}
 #:
 
 This meal will be cooked, mainly, by my younger son who has a subscription to #link[to=referral link]{Eat2Explore}. This meal idea is from his China box. We're enjoying the Eat2Explore meals. I think they are not ""authentic"" or whatever, because they're designed to be cooked by children in American kitchens where ""authentic"" ingredients cannot always be found. However, all the food we've cooked from them so far has been tasty, and he is learning a lot from them. One thing he's learning is that many of their recipes call for olive oil and it isn't always the most appropriate (but they're trying to accommodate what's likely to be in American kitchens, I think); we stock many oils so I'm always saying, "no, I think for this we'll use the ghee (or peanut oil, or whatever seems most appropriate)." The included cultural information is cool. We've had the subscription just to the Asia boxes, and we finished India and Singapore. After China, we have Japan. He wants a subscription to the Africa boxes after this and also the Brazil box, which is pretty exciting.
