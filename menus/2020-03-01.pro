@@ -11,14 +11,24 @@ It is time to start thinking about the garden again. For this year, I think our 
 
 OK, so onto the menu for this week. I have recently bought a few cookbooks that are aimed at less-experienced cooks. One of these is *Cookish* by Christopher Kimball and the crew at Milk Street. Another is *Small Victories* by Julia Turshen. In some way it might also be reasonable to see *Eat* by Nigel Slater in a similar category, and also Alison Roman's excellent *Dining In*. One of my goals this year is to encourage the other members of the household to more independence in the kitchen; whenever I can't cook for some reason (illness, depression, social engagement), there's a bit of a problem because no one else knows what we have or where to find a recipe that might suitably use ingredients we have or even, and this has surprised me somewhat, how to read the recipes they might find. What we're learning about reading recipes itself deserves its own post, but that will have to wait.
 
-So, in the coming weeks we'll be doing some "better know a cookbook" nights
+So, in the coming weeks we'll be doing some "better know a cookbook" nights. What I want to do is learn what questions the different cooks in the household have about these recipes: what is easy to mess up, because the instruction isn't clear enough? how well can they understand from the accompanying text and descriptions what the end result should be like?
 
 main courses
 
 - cumin beef and squash stew
 - deviled eggs and grits
-- spaghetti squash pizza boats (sides/dessert)
+- spaghetti squash pizza boats (veg/farro soup, Cookish butterscotch pudding)
+ write up spaghetti squash pizza boats as a separate recipe
+
+
+
+- pork chops with salsa macha
+- poor man's potatoes (Eat) with poblanos (frozen) instead of the red peppers
+- zucchini fritters (Small Victories)
+
+
+
 - egg foo young (sides/dessert)
-- that lamb stew with preserved lemon (apps/desserts?)
-- pizza (sides/dessert)
-- roast duck (sides)
+
+
+
