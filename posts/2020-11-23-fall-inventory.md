@@ -4,13 +4,13 @@ date: 2020-11-23
 tags: fall, planning, food storage
 ---
 
-When our CSA ended this year, we took an inventory of some of the foods we have on hand. We're hoping that writing about it will help us in the future, giving us a reference point for planning and organizing next year.  We're hoping that this will serve a couple of purposes. First, this helps us with meal and menu planning throughout the winter; we can plan to eat up the foods that we have and make sure none of the squash or parsnips goes to waste. Second, it will also help guide my choices in 2021 regarding how much food to buy and how much to preserve in different forms, based on how much of it we eat up over the course of the winter. This was partially prompted by the fact that during the last winter (2019-20) we ran out of a few items quite quickly. I remembered at least a couple of those things while I was putting food up this summer, and put up more of those things this year, but I'm curious to see if they last us through winter. 
+When our CSA ended this year, we took an inventory of some of the foods we have on hand. We're hoping that writing about it will help us in the future, giving us a reference point for planning and organizing next year.  We're hoping that this will serve a couple of purposes. First, this helps us with meal and menu planning throughout the winter; we can plan to eat up the foods that we have and make sure none of the squash or parsnips goes to waste. Second, it will also help guide my choices in 2021 regarding how much food to buy and how much to preserve in different forms, based on how much of it we eat up over the course of the winter. This was partially prompted by the fact that during the last winter (2019-20) we ran out of a few items quite quickly. I remembered at least a couple of those things while I was putting food up this summer, and put up more of those things this year, but I'm curious to see if they last us through winter.
 
 # Food storage
 
 Overall, we store a lot of food. We do this even in years when we don't have a hard winter or a pandemic to deal with, because even in mild winters there can be times when we don't want to leave our house -- someone's sick or it's snowy this weekend or we want to get some other project done instead. These times can be unpredictable, so I don't like for my meal planning to hinge at all on the accessibility of a grocery store. Honestly this is mostly true in summer, too, but summers are more predictable in this regard because, knowing we have a lot of food storage to do (canning, fermenting, and whatnot), we plan our weeks around visits to farmer's markets.
 
-We keep a chest freezer fairly well stocked with meats and cheeses and some yogurt (and occasionally milk, which gets weird when you freeze it but is still very acceptable to use in cooking, just weird for drinking). So that's part of our food storage. 
+We keep a chest freezer fairly well stocked with meats and cheeses and some yogurt (and occasionally milk, which gets weird when you freeze it but is still very acceptable to use in cooking, just weird for drinking). So that's part of our food storage.
 
 We also then have some quantity of prepper-adjacent food storage: a very large bin containing boxes of pasta, freeze-dried cheeses and fruits from [Thrive Life](https://www.thrivelife.com/invite/MjE5NTk4). The freeze-dried cheeses are particularly great, easy to reconstitute, and allow us to eat an optimal amount of pizza in the winter, even if we have not done a good job of stocking the freezer with fresh mozzarella and parmesan. These are mostly housed on shelves in the basement, where we also keep my home-canned food.
 
@@ -28,7 +28,7 @@ Ultimately I want to have notes as well about which items don't last in terms of
 
 We are a family of four, with two sons aged 15 and 11 at time of writing, so they're both sometimes going through rapid growth spurts where they eat a lot. We also have several herbivorous pets (rabbits, guinea pigs, an iguana) and some of the vegetables in storage will end up as feed for them, though they often eat the scraps from our dinner preparations (peels and the like).
 
-Since I do all of my meal planning from our food storage (rather than do what I think is more the typical thing where you think of foods you want to eat or find new recipes you want to make and then go buy the stuff for it), we did include in the inventory a few things that are fermented or dehydrated or canned but that fill the role of being ingredients in other foods. Like, we do eat jam and I make a lot of jam (usually too much), but I don't use much jam in recipes or meal prep, so we didn't count it. 
+Since I do all of my meal planning from our food storage (rather than do what I think is more the typical thing where you think of foods you want to eat or find new recipes you want to make and then go buy the stuff for it), we did include in the inventory a few things that are fermented or dehydrated or canned but that fill the role of being ingredients in other foods. Like, we do eat jam and I make a lot of jam (usually too much), but I don't use much jam in recipes or meal prep, so we didn't count it.
 
 ### In the Pickle Fridge
 
@@ -53,7 +53,7 @@ I've included soups in this category not because they're an "ingredient" but bec
 
 I haven't included home-canned broth/stock in this list, although it is an ingredient and I do can it, because I can much more of it in the winter than I do in the summer. Summer canning is busy enough without also canning stock, which can be done at any time of year. So in March or April, I'll try to make sure I have enough stock to last through the summer built up before summer hits.
 
-This doesn't seem like much, given how much canning I do each summer, but that's because we only focused on a few narrow categories. 
+This doesn't seem like much, given how much canning I do each summer, but that's because we only focused on a few narrow categories.
 
 ### Fresh veg
 
@@ -95,4 +95,24 @@ The leeks in the root cellar are a little moldy on the outside but still totally
 
 I was a little hesitant to even buy, let alone store, red delicious apples because they are the epitome of the bland supermarket apple, but these have gotten tastier in storage. They are not very crisp at this point, so I am mostly using them in cooking, and they have good flavor.
 
+### UPDATE: March 7, 2021
 
+The weather is threatening to turn warm enough that we can't keep our storage room at a consistently low temperature, so it's about time to finish getting through what's left down there. Today we made a quart and a half of sauerkraut to use up one of the cabbages.
+
+On the whole, the project has been pretty successful.
+
+Apples were just about the right amount, and they're holding up really well. Some of them got a little bit soft, but the flavor -- of Red Delicious apples, which are not the best tasting to begin with -- was actually better than eating them in the Fall.
+
+Our second major loss was one carrot bucket -- It seems that when one of these buckets goes bad, everything inside goes bad at once. The sand in this bucket seemed particularly wet, so we're suspecting that the problem on this one might have been due to overwetting when we packed them in.
+
+Some of the squash are starting to get mold, and we've lost a few. We lined some of the wire shelves with plastic, thinking it would cushion the squash and maybe prevent pressure points that would go bad first. Instead, it just seemed to have trapped moisture, and the bottoms of the squashes in contact with the plastic are what went bad first. Putting squash directly on wire shelves does not seem to be a problem, and in fact is probably the best way to go, to make sure that they get air circulation all around to keep the squashes dry.
+
+Radish, parsnips, and the carrots (apart from that one failure) are all still doing fine.
+
+Cabbages are all starting to show signs of age, but they're alright once you take 4-5 leaves off.
+
+What we ended up with way too much of: Parsnips and spaghetti squash. We either need to get less spaghetti squash next year, or make sure we cook them about once a week all Winter -- we certainly have enough spaghetti squash recipes that we like, so it won't be a hardship to eat more of it. We knew it was too many parsnips when we got them, it just happened by accident.
+
+Of Winter squashes, next year we probably want about five fewer than we got this year.
+
+Potatoes are holding up pretty well, but we still have a slightly unreasonable quantity.
