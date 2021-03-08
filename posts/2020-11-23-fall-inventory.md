@@ -95,4 +95,20 @@ The leeks in the root cellar are a little moldy on the outside but still totally
 
 I was a little hesitant to even buy, let alone store, red delicious apples because they are the epitome of the bland supermarket apple, but these have gotten tastier in storage. They are not very crisp at this point, so I am mostly using them in cooking, and they have good flavor.
 
+### UPDATE: March 7, 2021
 
+The weather is threatening to turn warm enough that we can't keep our storage room at a consistently low temperature, so it's about time to finish getting through what's left down there.
+
+Apples were just about the right amount, and they're holding up really well. Some of them got a little bit soft, but the flavor -- of Red Delicious apples, which are not the best tasting to begin with -- was actually better than eating them in the Fall.
+
+Our second major loss was one carrot bucket -- It seems that when one of these buckets goes bad, everything inside goes bad at once. The sand in this bucket seemed particularly wet, so we're suspecting that the problem on this one might have been due to overwetting when we packed them in.
+
+Some of the squash are starting to get mold, and we've lost a few. We lined some of the wire shelves with plastic, thinking it would cushion the squash and maybe prevent pressure points that would go bad first. Instead, it just seemed to have trapped moisture, and the bottoms of the squashes in contact with the plastic are what went bad first. Putting squash directly on wire shelves does not seem to be a problem, and in fact is probably the best way to go, to make sure that they get air circulation all around to keep the squashes dry.
+
+Radish, parsnips, and the carrots (apart from that one failure) are all still doing fine.
+
+Cabbages are all starting to show signs of age, but they're alright once you take 4-5 leaves off.
+
+What we ended up with way too much of: Parsnips and spaghetti squash. We either need to get less spaghetti squash next year, or make sure we cook them about once a week all Winter -- we certainly have enough spaghetti squash recipes that we like, so it won't be a hardship to eat more of it. We knew it was too many parsnips when we got them, it just happened by accident.
+
+Of Winter squashes, next year we probably want about five fewer than we got this year.
