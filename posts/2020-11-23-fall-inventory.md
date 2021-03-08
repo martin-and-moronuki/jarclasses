@@ -4,13 +4,13 @@ date: 2020-11-23
 tags: fall, planning, food storage
 ---
 
-When our CSA ended this year, we took an inventory of some of the foods we have on hand. We're hoping that writing about it will help us in the future, giving us a reference point for planning and organizing next year.  We're hoping that this will serve a couple of purposes. First, this helps us with meal and menu planning throughout the winter; we can plan to eat up the foods that we have and make sure none of the squash or parsnips goes to waste. Second, it will also help guide my choices in 2021 regarding how much food to buy and how much to preserve in different forms, based on how much of it we eat up over the course of the winter. This was partially prompted by the fact that during the last winter (2019-20) we ran out of a few items quite quickly. I remembered at least a couple of those things while I was putting food up this summer, and put up more of those things this year, but I'm curious to see if they last us through winter. 
+When our CSA ended this year, we took an inventory of some of the foods we have on hand. We're hoping that writing about it will help us in the future, giving us a reference point for planning and organizing next year.  We're hoping that this will serve a couple of purposes. First, this helps us with meal and menu planning throughout the winter; we can plan to eat up the foods that we have and make sure none of the squash or parsnips goes to waste. Second, it will also help guide my choices in 2021 regarding how much food to buy and how much to preserve in different forms, based on how much of it we eat up over the course of the winter. This was partially prompted by the fact that during the last winter (2019-20) we ran out of a few items quite quickly. I remembered at least a couple of those things while I was putting food up this summer, and put up more of those things this year, but I'm curious to see if they last us through winter.
 
 # Food storage
 
 Overall, we store a lot of food. We do this even in years when we don't have a hard winter or a pandemic to deal with, because even in mild winters there can be times when we don't want to leave our house -- someone's sick or it's snowy this weekend or we want to get some other project done instead. These times can be unpredictable, so I don't like for my meal planning to hinge at all on the accessibility of a grocery store. Honestly this is mostly true in summer, too, but summers are more predictable in this regard because, knowing we have a lot of food storage to do (canning, fermenting, and whatnot), we plan our weeks around visits to farmer's markets.
 
-We keep a chest freezer fairly well stocked with meats and cheeses and some yogurt (and occasionally milk, which gets weird when you freeze it but is still very acceptable to use in cooking, just weird for drinking). So that's part of our food storage. 
+We keep a chest freezer fairly well stocked with meats and cheeses and some yogurt (and occasionally milk, which gets weird when you freeze it but is still very acceptable to use in cooking, just weird for drinking). So that's part of our food storage.
 
 We also then have some quantity of prepper-adjacent food storage: a very large bin containing boxes of pasta, freeze-dried cheeses and fruits from [Thrive Life](https://www.thrivelife.com/invite/MjE5NTk4). The freeze-dried cheeses are particularly great, easy to reconstitute, and allow us to eat an optimal amount of pizza in the winter, even if we have not done a good job of stocking the freezer with fresh mozzarella and parmesan. These are mostly housed on shelves in the basement, where we also keep my home-canned food.
 
@@ -28,7 +28,7 @@ Ultimately I want to have notes as well about which items don't last in terms of
 
 We are a family of four, with two sons aged 15 and 11 at time of writing, so they're both sometimes going through rapid growth spurts where they eat a lot. We also have several herbivorous pets (rabbits, guinea pigs, an iguana) and some of the vegetables in storage will end up as feed for them, though they often eat the scraps from our dinner preparations (peels and the like).
 
-Since I do all of my meal planning from our food storage (rather than do what I think is more the typical thing where you think of foods you want to eat or find new recipes you want to make and then go buy the stuff for it), we did include in the inventory a few things that are fermented or dehydrated or canned but that fill the role of being ingredients in other foods. Like, we do eat jam and I make a lot of jam (usually too much), but I don't use much jam in recipes or meal prep, so we didn't count it. 
+Since I do all of my meal planning from our food storage (rather than do what I think is more the typical thing where you think of foods you want to eat or find new recipes you want to make and then go buy the stuff for it), we did include in the inventory a few things that are fermented or dehydrated or canned but that fill the role of being ingredients in other foods. Like, we do eat jam and I make a lot of jam (usually too much), but I don't use much jam in recipes or meal prep, so we didn't count it.
 
 ### In the Pickle Fridge
 
@@ -53,7 +53,7 @@ I've included soups in this category not because they're an "ingredient" but bec
 
 I haven't included home-canned broth/stock in this list, although it is an ingredient and I do can it, because I can much more of it in the winter than I do in the summer. Summer canning is busy enough without also canning stock, which can be done at any time of year. So in March or April, I'll try to make sure I have enough stock to last through the summer built up before summer hits.
 
-This doesn't seem like much, given how much canning I do each summer, but that's because we only focused on a few narrow categories. 
+This doesn't seem like much, given how much canning I do each summer, but that's because we only focused on a few narrow categories.
 
 ### Fresh veg
 
