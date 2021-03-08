@@ -99,6 +99,8 @@ I was a little hesitant to even buy, let alone store, red delicious apples becau
 
 The weather is threatening to turn warm enough that we can't keep our storage room at a consistently low temperature, so it's about time to finish getting through what's left down there.
 
+On the whole, the project has been pretty successful.
+
 Apples were just about the right amount, and they're holding up really well. Some of them got a little bit soft, but the flavor -- of Red Delicious apples, which are not the best tasting to begin with -- was actually better than eating them in the Fall.
 
 Our second major loss was one carrot bucket -- It seems that when one of these buckets goes bad, everything inside goes bad at once. The sand in this bucket seemed particularly wet, so we're suspecting that the problem on this one might have been due to overwetting when we packed them in.
@@ -112,3 +114,5 @@ Cabbages are all starting to show signs of age, but they're alright once you tak
 What we ended up with way too much of: Parsnips and spaghetti squash. We either need to get less spaghetti squash next year, or make sure we cook them about once a week all Winter -- we certainly have enough spaghetti squash recipes that we like, so it won't be a hardship to eat more of it. We knew it was too many parsnips when we got them, it just happened by accident.
 
 Of Winter squashes, next year we probably want about five fewer than we got this year.
+
+Potatoes are holding up pretty well, but we still have a slightly unreasonable quantity.
