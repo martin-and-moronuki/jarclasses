@@ -1,4 +1,4 @@
-title: Hello!
+title: Our Canifesto
 ---
 
-This is our blog!
+
