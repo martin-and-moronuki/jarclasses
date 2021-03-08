@@ -97,7 +97,7 @@ I was a little hesitant to even buy, let alone store, red delicious apples becau
 
 ### UPDATE: March 7, 2021
 
-The weather is threatening to turn warm enough that we can't keep our storage room at a consistently low temperature, so it's about time to finish getting through what's left down there.
+The weather is threatening to turn warm enough that we can't keep our storage room at a consistently low temperature, so it's about time to finish getting through what's left down there. Today we made a quart and a half of sauerkraut to use up one of the cabbages.
 
 On the whole, the project has been pretty successful.
 
