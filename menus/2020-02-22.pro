@@ -23,7 +23,7 @@ The sourdough caraway rye bread comes from *No Need to Knead* (we should have a 
   #-item{Butternut squash soup with the Simon and Garfunkel herbs}
 #:
 
-And that was our last butternut squash of the year. To make the soup, sweat a diced red onion and some garlic in butter and a good pinch of salt until the onion is translucent. Add peeled, chopped butternut squash. We also added a little bit of parsnip we had leftover from something else that needed to get used up. Add vegetable broth or chicken stock, if you've got it. Add dried sage, dried rosemary, dried thyme. Cook until the squash (and parsnip) is tender. Add creme fraiche, yogurt, or sour cream for a little acidity and creaminess and then puree with a stick blender. Check the salt and adjust as needed. Pepper is fine, but it's good without it too. Then add some minced fresh parsley and serve.
+And that was our last butternut squash of the year. To make the soup, sweat a diced red onion and some garlic in butter and a good pinch of salt until the onion is translucent. Add peeled, chopped butternut squash. We also added a little bit of parsnip we had leftover from something else that needed to get used up. Add vegetable broth or chicken stock, if you've got it. Add dried sage, dried rosemary, dried thyme. Cook until the squash (and parsnip) is tender. Add creme fraiche, yogurt, or sour cream for a little acidity and creaminess and then puree with a stick blender. Check the salt and adjust as needed. Pepper is fine, but it's good without it too. Then add some minced fresh parsley, if you have it, and serve.
 
 #-day{Tuesday}
 
@@ -47,7 +47,7 @@ Sort of a double casserole night, because why not?
   #-item{Corn casserole}
 #:
 
-The BBQ lima beans are from Mark Bittman's *How to Cook Everything Fast* although with copious changes: I don't have collards but I have frozen kale; I don't have fresh lima beans but one of the variations suggests substituting canned black beans so I can use my favorite beans, the #link[to='https://www.ranchogordo.com/collections/the-rancho-gordo-xoxoc-project/products/ayocote-morado?variant=18256055795808']{Ayocote Morado Bean} from Rancho Gordo; and I'll use a tiny bit of Spanish chorizo instead of either the bacon or the fresh Mexican-type chorizo. I just work with what I have.
+The BBQ lima beans are from Mark Bittman's #title{How to Cook Everything Fast} although with copious changes: I don't have collards but I have frozen kale; I don't have fresh lima beans but one of the variations suggests substituting canned black beans so I can use my favorite beans, the #link[to='https://www.ranchogordo.com/collections/the-rancho-gordo-xoxoc-project/products/ayocote-morado?variant=18256055795808']{Ayocote Morado Bean} from Rancho Gordo; and I'll use a tiny bit of Spanish chorizo instead of either the bacon or the fresh Mexican-type chorizo. I just work with what I have.
 
 The corn casserole is a wonderful thing from a wonderful little cookbook, Nigel Slater's *Eat*. It goes like this:
 
@@ -98,7 +98,7 @@ Sunday mornings I often like to make muffins or pancakes; this week's will proba
   #-item{Chocolate cake}
 #:
 
-This meal will be cooked, mainly, by my younger son who has a subscription to #link[to=referral link]{Eat2Explore}. This meal idea is from his China box. We're enjoying the Eat2Explore meals. I think they are not ""authentic"" or whatever, because they're designed to be cooked by children in American kitchens where ""authentic"" ingredients cannot always be found. However, all the food we've cooked from them so far has been tasty, and he is learning a lot from them. One thing he's learning is that many of their recipes call for olive oil and it isn't always the most appropriate (but they're trying to accommodate what's likely to be in American kitchens, I think); we stock many oils so I'm always saying, "no, I think for this we'll use the ghee (or peanut oil, or whatever seems most appropriate)." The included cultural information is cool. We've had the subscription just to the Asia boxes, and we finished India and Singapore. After China, we have Japan. He wants a subscription to the Africa boxes after this and also the Brazil box, which is pretty exciting.
+This meal will be cooked, mainly, by my younger son who has a subscription to #link[to='https://eat2explore.com/a/refer-a-friend/redeem/juliemoronuki/2975']{Eat2Explore}. This meal idea is from his China box. We're enjoying the Eat2Explore meals. I think they are not ""authentic"" or whatever, because they're designed to be cooked by children in American kitchens where ""authentic"" ingredients cannot always be found. However, all the food we've cooked from them so far has been tasty, and he is learning a lot from them. One thing he's learning is that many of their recipes call for olive oil and it isn't always the most appropriate (but they're trying to accommodate what's likely to be in American kitchens, I think); we stock many oils so I'm always saying, "no, I think for this we'll use the ghee (or peanut oil, or whatever seems most appropriate)." The included cultural information is cool. We've had the subscription just to the Asia boxes, and we finished India and Singapore. After China, we have Japan. He wants a subscription to the Africa boxes after this and also the Brazil box, which is pretty exciting.
 
 
 
