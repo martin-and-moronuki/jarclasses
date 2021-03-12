@@ -3,14 +3,14 @@ title: Menu for November 19, 2019
 
 The week before Thanksgiving! Last week of CSA (a good week, too #dash got more apples, and another cabbage).
 
-This week we're starting to use Mark Bittman's How to Cook Everything ~Fast~ cookbook. Both Chris and the kids want to learn to cook more and be more independent (and more prepared to cook when I'm sick or otherwise unable to), so I'm more in the role of instructor/sous chef for a while (except Thanksgiving cooking, sure), and this cookbook is nice for having the prep steps (cut the onion, mince the garlic, etc) worked into the actual recipe, for maximum parallelization. Since prep steps are also in blue (while the rest of the text is in black), it's therefore really easy to visually divide the process between two people. It's a fantastic idea for a cookbook, and I'm glad we have it. I expect we'll be using it much more heavily from now on. Not exclusively, but frequently, it just makes sharing the recipe and putting me in a position where I can really help them learn so easy. So.
+This week we're starting to use Mark Bittman's #title{How to Cook Everything Fast} cookbook. This cookbook is great for having the prep steps (cut the onion, mince the garlic, etc) worked into the actual recipe, for maximum parallelization, so it helps Chris and I cook together. Since prep steps are also in blue (while the rest of the text is in black), it's therefore really easy to visually divide the process between two people. It's a fantastic idea for a cookbook, and I'm glad we have it. I expect we'll be using it much more heavily from now on. Not exclusively, but frequently: it just makes sharing the recipe and putting me in a position where I can really help them learn so easy. So.
 
 #-day{Monday}
 
 #-list:
   #-item{Pasta with squash and ham, risotto style (#title{Fast}, page 322)}
   #-item{Garlic toast}
-  #-item{Roasted beet salad (with celery-mint ferment, lemon zest, nuts, and olive or nut oil).}
+  #-item{Roasted beet salad (with celery-mint ferment, lemon zest, nuts, and olive or nut oil)}
 #:
 
 Never cooked pasta like this before, but wow what an #emphatic{incredible} thing. The squash cooks down into a super rich and creamy sauce, the pasta is chewy, and the sage gives it such autumnal savoriness. We added a bit of nutmeg (could have used more). Looking forward to trying some of the variations, too.
@@ -59,9 +59,9 @@ The snow peas are ones I froze back in July. This was quite yum, but I don't thi
 
 Kids cook!
 
-Older son learned to make jam bars. This batch is with tart cherry preserve, and I like it. We use #link[to='https://www.allrecipes.com/recipe/11314/delicious-raspberry-oatmeal-cookie-bars/']{this recipe} but add cinnamon. We also generally double it. I don't know what to say about that except they are growing boys.
+Older son learned to make jam bars. This batch is with tart cherry preserve. We use #link[to='https://www.allrecipes.com/recipe/11314/delicious-raspberry-oatmeal-cookie-bars/']{this recipe} but add cinnamon. We also generally double it. I don't know what to say about that except they are growing boys.
 
-Younger son made lamb stew with tomatoes and green beans (#title{Fast}, page 254). Oh my heavens, this was good -- we all loved it. Heavy on cumin and garlic.
+Younger son made lamb stew with tomatoes and green beans (#title{Fast}, page 254). Oh my heavens, this was good -- we all loved it. Heavy on cumin and garlic. My favorite part of this, aside from how it tastes, was when he added the cumin, he said, "Oh, now it smells like food!"
 
 I think we might be out of frozen green beans already, but next time we could make the chickpea variation (chickpeas instead of green beans, basically) and it would still be good. We certainly have a lot of humanely raised lambs around here.
 

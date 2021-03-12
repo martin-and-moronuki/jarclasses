@@ -42,4 +42,4 @@ Ate this with cheese grits and pickles, and we want to eat this again, often. So
 
 Saturdays the kids help cook. Today we had a lot of leftovers, so we mostly reheated sides (pumpkin soup, among other things) and made a crustless quiche (six eggs to 2 cups milk/cream) that had leftovers in it. I forgot how much I dislike fish (we used some leftover salmon) in my quiche. We had also made buckwheat bread at the 4-H thing, so we ate the kids' bread with dinner.
 
-Sunday is usually left open. This week we made make-your-own pizzas (I got four crusts ready and a buffet of toppings options and let everyone top their own pizzas) and a chocolate meringue pie, and it was incredibly satisfying.
+Sunday we left open because it's nice to just cook whatever you're in the mood for that day, since there's more time. This week we made make-your-own pizzas (I got four crusts ready and a buffet of toppings options and let everyone top their own pizzas) and a chocolate meringue pie, and it was incredibly satisfying.

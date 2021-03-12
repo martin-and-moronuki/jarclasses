@@ -59,14 +59,22 @@ This day is going to be heavy on the starch but so be it.
 
 Of course, we don't have fresh bok choy as the chili-soy noodles recipe asks for, but we have frozen vegetables; we will probably use frozen broccoli.
 
-Kabocha salad is something I used to eat and make in Japan a lot, and I don't really have a recipe. Basically, peel a kabocha (or mostly peel it; a few little flecks of green peel are nice left on it for both extra color and texture), cut it into bite-size chunks, and simmer or steam it until barely tender. Mix it in a bowl with Kewpie mayonnaise #dash yes, it has to be Japanese mayonnaise, I'm sorry #dash
+Kabocha salad is something I used to eat and make in Japan a lot, and I don't really have a recipe. Basically, peel a kabocha (or mostly peel it; a few little flecks of green peel are nice left on it for both extra color and texture), cut it into bite-size chunks, and simmer or steam it until barely tender. Mix it in a bowl with Kewpie mayonnaise #dash yes, it has to be Japanese mayonnaise, I'm sorry #dash and cucumber -- in Japan, where I had nearly year-round greenhouse cucumbers, I would use fresh, but here, where I don't, I use honey-garlic pickles that I made in the summer. They're already sliced when I make the pickle, too, making this very convenient, and their very slight sweetness is perfect for this salad.
 
-st paul sandos (chris), kabocha salad (me), chili oil noodles (joe), yogurt panna cotta (so)
 
 #-day{Friday}
-- pork chops with salsa macha
-- patatas bravas (Small Victories)
-- zucchini fritters (Small Victories)
+
+I sort of feel like this could use another vegetable but I'm tired, we're all tired, and so I think we'll just eat canned peaches for dessert or something.
+
+#-list:
+  #-item{Pork chops with salsa macha} from #title{Cookish}, made by me
+  #-item{Kinda sorta patatas bravas} from #title{Small Victories}, made by my younger son
+  #-item{Zucchini and nigella fritters} from #title{Small Victories}, made by Chris
+#:
+
+The zucchini for the fritters is shredded zucchini that I fermented last summer. You can also shred zucchini and then freeze it for breads or for fritters like this, and it works out pretty well. I've done that for many years, but two summers ago I started fermenting it instead. I don't think either is particularly superior; since we never eat this fermented shredded zucchini raw, we don't ever end up getting the benefits of eating fermented foods from it. However, it is convenient that we don't have to thaw it before using it in zucchini bread or muffins or fritters.
+
+I bought nigella seeds a while back but had never tasted them, so this will be a nice opportunity to try them out. If we like them, maybe we will try to grow some on our own. I love it when we can grow a beautiful flower that has also some delicious uses.
 
 #-day{Saturday}
 
@@ -74,7 +82,14 @@ We're going to be out and about on Saturday, so we probably won't end up cooking
 
 #-day{Sunday}
 
-cottage cheese pancakes with Basque plums (so), sauteed apples with cinnamon, scrambled eggs with kale and chorizo
+BFD, baby: Breakfast For Dinner.
 
+#-list:
+  #-item{Cottage cheese pancakes}, from #title{How to Cook Everything}, made by my older son
+  #-item{Sauteed apples with cinnamon}, made by me
+  #-item{Scrambled eggs with kale and Spanish chorizo}, also made by me
+#:
+
+My older son spotted this recipe and wanted to try it. We will serve the pancakes with a jar of Basque plum preserves that I can every summer; the recipe for the plums is the #title{French Farmhouse Cookbook} by Susan Loomis, the cookbook I originally used to teach myself how to can, back in grad school. So, I guess I've had this cookbook for a very long time, through so many moves, and it keeps serving me well. These plum preserves, made with the dark Italian type of plum, have vanilla in them and are one of my favorite things to have around for flavoring yogurt or topping pancakes or French toast or the like.
 
 
