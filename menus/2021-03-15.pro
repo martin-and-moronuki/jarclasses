@@ -60,7 +60,7 @@ It's been too long since we had Mexican food, and this menu also uses up some of
   #-item{Pinto beans with chiles and pickled corn}
 #:
 
-
+The other day I was looking in the freezer for something and noticed a small bag of shredded cooked chicken in it. I have no idea how long it's been in there. If it's not too freezer-burned or something, I'm going to use it up in the enchiladas, which will be a relief. I'm trying to get the freezer emptied of old foods before the summer frenzy hits again.
 
 #-day{Saturday}
 
