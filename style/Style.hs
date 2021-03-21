@@ -81,7 +81,7 @@ contentWidthPx :: Double
 contentWidthPx = 650
 
 contentFontFamily, headerFontFamily :: Css
-headerFontFamily = fontFamily ["Open Sans", "Myriad", "Calibri"] [sansSerif]
+headerFontFamily = fontFamily ["Lato", "Open Sans", "Myriad", "Calibri"] [sansSerif]
 contentFontFamily = fontFamily ["Georgia", "Palatino", "Palatino Linotype", "Times", "Times New Roman"] [serif]
 
 noMargin, noPadding, hoverUnderline, bold, italic, nowrap, inlineBlock :: Css
