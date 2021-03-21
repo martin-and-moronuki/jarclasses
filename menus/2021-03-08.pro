@@ -3,17 +3,22 @@ title: Menu for Week of March 8, 2021
 
 This week we'll still be doing the "better know a cookbook" thing, working with the same set of cookbooks as last week. So far, this has been really successful, and I think it's just a big help to us as a family to have these cookbooks here and find how accessible they are to all of us.
 
-I'm getting into the habit of making kombucha now, and I love it. I've had some problems getting it as fizzy as I like it, which I think are due to not having jars or bottles for the secondary fermentation that are airtight enough. I didn't want to invest in more bottles until I knew I was going to keep up the habit, but I'm finding that having kombucha around more is something I want and that the process fits pretty easily into my weekend rhythm with making bread and everything. We'll see if I can maintain it in the summers. I don't bake our bread during the summers usually, at least not on a weekly basis; we have a bread subscription from a local bakery through our CSA and we also buy breads from local bakers, at the farmer's market or occasional trips to the #link[to='https://www.thedixonmercantile.com/]{Dixon Mercantile}. We have a "floating" share in the #link[to='https://www.glaciertilthfarm.com/']{Glacier Tilth CSA} in Dixon anyway, so I'm often in Dixon on the weekends.
+I'm getting into the habit of making kombucha now, and I love it. I've had some problems getting it as fizzy as I like it, which I think are due to not having jars or bottles for the secondary fermentation that are airtight enough. I didn't want to invest in more bottles until I knew I was going to keep up the habit, but I'm finding that having kombucha around more is something I want and that the process fits pretty easily into my weekend rhythm with making bread and everything. We'll see if I can maintain it in the summers. I don't bake our bread during the summers usually, at least not on a weekly basis; we have a bread subscription from a local bakery through our CSA and we also buy breads from local bakers, at the farmer's market or occasional trips to the #link[to='https://www.thedixonmercantile.com/']{Dixon Mercantile}. We have a "floating" share in the #link[to='https://www.glaciertilthfarm.com/']{Glacier Tilth CSA} in Dixon anyway, so I'm often in Dixon on the weekends.
 
 #-day{Monday}
 
 Vaguely, but only very vaguely, "Asian." I don't really like calling food "Asian" because, come on, there's basically nothing in common between, like, Japanese food and Thai food, but nevertheless we are having a bunch of flavors from that largest of continents here. They don't really go together, this isn't a totally coherent artistic statement, but it's fine.
 
 #-list:
-  #-item{Turmeric Chicken with asparagus}
-  #-item{Rice} plus we'll make extra for fried rice later in the week
-  #-item{Red curry kuri soup}
-  #-item{Parsnip kinpira}
+
+    #item{Turmeric Chicken with asparagus}
+
+    #item{Rice} plus we'll make extra for fried rice later in the week
+
+    #item{Red curry kuri soup}
+
+    #item{Parsnip kinpira}
+
 #:
 
 The turmeric chicken is a recipe that was popular among people I follow on Twitter last spring, and I'm craving it and we have frozen asparagus still, which will not be the same but might still be good. I also got the idea for the red curry kuri soup from a blog, but I'm going to make it differently; nevertheless, it will be a soup made with red kuri squash and Thai red curry paste. If it's good, we'll eventually post a recipe for it. Kinpira is traditionally made with burdock root and carrot, but here we'll substitute parsnip for the burdock, to use up the parsnips that are currently oppressing us with their overwhelming numbers.
@@ -23,9 +28,12 @@ The turmeric chicken is a recipe that was popular among people I follow on Twitt
 Sandwich night, which means I need to bake sandwich rolls. I'll use the simple French bread recipe from #title{French Farmhouse Cookbook} which has never failed me and can be turned into four perfect size sandwich rolls in about two hours.
 
 #-list:
-  #-item{Chorizo and mozzarella sandwiches} from Nigel Slater's #title{Eat}
-  #-item{Parsnip and carrot fritters with spicy tomato sauce} from the same cookbook, made by Chris
-  #-item{Cherry clafoutis}
+
+    #item{Chorizo and mozzarella sandwiches} from Nigel Slater's #title{Eat}
+
+    #item{Parsnip and carrot fritters with spicy tomato sauce} from the same cookbook, made by Chris
+
+    #item{Cherry clafoutis}
 #:
 
 Do I even need to say that the cherries are frozen from last summer?
@@ -37,9 +45,12 @@ One of the things Chris and I have talked about in terms of him learning how to 
 Let's use up that leftover rice.
 
 #-list:
-  #-item{Kimchi fried rice with bacon} from #title{Cookish}, made by Chris
-  #-item{Kongnamul muchim}, a bean sprouts side dish
-  #-item{corn cheese!}
+
+    #item{Kimchi fried rice with bacon} from #title{Cookish}, made by Chris
+
+    #item{Kongnamul muchim}, a bean sprouts side dish
+
+    #item{corn cheese!}
 #:
 
 I don't know if we've mentioned that we grow bean sprouts in a mason jar on the counter during the winter. They're such a delightful and easy source of fresh vegetables during the winter, and so we eat a bean sprouts dish (usually, I have to admit, it's egg foo yung, because I am a serious fan of egg foo yung, either with the brown gravy or on a St. Paul sandwich) about every ten days. This day it will be a classic Korean banchan; I don't particularly need a recipe for this, but there's a good one in the #title{Koreatown} cookbook. The corn cheese recipe is from the Lucky Peach #title{101 Easy Asian Recipes} cookbook, as solid an introduction to easy Asian foods for home cooks as I've seen; Asian fits here, because it features typical homecooking-style recipes from many different Asian countries as well as some Asian-American dishes that, let's face it, have ties to something vaguely Asian but are clearly not traditional or authentic such as the St. Paul sandwich. Sorry to have brought that sandwich up two times in a single paragraph.
@@ -53,10 +64,15 @@ We'll eat leftover curry-kuri soup if we have it, and we probably will.
 #emphatic{sigh} More spaghetti squash. They are never going to be done.
 
 #-list:
-  #-item{Vermicelli pie} from #title{Cookish} but we'll use (cooked) spaghetti squash instead of the pasta
-  #-item{Honey-caraway parsnips} from the same book, made by my older son
-  #-item{home fries}, made by me
-  #-item{Maple syrup pie}, made by my younger son who wants to learn to make pie and who am I to argue?
+
+    #item{Vermicelli pie} from #title{Cookish} but we'll use (cooked) spaghetti squash instead of the pasta
+
+    #item{Honey-caraway parsnips} from the same book, made by my older son
+
+    #item{home fries}, made by me
+
+    #item{Maple syrup pie}, made by my younger son who wants to learn to make pie and who am I to argue?
+
 #:
 
 I don't have much to say here; I am not that excited about this. I think I am mildly burnt out on using up spaghetti squash and parsnips, ha.
@@ -66,9 +82,13 @@ I don't have much to say here; I am not that excited about this. I think I am mi
 Fun #dash it's #link[to='https://eat2explore.com/a/refer-a-friend/redeem/juliemoronuki/2975']{Eat2Explore} night again! So my younger son will be taking the lead on this one, while I will only add a side dish and some minor guidance.
 
 #-list:
-  #-item{Mapo tofu}, the last recipe from his China box
-  #-item{Brown rice}
-  #-item{Korean pumpkin pancake}, from #title{101 Easy Asian recipes}, made by me
+
+    #item{Mapo tofu}, the last recipe from his China box
+
+    #item{Brown rice}
+
+    #item{Korean pumpkin pancake}, from #title{101 Easy Asian recipes}, made by me
+
 #:
 
 #-day{Saturday}
@@ -83,6 +103,7 @@ I'm feeling the big Sunday dinner thing here, which usually means either fried o
   #-item{Pork ribs, baked in the oven}
   #-item{Boston style baked beans served with (home canned) Indian pickle}
   #-item{Ranch cole slaw}
+#:
 
 I use the recipe for baking ribs in #title{The Joy of Cooking} as I find it very reliable. I don't like mine with sauce, just a flavorful rub on them. I never order ribs in restaurants and thought I didn't like them until I started making them at home; it turns out, I just don't really like sauce on them. I realize there are probably lots of great BBQ joints where you can get perfect ribs with no sauce, but I didn't know this, and I always assumed that they would have sauce (even though the other BBQ meats don't at such places) so I never tried. Don't @ me.
 
