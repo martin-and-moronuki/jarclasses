@@ -76,6 +76,14 @@ main > ol span.title
   font-style : italic;
 }
 
+main > p span.item,
+main > ul span.item,
+main > ol span.item
+{
+  font-weight : bold;
+  color       : #404020;
+}
+
 main > p a,
 main > ul a,
 main > ol a
@@ -104,7 +112,7 @@ main > h4,
 main > h5,
 main > h6
 {
-  font-family : "Open Sans","Myriad","Calibri", sans-serif;
+  font-family : "Lato","Open Sans","Myriad","Calibri", sans-serif;
   font-weight : bold;
 }
 
