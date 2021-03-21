@@ -44,6 +44,7 @@ jarclassesStyle =
         textAlign justify
         contentFontFamily
         foldMap1 (\cls -> span # byClass cls) ("emphatic" :| "title" : []) ? italic
+        foldMap1 (\cls -> span # byClass cls) ("item" :| []) ? (bold <> color (rgb 0x40 0x40 0x20))
         a ? (textDecoration none <> color (rgb 0x41 0x70 0x90) <> hoverUnderline)
       p <? marginVertical (em 0.7)
       headerTags <? (headerFontFamily <> bold)

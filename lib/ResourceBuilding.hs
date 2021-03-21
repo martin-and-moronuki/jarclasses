@@ -35,7 +35,7 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
               list <- Home.listOfContent scheme
               pure
                 defaultOpts
-                  { extraBlockTags = \x ->
+                  { extraBlockTags = \_ x ->
                       case (Prosidy.tagName x) of
                         "list-of-content" -> Just $
                           case view (Prosidy.atSetting "limit") x of
@@ -52,7 +52,7 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
               list <- Menus.listOfContent scheme
               pure
                 defaultOpts
-                  { extraBlockTags = \x ->
+                  { extraBlockTags = \_ x ->
                       case (Prosidy.tagName x) of
                         "list-of-content" -> Just list
                         _ -> Nothing
