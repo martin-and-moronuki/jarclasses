@@ -22,11 +22,17 @@ Well, I did not cook the ribs that I'd planned yesterday, since we ended up exha
 The type of "bread, cheese, and pickles" meal that originally inspired me to start eating only from truly seasonal food, i.e., what can be had locally in any given season. We do have the mushrooms (for the Swiss rarebit) growing indoors right at the moment, something that we can't count on all the time.
 
 #-list:
-  #-item{Swiss rarebit}
-  #-item{Rye toast}
-  #-item{Russian pickled cherries}
-  #-item{Tea pickles}
-  #-item{Parsnip rosti with shallots}, made by Chris from Nigel Slater's #title{Eat}
+
+    #item{Swiss rarebit}
+
+    #item{Rye toast}
+
+    #item{Russian pickled cherries}
+
+    #item{Tea pickles}
+
+    #item{Parsnip rosti with shallots}, made by Chris from Nigel Slater's #title{Eat}
+
 #:
 
 #-day{Wednesday}
@@ -75,9 +81,13 @@ The spaghetti squashes will continue until morale improves. I suspect I will add
 And now, again to use some things up, we need to eat Indian (or Indian-ish) food. Oh, the hardships. I do expect weekends for the next, oh, few months are going to involve a lot of outdoor work, so weekend recipes should be fast or made in the Crock-Pot or Instant Pot or fast *and* made in one of those.
 
 #-list:
-  #-item{Tandoori-ish chicken thighs and drumsticks}
-  #-item{Eggplant pickle from last year, as well as the super spicy green chile pickle from last year}
-  #-item{Curried potatoes, tomatoes, and cabbage}, from #title{Cook-ish}, made by one of the children
+
+    #item{Tandoori-ish chicken thighs and drumsticks}
+
+    #item{Eggplant pickle} from last year, as well as the #item{super spicy green chile pickle} from last year
+
+    #item{Curried potatoes, tomatoes, and cabbage}, from #title{Cook-ish}, made by one of the children
+
 #:
 
 My younger son wants to learn to make naan or at least chapati, so we might try to make that for a side, depending on mood and time. Otherwise, there is always a nice side of plain rice, not that it's strictly necessary given the potatoes but one wants to have something to soak up the various juices.
