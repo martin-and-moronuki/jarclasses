@@ -96,7 +96,7 @@ I bought nigella seeds a while back but had never tasted them, so this will be a
 
 #-day{Saturday}
 
-We're going to be out and about on Saturday, so we probably won't end up cooking. We're going up north for #-link[to='https://freetheseedsmontana.com/']{Free the Seeds} and the #-link[to='http://www.bigforkbrewfest.com/']{Bigfork Brewfest} so we'll probably end up eating out. If not, we'll make some kind of fast pantry pasta with frozen vegetables or the like.
+We're going to be out and about on Saturday, so we probably won't end up cooking. We're going up north for #link[to='https://freetheseedsmontana.com/']{Free the Seeds} and the #link[to='http://www.bigforkbrewfest.com/']{Bigfork Brewfest} so we'll probably end up eating out. If not, we'll make some kind of fast pantry pasta with frozen vegetables or the like.
 
 #-day{Sunday}
 
