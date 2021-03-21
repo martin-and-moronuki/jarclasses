@@ -42,7 +42,7 @@ proBlockHtml :: ProHtmlOpts -> Block -> Html
 proBlockHtml opts =
   \case
     BlockLiteral x -> HTML.stringComment (show x)
-    BlockParagraph x -> HTML.p (foldMap (proInlineHtml opts) (view content x))
+    BlockParagraph x -> HTML.p (inlineHtml opts (view content x))
     BlockTag x -> proBlockTagHtml opts x
 
 proBlockTagHtml :: ProHtmlOpts -> BlockTag -> Html
@@ -65,8 +65,7 @@ requireInlineOnly :: ProHtmlOpts -> Series Block -> Html
 requireInlineOnly opts =
   foldMap
     \case
-      BlockParagraph y ->
-        foldMap (proInlineHtml opts) (view content y)
+      BlockParagraph y -> inlineHtml opts (view content y)
       y -> HTML.stringComment (show y)
 
 proInlineHtml :: ProHtmlOpts -> Inline -> Html
@@ -80,10 +79,10 @@ proInlineTagHtml :: ProHtmlOpts -> InlineTag -> Html
 proInlineTagHtml opts x =
   case (tagName x) of
     "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
-    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap (proInlineHtml opts) (view content x)
-    "italic" -> HTML.span ! Attr.style "font-style: italic" $ foldMap (proInlineHtml opts) (view content x)
-    "title" -> HTML.span ! Attr.class_ "title" $ foldMap (proInlineHtml opts) (view content x)
-    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ foldMap (proInlineHtml opts) (view content x)
+    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ inlineHtml opts (view content x)
+    "italic" -> HTML.span ! Attr.style "font-style: italic" $ inlineHtml opts (view content x)
+    "title" -> HTML.span ! Attr.class_ "title" $ inlineHtml opts (view content x)
+    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ inlineHtml opts (view content x)
     _ -> fromMaybe (HTML.stringComment (show x)) (extraInlineTags opts opts x)
 
 proListHtml :: ProHtmlOpts -> BlockTag -> Html
@@ -115,5 +114,8 @@ itemHtml opts a x =
 
 inlineItemTag :: ProHtmlOpts -> InlineTag -> Maybe Html
 inlineItemTag opts i
-  | tagName i == "item" = Just $ HTML.span ! Attr.class_ "item" $ foldMap (proInlineHtml opts) (view content i)
+  | tagName i == "item" = Just $ HTML.span ! Attr.class_ "item" $ inlineHtml opts (view content i)
   | otherwise = Nothing
+
+inlineHtml :: Foldable series => ProHtmlOpts -> series Inline -> Html
+inlineHtml opts = foldMap (proInlineHtml opts)
