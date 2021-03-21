@@ -25,6 +25,7 @@ main
 main > p,
 main > ul,
 main > ol,
+main > blockquote,
 main > h1,
 main > h2,
 main > h3,
@@ -38,7 +39,8 @@ main > h6
 
 main > p,
 main > ul,
-main > ol
+main > ol,
+main > blockquote
 {
   max-width : 650px;
 }
@@ -74,6 +76,14 @@ main > ol span.title
   font-style : italic;
 }
 
+main > p span.item,
+main > ul span.item,
+main > ol span.item
+{
+  font-weight : bold;
+  color       : #404020;
+}
+
 main > p a,
 main > ul a,
 main > ol a
@@ -102,7 +112,7 @@ main > h4,
 main > h5,
 main > h6
 {
-  font-family : "Open Sans","Myriad","Calibri", sans-serif;
+  font-family : "Lato","Open Sans","Myriad","Calibri", sans-serif;
   font-weight : bold;
 }
 
@@ -147,6 +157,19 @@ main > p.horizontalList > :not(:first-child)::before
   content       : "·";
   padding-left  : 0.5em;
   padding-right : 0.5em;
+}
+
+main > blockquote
+{
+  -webkit-box-sizing : border-box;
+  -moz-box-sizing    : border-box;
+  -ms-box-sizing     : border-box;
+  -o-box-sizing      : border-box;
+  box-sizing         : border-box;
+  border-left        : solid 1px #800080;
+  padding-left       : 1em;
+  padding-right      : 1em;
+  line-height        : 1.39999;
 }
 
 
