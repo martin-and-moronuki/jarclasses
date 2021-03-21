@@ -1,8 +1,6 @@
 module FileLayout where
 
-import Control.Lens
-import qualified Data.Set as Set
-import qualified Data.Text as Text
+import Generic.Data
 import Path
 import Path.IO
 import Pipes
@@ -33,16 +31,25 @@ newtype DeployPath = DeployPath (Path Rel File)
 data Scheme = Scheme
   { scheme_proHtmlDirs :: Set (Path Rel Dir),
     scheme_styleDirs :: Set (Path Rel Dir),
-    scheme_otherProHtmlResources :: Set ProHtmlResource
+    scheme_otherProHtmlResources :: Set ProHtmlResource,
+    scheme_rssLocation :: Set (Path Rel File)
   }
-  deriving (Show)
+  deriving stock (Show, Generic)
 
 instance Semigroup Scheme where
-  Scheme a b c <> Scheme a2 b2 c2 =
-    Scheme (a <> a2) (b <> b2) (c <> c2)
+  (<>) = gmappend
 
 instance Monoid Scheme where
-  mempty = Scheme mempty mempty mempty
+  mempty = gmempty
+
+schemeRssLocationMaybe :: Scheme -> Maybe (Path Rel File)
+schemeRssLocationMaybe scheme =
+  case toList (scheme_rssLocation scheme) of
+    [x] -> Just x
+    _ -> Nothing
+
+schemeRssResourceMaybe :: Scheme -> Maybe Resource
+schemeRssResourceMaybe = fmap relFileResource . schemeRssLocationMaybe
 
 dirsToWatch :: Scheme -> [Path Rel Dir]
 dirsToWatch s = toList $ scheme_proHtmlDirs s <> scheme_styleDirs s
@@ -52,7 +59,8 @@ filesToWatch s =
   toList $
     foldMap
       ( \(ProHtmlResource _ (InputPath a) (OutputPath b) _) ->
-          Set.singleton a <> Set.singleton b
+          one @(Set (Path Rel File)) a
+            <> one @(Set (Path Rel File)) b
       )
       (scheme_otherProHtmlResources s)
 
@@ -66,7 +74,7 @@ inProHtmlDir :: Scheme -> Path Rel t -> Bool
 inProHtmlDir s p = any (\d -> d `Path.isProperPrefixOf` p) (scheme_proHtmlDirs s)
 
 resourceOutputPath :: Scheme -> Resource -> Maybe OutputPath
-resourceOutputPath s r = other <|> css <|> html
+resourceOutputPath s r = other <|> css <|> html <|> rss
   where
     css =
       fmap OutputPath $
@@ -80,6 +88,9 @@ resourceOutputPath s r = other <|> css <|> html
           if inProHtmlDir s p
             then resourceRelFile r >>= Path.addExtension ".html"
             else Nothing
+    rss =
+      guard (schemeRssResourceMaybe s == Just r)
+        *> (OutputPath <$> schemeRssLocationMaybe s)
     other =
       getFirst $
         foldMap
@@ -115,7 +126,7 @@ pathAsResourceInput s ip@(InputPath p) = other <|> inDir
     inDir =
       guard (inProHtmlDir s p)
         *> Path.splitExtension p >>= \case
-          (p', ".pro") -> Just (relFileBaseResource p')
+          (p', ".pro") -> Just (relFileResource p')
           _ -> Nothing
     other =
       getFirst $
@@ -129,13 +140,16 @@ test_pathAsResourceInput s x =
     "pathAsResourceInput" <!> show x <!> "=" <!> show (pathAsResourceInput s x)
 
 pathAsResourceOutput :: Scheme -> OutputPath -> Maybe Resource
-pathAsResourceOutput s ip@(OutputPath p) = other <|> inDir
+pathAsResourceOutput s ip@(OutputPath p) = other <|> inDir <|> rss
   where
     inDir =
       guard (inProHtmlDir s p)
         *> Path.splitExtension p >>= \case
-          (p', ".html") -> Just (relFileBaseResource p')
+          (p', ".html") -> Just (relFileResource p')
           _ -> Nothing
+    rss =
+      guard (schemeRssLocationMaybe s == Just p)
+        *> schemeRssResourceMaybe s
     other =
       getFirst $
         foldMap
@@ -171,14 +185,6 @@ resourceDeployPath s r =
       Nothing -> Nothing
       Just (OutputPath x) -> Just (DeployPath x)
 
-relFileBaseResource :: Path Rel File -> Resource
-relFileBaseResource file = ResourceSlashList $ f (Path.parent file) `snoc` txtFile (Path.filename file)
-  where
-    f :: Path Rel Dir -> [Text]
-    f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
-    txtFile = toText . Path.toFilePath
-    txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
-
 findProHtmlResources :: Scheme -> Producer ProHtmlResource IO ()
 findProHtmlResources s =
   do
@@ -209,8 +215,10 @@ test s =
       one [relfile|menus/2019-11-11.pro|]
         <> one [relfile|style/jarclasses.css|]
         <> one [relfile|home/home.pro|]
+        <> one [relfile|feed/rss.xml|]
     resources :: Seq Resource =
       one [res|menus/2019-11-11|]
         <> one [res|style/jarclasses.css|]
         <> one [res||]
         <> one [res|menus|]
+        <> one [res|feed/rss.xml|]

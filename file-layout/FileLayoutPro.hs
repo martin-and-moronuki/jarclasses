@@ -67,12 +67,22 @@ proInlineTagScheme x =
       case inlineDir x of
         Just p -> pure $ mempty {scheme_styleDirs = one p}
         Nothing -> err x
+    "rss" ->
+      case inlineFile x of
+        Just f -> pure $ mempty {scheme_rssLocation = one f}
+        Nothing -> err x
     _ -> foldMap proInlineScheme (view content x)
 
 inlineDir :: Tag (Series Inline) -> Maybe (Path Rel Dir)
 inlineDir x =
   case toList (view content x) of
     [InlineText t] -> parseRelDir (toString (fragmentText t))
+    _ -> Nothing
+
+inlineFile :: Tag (Series Inline) -> Maybe (Path Rel File)
+inlineFile x =
+  case toList (view content x) of
+    [InlineText t] -> parseRelFile (toString (fragmentText t))
     _ -> Nothing
 
 blockPage :: Tag (Series Block) -> Maybe ProHtmlResource

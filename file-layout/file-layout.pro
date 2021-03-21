@@ -21,3 +21,5 @@ There are also a few additional pages:
         Its HTML is written to #output{menus/menus.html}.
         Its URL is #url{/menus}, and it ends up at #deploy{menus/index.html}.
     #:
+
+The RSS feed is located at #rss{feed/rss.xml}.

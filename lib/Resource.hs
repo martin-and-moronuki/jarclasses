@@ -56,3 +56,11 @@ resourceRelFile (ResourceSlashList r) =
     traverse (Path.parseRelDir . toString) dirTexts >>= \dirs ->
       (Path.parseRelFile . toString) fileText >>= \file ->
         Just $ foldr (Path.</>) file dirs
+
+relFileResource :: Path Rel File -> Resource
+relFileResource file = ResourceSlashList $ f (Path.parent file) `snoc` txtFile (Path.filename file)
+  where
+    f :: Path Rel Dir -> [Text]
+    f p = if Path.parent p == p then [] else f (Path.parent p) `snoc` txtDir (Path.dirname p)
+    txtFile = toText . Path.toFilePath
+    txtDir = fromMaybe (error "dir should have a trailing slash") . T.stripSuffix "/" . toText . Path.toFilePath

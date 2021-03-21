@@ -1,5 +1,6 @@
 module BuildAll where
 
+import Feed
 import FileLayout
 import FileLayoutPro
 import Path
@@ -27,6 +28,8 @@ main =
     makeStyles cwd
 
     scheme <- getScheme
+
+    makeFeeds scheme cwd
 
     writeTestFiles (Test.test scheme) cwd
 
