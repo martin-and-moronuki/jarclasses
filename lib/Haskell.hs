@@ -71,7 +71,7 @@ ghcid :: IO ()
 ghcid =
   getHsFiles >>= \hsFiles ->
     callProcess "ghcid" $
-      ["--command=ghc " <> Prelude.unwords srcDirFlags <> " Haskell -e mainForGhcidInNixShell", "--outputfile=ghcid.txt", "--color=always", "--ignore-loaded", "--run=Run.main", "--warnings"] <> ghcidReloadFlags hsFiles <> ["--restart=shell.nix", "--restart=lib/Haskell.hs"]
+      ["--command=ghc " <> Prelude.unwords srcDirFlags <> " Haskell -e mainForGhcidInNixShell", "--outputfile=ghcid.txt", "--color=always", "--ignore-loaded", "--run=Run.main", "--warnings"] <> ghcidReloadFlags hsFiles <> ["--restart=shell.nix", "--restart=haskell.nix", "--restart=lib/Haskell.hs"]
 
 ghcidReloadFlags :: [Path Rel File] -> [String]
 ghcidReloadFlags hsFiles =
