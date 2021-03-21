@@ -74,6 +74,7 @@ proInlineTagHtml x =
   case (tagName x) of
     "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
     "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ foldMap proInlineHtml (view content x)
+    "italic" -> HTML.span ! Attr.style "font-style: italic" $ foldMap proInlineHtml (view content x)
     "title" -> HTML.span ! Attr.class_ "title" $ foldMap proInlineHtml (view content x)
     "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ foldMap proInlineHtml (view content x)
     _ -> HTML.stringComment (show x)
