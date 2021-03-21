@@ -73,11 +73,11 @@ If I'm going to be frying anyway (the chicken livers), and we want some green ve
 
 The angel food cake is because I have this accumulation of egg whites in a jar that I need to use up. We have strawberries in the freezer, from the summer, so I will thaw them and their juicy syrup to put over the cake. This should be a very hearty meal, and we should also have some nice leftovers from this.
 
-#-{Friday}
+#-day{Friday}
 
 Our local cooperative brewery, bless them, is hosting an outdoors block party, at which we believe a food truck will be present. The weather is supposed to be ... chilly. But we're planning to go and eat there, unless it's really awful out. Why do you buy winter coats if you're never going to go out and play cornhole in sub-freezing weather?
 
-#-{Saturday}
+#-day{Saturday}
 
 #-list:
   #-item{Pizza}
