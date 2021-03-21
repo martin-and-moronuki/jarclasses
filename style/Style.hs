@@ -34,8 +34,8 @@ jarclassesStyle =
     body ? background (rgb 0xf0 0xe8 0xe8)
     main_ ? do
       marginVertical (px 80)
-      (p <> listTags <> headerTags) <? marginHorizontal auto
-      (p <> listTags) <? maxWidth (px contentWidthPx)
+      (p <> listTags <> blockquote <> headerTags) <? marginHorizontal auto
+      (p <> listTags <> blockquote) <? maxWidth (px contentWidthPx)
       headerTags <? maxWidth (px (contentWidthPx + 40))
       (p <> listTags) <? do
         color (rgb 0x34 0x29 0x23)
@@ -65,6 +65,11 @@ jarclassesStyle =
         intersperse do
           content (stringContent "·")
           paddingHorizontal (em 0.5)
+      blockquote <? do
+        boxSizing borderBox
+        borderLeft solid (px 1) purple
+        paddingHorizontal (em 1)
+        lineHeight (unitless 1.4)
 
 homeStyle :: Css
 homeStyle =

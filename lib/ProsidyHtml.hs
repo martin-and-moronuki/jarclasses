@@ -44,10 +44,15 @@ proBlockTagHtml opts x =
     "day" -> h2 x
     "h2" -> h2 x
     "list" -> proListHtml opts x
+    "quote" -> blockQuote opts x
+    "blockquote" -> blockQuote opts x
     _ -> fromMaybe (HTML.stringComment (show x)) (extraBlockTags opts x)
 
 h2 :: Tag (Series Block) -> Html
 h2 = HTML.h2 . requireInlineOnly . view content
+
+blockQuote :: ProHtmlOpts -> Tag (Series Block) -> Html
+blockQuote opts = HTML.blockquote . foldMap (proBlockHtml opts) . view content
 
 requireInlineOnly :: Series Block -> Html
 requireInlineOnly =
