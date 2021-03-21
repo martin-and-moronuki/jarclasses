@@ -24,10 +24,15 @@ Tonight we're going to have a beef and squash stew, adapted from Milk Street's #
 Tonight we're cooking together. I want each person in the family to make one dish, and I'm staggering them (and serving some at room temperature) to make sure the kitchen doesn't get too crowded.
 
 #-list:
-  #-item{Green eggs} from Julia Turshen's #title{Small Victories}, made by my younger son
-  #-item{Beet and pickled cucumber salad} also from #title{Small Victories}, made by my older son
-  #-item{Roasted sweet potatoes with hot honey butter} from Alison Roman's #title{Dining In}, made by Chris
-  #-item{Bread or possibly leftover grits?}
+
+    #item{Green eggs} from Julia Turshen's #title{Small Victories}, made by my younger son
+
+    #item{Beet and pickled cucumber salad} also from #title{Small Victories}, made by my older son
+
+    #item{Roasted sweet potatoes with hot honey butter} from Alison Roman's #title{Dining In}, made by Chris
+
+    #item{Bread or possibly leftover grits?}
+
 #:
 
 The pickled cucumber for the beet salad is obviously not fresh, as the recipe would have you use. But last summer I experimented with putting some vegetables up in traditional French ways, and we still have a little of the cucumber preserved in oil. It does taste somewhat pickled but maintains a hearty cucumber crunch, and we've used it in salads several times through the winter, so I think it will serve us well here. This will finish the cucumber, though.
@@ -37,9 +42,13 @@ The pickled cucumber for the beet salad is obviously not fresh, as the recipe wo
 Spaghetti squash time!
 
 #-list:
-  #-item{Spaghetti squash pizza boats}, made by Chris
-  #-item{Vegetable-farro soup}, made by me
-  #-item{Salt and pepper butterscotch pudding} from #title{Cookish}, made by my older son
+
+    #item{Spaghetti squash pizza boats}, made by Chris
+
+    #item{Vegetable-farro soup}, made by me
+
+    #item{Salt and pepper butterscotch pudding} from #title{Cookish}, made by my older son
+
 #:
 
 We should write the spaghetti squash pizza boats up into a proper recipe sometime, but for now:
@@ -51,10 +60,15 @@ Bake spaghetti squash until quite tender, about one hour. Meanwhile, brown a pou
 This day is going to be heavy on the starch but so be it.
 
 #-list:
-  #-item{St. Paul sandwiches} from Lucky Peach's #title{101 Easy Asian Recipes}, made by Chris
-  #-item{kabocha salad}, made by me
-  #-item{Chili-soy noodles with bok choy and peanuts} from #title{Cookish}, made by my younger son
-  #-item{Yogurt panna cotta with honey and turmeric} from #title{Cookish}, made by my older son
+
+    #item{St. Paul sandwiches} from Lucky Peach's #title{101 Easy Asian Recipes}, made by Chris
+
+    #item{kabocha salad}, made by me
+
+    #item{Chili-soy noodles with bok choy and peanuts} from #title{Cookish}, made by my younger son
+
+    #item{Yogurt panna cotta with honey and turmeric} from #title{Cookish}, made by my older son
+
 #:
 
 Of course, we don't have fresh bok choy as the chili-soy noodles recipe asks for, but we have frozen vegetables; we will probably use frozen broccoli.
@@ -67,9 +81,13 @@ Kabocha salad is something I used to eat and make in Japan a lot, and I don't re
 I sort of feel like this could use another vegetable but I'm tired, we're all tired, and so I think we'll just eat canned peaches for dessert or something.
 
 #-list:
-  #-item{Pork chops with salsa macha} from #title{Cookish}, made by me
-  #-item{Kinda sorta patatas bravas} from #title{Small Victories}, made by my younger son
-  #-item{Zucchini and nigella fritters} from #title{Small Victories}, made by Chris
+
+    #item{Pork chops with salsa macha} from #title{Cookish}, made by me
+
+    #item{Kinda sorta patatas bravas} from #title{Small Victories}, made by my younger son
+
+    #item{Zucchini and nigella fritters} from #title{Small Victories}, made by Chris
+
 #:
 
 The zucchini for the fritters is shredded zucchini that I fermented last summer. You can also shred zucchini and then freeze it for breads or for fritters like this, and it works out pretty well. I've done that for many years, but two summers ago I started fermenting it instead. I don't think either is particularly superior; since we never eat this fermented shredded zucchini raw, we don't ever end up getting the benefits of eating fermented foods from it. However, it is convenient that we don't have to thaw it before using it in zucchini bread or muffins or fritters.
@@ -85,9 +103,13 @@ We're going to be out and about on Saturday, so we probably won't end up cooking
 BFD, baby: Breakfast For Dinner.
 
 #-list:
-  #-item{Cottage cheese pancakes}, from #title{How to Cook Everything}, made by my older son
-  #-item{Sauteed apples with cinnamon}, made by me
-  #-item{Scrambled eggs with kale and Spanish chorizo}, also made by me
+
+    #item{Cottage cheese pancakes}, from #title{How to Cook Everything}, made by my older son
+
+    #item{Sauteed apples with cinnamon}, made by me
+
+    #item{Scrambled eggs with kale and Spanish chorizo}, also made by me
+
 #:
 
 My older son spotted this recipe and wanted to try it. We will serve the pancakes with a jar of Basque plum preserves that I can every summer; the recipe for the plums is the #title{French Farmhouse Cookbook} by Susan Loomis, the cookbook I originally used to teach myself how to can, back in grad school. So, I guess I've had this cookbook for a very long time, through so many moves, and it keeps serving me well. These plum preserves, made with the dark Italian type of plum, have vanilla in them and are one of my favorite things to have around for flavoring yogurt or topping pancakes or French toast or the like.
