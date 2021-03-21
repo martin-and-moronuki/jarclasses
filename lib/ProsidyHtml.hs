@@ -26,7 +26,7 @@ proHtml opts doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
     body = HTML.body main
     main = HTML.main $ do
       foldMap (HTML.h1 . toHtml) $ proTitle doc
-      either (HTML.stringComment . show) (foldMap (proBlockHtml opts) . view content) doc
+      either (HTML.stringComment . ("\n" <>) . prettyFailure) (foldMap (proBlockHtml opts) . view content) doc
 
 proTitle :: Either Prosidy.Failure Document -> Maybe Text
 proTitle = either (const Nothing) (view (atSetting "title"))
