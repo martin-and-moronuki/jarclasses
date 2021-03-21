@@ -92,4 +92,5 @@ proListHtml opts x
             if
                 | isHorizontal -> HTML.span $ requireInlineOnly (view content i)
                 | otherwise -> HTML.li $ foldMap (proBlockHtml opts) (view content i)
+        BlockParagraph i -> HTML.li $ foldMap proInlineHtml (view content i)
         y -> HTML.stringComment (show y)
