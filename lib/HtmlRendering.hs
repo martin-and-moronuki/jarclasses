@@ -195,12 +195,6 @@ escapeFragmentChar =
     '&' -> "&amp;"
     '<' -> "&lt;"
     '>' -> "&gt;"
-
-    -- todo: these aren't necessary
-    '\'' -> "&#39;"
-    '—' -> "&mdash;"
-    '"' -> "&quot;"
-
     x -> Text.singleton x
 
 escapeAttrChar :: Char -> Text
