@@ -2,12 +2,11 @@ module Title where
 
 import Control.Lens
 import FileLayout
+import qualified HtmlTypes as H
 import Path
 import qualified Prosidy
 import Relude
 import Resource
-
-import qualified HtmlTypes as H
 
 resourceTitleHtml :: Scheme -> Resource -> IO (Maybe (H.Series H.Inline))
 resourceTitleHtml scheme = maybe (pure Nothing) prhTitleHtml . resourceAsProHtml scheme

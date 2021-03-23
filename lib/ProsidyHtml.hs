@@ -1,11 +1,11 @@
 module ProsidyHtml where
 
 import Control.Lens
+import qualified HtmlBuilding as H
+import qualified HtmlTypes as H
 import Prosidy
 import Relude hiding (head)
 import Resource
-import qualified HtmlBuilding as H
-import qualified HtmlTypes as H
 
 data ProHtmlOpts = ProHtmlOpts
   { extraBlockTags :: ProHtmlOpts -> BlockTag -> Maybe (H.Series H.Block),
@@ -17,21 +17,24 @@ defaultOpts :: ProHtmlOpts
 defaultOpts = ProHtmlOpts (\_ _ -> Nothing) (\_ _ -> Nothing) []
 
 addBlockTag :: (ProHtmlOpts -> BlockTag -> Maybe (H.Series H.Block)) -> ProHtmlOpts -> ProHtmlOpts
-addBlockTag f opts = opts{ extraBlockTags = \o x -> extraBlockTags opts o x <|> f o x }
+addBlockTag f opts = opts {extraBlockTags = \o x -> extraBlockTags opts o x <|> f o x}
 
 addInlineTag :: (ProHtmlOpts -> InlineTag -> Maybe (H.Series H.Inline)) -> ProHtmlOpts -> ProHtmlOpts
-addInlineTag f opts = opts{ extraInlineTags = \o x -> extraInlineTags opts o x <|> f o x }
+addInlineTag f opts = opts {extraInlineTags = \o x -> extraInlineTags opts o x <|> f o x}
 
 proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> H.Document
-proHtml opts doc = H.Document{ H.documentLang, H.documentHead, H.documentContent }
+proHtml opts doc = H.Document {H.documentLang, H.documentHead, H.documentContent}
   where
     documentLang = Just "en"
     documentHead = H.utf8htmlMeta <> H.viewportMeta <> title <> css
     css = foldMap H.stylesheet (one [res|style/jarclasses.css|] ++ extraStyle opts)
     title = foldMap (one . H.HeaderTitle) $ proTitle doc
-    documentContent = one $ H.BlockMain $ H.Main $
-        (foldMap (H.toBlocks . H.H H.H1 . H.toInlines) $ proTitle doc) <>
-        (either (H.toBlocks . H.Comment . ("\n" <>) . toText . prettyFailure) (foldMap (proBlockHtml opts) . view content) doc)
+    documentContent =
+      one $
+        H.BlockMain $
+          H.Main $
+            (foldMap (H.toBlocks . H.H H.H1 . H.toInlines) $ proTitle doc)
+              <> (either (H.toBlocks . H.Comment . ("\n" <>) . toText . prettyFailure) (foldMap (proBlockHtml opts) . view content) doc)
 
 proTitle :: Either Prosidy.Failure Document -> Maybe Text
 proTitle = either (const Nothing) (view (atSetting "title"))
@@ -40,7 +43,7 @@ proBlockHtml :: ProHtmlOpts -> Block -> H.Series H.Block
 proBlockHtml opts =
   \case
     BlockLiteral x -> H.toBlocks $ H.Comment (show x)
-    BlockParagraph x -> H.toBlocks $ H.Paragraph{ H.paragraphClasses, H.paragraphContent }
+    BlockParagraph x -> H.toBlocks $ H.Paragraph {H.paragraphClasses, H.paragraphContent}
       where
         paragraphClasses = mempty
         paragraphContent = inlineHtml opts (view content x)
@@ -79,33 +82,27 @@ proInlineHtml opts =
 proInlineTagHtml :: ProHtmlOpts -> InlineTag -> H.Series H.Inline
 proInlineTagHtml opts x =
   case (tagName x) of
-
     "dash" -> H.toInlines ("—" :: Text)
-
-    "emphatic" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+    "emphatic" -> H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
       where
         spanClasses = one "emphatic"
         spanStyles = mempty
         spanContent = inlineHtml opts (view content x)
-
-    "italic" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+    "italic" -> H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
       where
         spanClasses = mempty
         spanStyles = one "font-style: italic"
         spanContent = inlineHtml opts (view content x)
-
-    "title" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+    "title" -> H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
       where
         spanClasses = one "title"
         spanStyles = mempty
         spanContent = inlineHtml opts (view content x)
-
-    "link" -> H.toInlines $ H.Anchor{ H.anchorName, H.anchorHref, H.anchorContent }
+    "link" -> H.toInlines $ H.Anchor {H.anchorName, H.anchorHref, H.anchorContent}
       where
         anchorName = Nothing
         anchorHref = view (atSetting "to") x
         anchorContent = inlineHtml opts (view content x)
-
     _ -> fromMaybe (H.toInlines $ H.Comment (show x)) (extraInlineTags opts opts x)
 
 proListHtml :: ProHtmlOpts -> BlockTag -> H.Series H.Block
@@ -114,7 +111,7 @@ proListHtml opts x =
     ListVertical -> H.toBlocks $ H.BulletedList listItems
       where
         listItems = foldMap (itemVertical opts) (view content x)
-    ListHorizontal -> H.toBlocks $ H.Paragraph{ H.paragraphClasses, H.paragraphContent }
+    ListHorizontal -> H.toBlocks $ H.Paragraph {H.paragraphClasses, H.paragraphContent}
       where
         paragraphClasses = one "horizontalList"
         paragraphContent = foldMap (itemHorizontal opts) (view content x)
@@ -142,7 +139,7 @@ itemHorizontal opts x =
     BlockParagraph i -> go $ pure $ BlockParagraph i
     y -> H.toInlines $ H.Comment $ show y
   where
-    go i = H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+    go i = H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
       where
         spanClasses = mempty
         spanStyles = mempty
@@ -151,12 +148,13 @@ itemHorizontal opts x =
 inlineItemTag :: ProHtmlOpts -> InlineTag -> Maybe (H.Series H.Inline)
 inlineItemTag opts =
   \case
-    i | tagName i == "item" ->
-        Just $ H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
-          where
-            spanClasses = one "item"
-            spanStyles = mempty
-            spanContent = inlineHtml opts (view content i)
+    i
+      | tagName i == "item" ->
+        Just $ H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
+      where
+        spanClasses = one "item"
+        spanStyles = mempty
+        spanContent = inlineHtml opts (view content i)
     _ -> Nothing
 
 inlineHtml :: Foldable series => ProHtmlOpts -> series Inline -> H.Series H.Inline

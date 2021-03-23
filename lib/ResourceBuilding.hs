@@ -1,8 +1,12 @@
 module ResourceBuilding where
 
 import Control.Lens
+import qualified Data.Text.Lazy.Builder as Text.Builder
 import FileLayout
 import qualified Home
+import qualified HtmlBuilding as H
+import qualified HtmlRendering as H
+import qualified HtmlTypes as H
 import qualified Menus
 import Path
 import qualified Prosidy
@@ -11,12 +15,6 @@ import Relude
 import Resource
 import StateOfResources
 import StringBuilding
-
-import qualified Data.Text.Lazy.Builder as Text.Builder
-
-import qualified HtmlBuilding as H
-import qualified HtmlRendering as H
-import qualified HtmlTypes as H
 
 ensureResourceBuilt :: Scheme -> (Text -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt scheme l rs r =

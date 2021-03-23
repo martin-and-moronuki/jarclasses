@@ -1,13 +1,10 @@
 module HtmlRendering where
 
-import Relude
-
-import HtmlTypes
-
+import qualified Data.Text as Text
 import qualified Data.Text.Lazy.Builder as Text (Builder)
 import qualified Data.Text.Lazy.Builder as Text.Builder
-
-import qualified Data.Text as Text
+import HtmlTypes
+import Relude
 
 type IndentLevel = Natural
 
@@ -15,23 +12,24 @@ indentation :: IndentLevel -> Text.Builder
 indentation il = fold $ replicate (fromIntegral il) $ Text.Builder.fromText "  "
 
 renderHtml :: Document -> Text.Builder
-renderHtml Document{ documentLang, documentHead, documentContent } =
-    "<!DOCTYPE HTML>\n\n" <>
-    elBlock il Tag{ tagName = "html", tagAttrs = foldMap (one . Setting "lang") documentLang }
-    (renderHead (il + 1) documentHead <> renderBody (il + 1) documentContent)
+renderHtml Document {documentLang, documentHead, documentContent} =
+  "<!DOCTYPE HTML>\n\n" <> html
   where
+    html = elBlock il htmlTag htmlContent
+    htmlTag = Tag {tagName = "html", tagAttrs = foldMap (one . Setting "lang") documentLang}
+    htmlContent = renderHead (il + 1) documentHead <> renderBody (il + 1) documentContent
     il = 0
 
 renderHead :: IndentLevel -> Series Header -> Text.Builder
 renderHead il = elBlock il (tag "head") . foldMap (renderHeader (il + 1))
 
-renderBody  :: IndentLevel -> Series Block -> Text.Builder
+renderBody :: IndentLevel -> Series Block -> Text.Builder
 renderBody il = elBlock il (tag "body") . foldMap (renderBlock (il + 1))
 
-data Tag = Tag{ tagName :: Text, tagAttrs :: Series Attr }
+data Tag = Tag {tagName :: Text, tagAttrs :: Series Attr}
 
 tag :: Text -> Tag
-tag tagName = Tag{ tagName, tagAttrs }
+tag tagName = Tag {tagName, tagAttrs}
   where
     tagAttrs = mempty
 
@@ -46,32 +44,32 @@ renderHeader il =
     HeaderLink x -> renderLink il x
 
 renderMeta :: IndentLevel -> Meta -> Text.Builder
-renderMeta il Meta{ metaName, metaContent } =
-    elBlockNoContent il Tag{ tagName, tagAttrs }
+renderMeta il Meta {metaName, metaContent} =
+  elBlockNoContent il Tag {tagName, tagAttrs}
   where
     tagName = "meta"
     tagAttrs =
-        one (Setting "name" metaName) <>
-        one (Setting "content" metaContent)
+      one (Setting "name" metaName)
+        <> one (Setting "content" metaContent)
 
 renderHttpEquiv :: IndentLevel -> HttpEquiv -> Text.Builder
-renderHttpEquiv il HttpEquiv{ httpEquivName, httpEquivContent } =
-    elBlockNoContent il Tag{ tagName, tagAttrs }
+renderHttpEquiv il HttpEquiv {httpEquivName, httpEquivContent} =
+  elBlockNoContent il Tag {tagName, tagAttrs}
   where
     tagName = "meta"
     tagAttrs =
-        one (Setting "http-equiv" httpEquivName) <>
-        one (Setting "content" httpEquivContent)
+      one (Setting "http-equiv" httpEquivName)
+        <> one (Setting "content" httpEquivContent)
 
 renderLink :: IndentLevel -> Link -> Text.Builder
-renderLink il Link{ linkRel, linkType, linkHref } =
-    elBlockNoContent il Tag{ tagName, tagAttrs }
+renderLink il Link {linkRel, linkType, linkHref} =
+  elBlockNoContent il Tag {tagName, tagAttrs}
   where
     tagName = "link"
     tagAttrs =
-        one (Setting "rel" linkRel) <>
-        one (Setting "type" linkType) <>
-        one (Setting "href" linkHref)
+      one (Setting "rel" linkRel)
+        <> one (Setting "type" linkType)
+        <> one (Setting "href" linkHref)
 
 renderBlock :: IndentLevel -> Block -> Text.Builder
 renderBlock il =
@@ -85,12 +83,12 @@ renderBlock il =
     BlockH x -> renderH il x
   where
     list :: Text -> Series ListItem -> Text.Builder
-    list tagName = elBlock il Tag{ tagName, tagAttrs } . foldMap (renderListItem (il + 1)) . toList
+    list tagName = elBlock il Tag {tagName, tagAttrs} . foldMap (renderListItem (il + 1)) . toList
       where
         tagAttrs = mempty
 
     blockNoAttrs :: Text -> Series Block -> Text.Builder
-    blockNoAttrs tagName = elBlock il Tag{ tagName, tagAttrs } . foldMap (renderBlock (il + 1)) . toList
+    blockNoAttrs tagName = elBlock il Tag {tagName, tagAttrs} . foldMap (renderBlock (il + 1)) . toList
       where
         tagAttrs = mempty
 
@@ -103,17 +101,17 @@ renderInline =
     InlineAnchor x -> renderAnchor x
 
 renderAnchor :: Anchor -> Text.Builder
-renderAnchor Anchor{ anchorName, anchorHref, anchorContent } =
-    elInline Tag{ tagName, tagAttrs } (foldMap renderInline anchorContent)
+renderAnchor Anchor {anchorName, anchorHref, anchorContent} =
+  elInline Tag {tagName, tagAttrs} (foldMap renderInline anchorContent)
   where
     tagName = "a"
     tagAttrs =
-        foldMap (one . Setting "name") anchorName <>
-        foldMap (one . Setting "href") anchorHref
+      foldMap (one . Setting "name") anchorName
+        <> foldMap (one . Setting "href") anchorHref
 
 renderSpan :: Span -> Text.Builder
-renderSpan Span{ spanClasses, spanStyles, spanContent } =
-    elInline Tag{ tagName, tagAttrs } (foldMap renderInline spanContent)
+renderSpan Span {spanClasses, spanStyles, spanContent} =
+  elInline Tag {tagName, tagAttrs} (foldMap renderInline spanContent)
   where
     tagName = "span"
     tagAttrs = classAttrs spanClasses <> styleAttrs spanStyles
@@ -144,8 +142,8 @@ renderListItem il =
     ListComment (Comment x) -> indentation il <> "<!--" <> Text.Builder.fromText x <> "-->"
 
 renderParagraph :: IndentLevel -> Paragraph -> Text.Builder
-renderParagraph il Paragraph{ paragraphClasses, paragraphContent } =
-    elBlockInlineTransition il Tag{ tagName, tagAttrs } (foldMap renderInline paragraphContent)
+renderParagraph il Paragraph {paragraphClasses, paragraphContent} =
+  elBlockInlineTransition il Tag {tagName, tagAttrs} (foldMap renderInline paragraphContent)
   where
     tagName = "p"
     tagAttrs = classAttrs paragraphClasses
@@ -155,16 +153,17 @@ renderAttrs =
   foldMap $
     \case
       Setting x value ->
-          " " <> Text.Builder.fromText x <> "=\"" <>
-          (Text.Builder.fromText $ Text.concatMap escapeAttrChar value) <> "\""
+        " " <> Text.Builder.fromText x <> "=\""
+          <> (Text.Builder.fromText $ Text.concatMap escapeAttrChar value)
+          <> "\""
       Property x ->
-          " " <> Text.Builder.fromText x
+        " " <> Text.Builder.fromText x
 
 open :: Tag -> Text.Builder
-open Tag{ tagName, tagAttrs } = "<" <> Text.Builder.fromText tagName <> renderAttrs tagAttrs <> ">"
+open Tag {tagName, tagAttrs} = "<" <> Text.Builder.fromText tagName <> renderAttrs tagAttrs <> ">"
 
 close :: Tag -> Text.Builder
-close Tag{ tagName } = "</" <> Text.Builder.fromText tagName <> ">"
+close Tag {tagName} = "</" <> Text.Builder.fromText tagName <> ">"
 
 -- | Render a block element that contains block content.
 elBlock :: IndentLevel -> Tag -> Text.Builder -> Text.Builder
