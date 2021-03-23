@@ -1,4 +1,6 @@
 title: On Xenophilia
+
+draft
 ---
 
 this thing food writers do where they worship even the most banal foods and restaurants as long as they are from a different country or from "people of color" (tamar adler, gabrille hamilton)

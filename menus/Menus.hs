@@ -6,6 +6,7 @@ import FileLayout
 import qualified HtmlBuilding as H
 import qualified HtmlTypes as H
 import qualified Pipes.Prelude as Pipes
+import Progress
 import Relude hiding (head)
 import Resource
 import Title
@@ -13,13 +14,13 @@ import Title
 listOfContent :: Scheme -> IO (H.Series H.Block)
 listOfContent scheme = fmap displayContent $ getContent scheme
 
-data Content = Content {contentResource :: Resource, contentTitle :: Maybe (H.Series H.Inline)}
+data Content = Content {contentResource :: Resource, contentTitle :: Maybe (H.Series H.Inline), contentProgress :: Maybe Progress}
 
 getContent :: Scheme -> IO [Content]
-getContent scheme = Pipes.toListM (findRecentResources scheme ([res|menus|] `Resource.isPrefixOf`)) >>= traverse (resourceContent scheme)
+getContent scheme = Pipes.toListM (findRecentResources scheme ([res|menus|] `Resource.isPrefixOf`)) >>= traverse (resourceContent scheme) >>= return . filter (\r -> contentProgress r == Just Published)
 
 resourceContent :: Scheme -> Resource -> IO Content
-resourceContent scheme r = Content r <$> resourceTitleHtml scheme r
+resourceContent scheme r = Content r <$> resourceTitleHtml scheme r <*> resourceProgress scheme r
 
 displayContent :: [Content] -> H.Series H.Block
 displayContent = H.toBlocks . H.BulletedList . foldMap (one . displayOne)
