@@ -1,51 +1,52 @@
 module ProsidyHtml where
 
 import Control.Lens
-import qualified HTML
 import Prosidy
 import Relude hiding (head)
 import Resource
-import Text.Blaze.Html (Html, toHtml, toValue, (!))
-import qualified Text.Blaze.Html5 as HTML
-import qualified Text.Blaze.Html5.Attributes as Attr
+import qualified HtmlBuilding as H
+import qualified HtmlTypes as H
 
 data ProHtmlOpts = ProHtmlOpts
-  { extraBlockTags :: ProHtmlOpts -> BlockTag -> Maybe Html,
-    extraInlineTags :: ProHtmlOpts -> InlineTag -> Maybe Html,
+  { extraBlockTags :: ProHtmlOpts -> BlockTag -> Maybe (H.Series H.Block),
+    extraInlineTags :: ProHtmlOpts -> InlineTag -> Maybe (H.Series H.Inline),
     extraStyle :: [Resource]
   }
 
 defaultOpts :: ProHtmlOpts
 defaultOpts = ProHtmlOpts (\_ _ -> Nothing) (\_ _ -> Nothing) []
 
-addBlockTag :: (ProHtmlOpts -> BlockTag -> Maybe Html) -> ProHtmlOpts -> ProHtmlOpts
+addBlockTag :: (ProHtmlOpts -> BlockTag -> Maybe (H.Series H.Block)) -> ProHtmlOpts -> ProHtmlOpts
 addBlockTag f opts = opts{ extraBlockTags = \o x -> extraBlockTags opts o x <|> f o x }
 
-addInlineTag :: (ProHtmlOpts -> InlineTag -> Maybe Html) -> ProHtmlOpts -> ProHtmlOpts
+addInlineTag :: (ProHtmlOpts -> InlineTag -> Maybe (H.Series H.Inline)) -> ProHtmlOpts -> ProHtmlOpts
 addInlineTag f opts = opts{ extraInlineTags = \o x -> extraInlineTags opts o x <|> f o x }
 
-proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> Html
-proHtml opts doc = HTML.docTypeHtml ! Attr.lang "en" $ head <> body
+proHtml :: ProHtmlOpts -> Either Prosidy.Failure Document -> H.Document
+proHtml opts doc = H.Document{ H.documentLang, H.documentHead, H.documentContent }
   where
-    head = HTML.head $ HTML.utf8htmlMeta <> HTML.viewportMeta <> title <> css
-    css = foldMap HTML.stylesheet (one [res|style/jarclasses.css|] ++ extraStyle opts)
-    title = foldMap (HTML.title . toHtml) $ proTitle doc
-    body = HTML.body main
-    main = HTML.main $ do
-      foldMap (HTML.h1 . toHtml) $ proTitle doc
-      either (HTML.stringComment . ("\n" <>) . prettyFailure) (foldMap (proBlockHtml opts) . view content) doc
+    documentLang = Just "en"
+    documentHead = H.utf8htmlMeta <> H.viewportMeta <> title <> css
+    css = foldMap H.stylesheet (one [res|style/jarclasses.css|] ++ extraStyle opts)
+    title = foldMap (one . H.HeaderTitle) $ proTitle doc
+    documentContent = one $ H.BlockMain $ H.Main $
+        (foldMap (H.toBlocks . H.H H.H1 . H.toInlines) $ proTitle doc) <>
+        (either (H.toBlocks . H.Comment . ("\n" <>) . toText . prettyFailure) (foldMap (proBlockHtml opts) . view content) doc)
 
 proTitle :: Either Prosidy.Failure Document -> Maybe Text
 proTitle = either (const Nothing) (view (atSetting "title"))
 
-proBlockHtml :: ProHtmlOpts -> Block -> Html
+proBlockHtml :: ProHtmlOpts -> Block -> H.Series H.Block
 proBlockHtml opts =
   \case
-    BlockLiteral x -> HTML.stringComment (show x)
-    BlockParagraph x -> HTML.p (inlineHtml opts (view content x))
+    BlockLiteral x -> H.toBlocks $ H.Comment (show x)
+    BlockParagraph x -> H.toBlocks $ H.Paragraph{ H.paragraphClasses, H.paragraphContent }
+      where
+        paragraphClasses = mempty
+        paragraphContent = inlineHtml opts (view content x)
     BlockTag x -> proBlockTagHtml opts x
 
-proBlockTagHtml :: ProHtmlOpts -> BlockTag -> Html
+proBlockTagHtml :: ProHtmlOpts -> BlockTag -> H.Series H.Block
 proBlockTagHtml opts x =
   case (tagName x) of
     "day" -> h2 opts x
@@ -53,69 +54,110 @@ proBlockTagHtml opts x =
     "list" -> proListHtml opts x
     "quote" -> blockQuote opts x
     "blockquote" -> blockQuote opts x
-    _ -> fromMaybe (HTML.stringComment (show x)) (extraBlockTags opts opts x)
+    _ -> fromMaybe (H.toBlocks $ H.Comment (show x)) (extraBlockTags opts opts x)
 
-h2 :: ProHtmlOpts -> BlockTag -> Html
-h2 opts = HTML.h2 . requireInlineOnly opts . view content
+h2 :: ProHtmlOpts -> BlockTag -> H.Series H.Block
+h2 opts = H.toBlocks . H.H H.H2 . requireInlineOnly opts . view content
 
-blockQuote :: ProHtmlOpts -> BlockTag -> Html
-blockQuote opts = HTML.blockquote . foldMap (proBlockHtml opts) . view content
+blockQuote :: ProHtmlOpts -> BlockTag -> H.Series H.Block
+blockQuote opts = H.toBlocks . H.Quote . foldMap (proBlockHtml opts) . view content
 
-requireInlineOnly :: ProHtmlOpts -> Series Block -> Html
+requireInlineOnly :: ProHtmlOpts -> Series Block -> H.Series H.Inline
 requireInlineOnly opts =
   foldMap
     \case
       BlockParagraph y -> inlineHtml opts (view content y)
-      y -> HTML.stringComment (show y)
+      y -> H.toInlines $ H.Comment (show y)
 
-proInlineHtml :: ProHtmlOpts -> Inline -> Html
+proInlineHtml :: ProHtmlOpts -> Inline -> H.Series H.Inline
 proInlineHtml opts =
   \case
-    Break -> toHtml (" " :: String)
-    InlineText x -> toHtml (fragmentText x)
+    Break -> H.toInlines (" " :: Text)
+    InlineText x -> H.toInlines (fragmentText x)
     InlineTag x -> proInlineTagHtml opts x
 
-proInlineTagHtml :: ProHtmlOpts -> InlineTag -> Html
+proInlineTagHtml :: ProHtmlOpts -> InlineTag -> H.Series H.Inline
 proInlineTagHtml opts x =
   case (tagName x) of
-    "dash" -> HTML.preEscapedToHtml ("&mdash;" :: Text)
-    "emphatic" -> HTML.span ! Attr.class_ "emphatic" $ inlineHtml opts (view content x)
-    "italic" -> HTML.span ! Attr.style "font-style: italic" $ inlineHtml opts (view content x)
-    "title" -> HTML.span ! Attr.class_ "title" $ inlineHtml opts (view content x)
-    "link" -> HTML.a ! (maybe mempty (Attr.href . toValue) $ view (atSetting "to") x) $ inlineHtml opts (view content x)
-    _ -> fromMaybe (HTML.stringComment (show x)) (extraInlineTags opts opts x)
 
-proListHtml :: ProHtmlOpts -> BlockTag -> Html
+    "dash" -> H.toInlines ("—" :: Text)
+
+    "emphatic" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+      where
+        spanClasses = one "emphatic"
+        spanStyles = mempty
+        spanContent = inlineHtml opts (view content x)
+
+    "italic" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+      where
+        spanClasses = mempty
+        spanStyles = one "font-style: italic"
+        spanContent = inlineHtml opts (view content x)
+
+    "title" -> H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+      where
+        spanClasses = one "title"
+        spanStyles = mempty
+        spanContent = inlineHtml opts (view content x)
+
+    "link" -> H.toInlines $ H.Anchor{ H.anchorName, H.anchorHref, H.anchorContent }
+      where
+        anchorName = Nothing
+        anchorHref = view (atSetting "to") x
+        anchorContent = inlineHtml opts (view content x)
+
+    _ -> fromMaybe (H.toInlines $ H.Comment (show x)) (extraInlineTags opts opts x)
+
+proListHtml :: ProHtmlOpts -> BlockTag -> H.Series H.Block
 proListHtml opts x =
   case listAxis x of
-    ListVertical -> HTML.ul i
-    ListHorizontal -> HTML.p ! Attr.class_ "horizontalList" $ i
-  where
-    i = foldMap (itemHtml opts (listAxis x)) (view content x)
+    ListVertical -> H.toBlocks $ H.BulletedList listItems
+      where
+        listItems = foldMap (itemVertical opts) (view content x)
+    ListHorizontal -> H.toBlocks $ H.Paragraph{ H.paragraphClasses, H.paragraphContent }
+      where
+        paragraphClasses = one "horizontalList"
+        paragraphContent = foldMap (itemHorizontal opts) (view content x)
 
 data ListAxis = ListVertical | ListHorizontal
 
 listAxis :: BlockTag -> ListAxis
 listAxis x = if view (hasProperty "horizontal") x then ListHorizontal else ListVertical
 
-itemHtml :: ProHtmlOpts -> ListAxis -> Block -> Html
-itemHtml opts a x =
+itemVertical :: ProHtmlOpts -> Block -> H.Series H.ListItem
+itemVertical opts x =
   case x of
-    BlockTag i | tagName i == "item" -> go (view content i)
-    BlockParagraph i -> go (pure (BlockParagraph i))
-    y -> HTML.stringComment (show y)
+    BlockTag i | tagName i == "item" -> go $ view content i
+    BlockParagraph i -> go $ pure $ BlockParagraph i
+    y -> one $ H.ListComment $ H.Comment $ show y
   where
-    go i =
-      case a of
-        ListHorizontal -> HTML.span $ requireInlineOnly opts i
-        ListVertical -> HTML.li $ foldMap (proBlockHtml opts') i
+    go i = one $ H.ListItem $ foldMap (proBlockHtml opts') i
+      where
+        opts' = opts & addInlineTag inlineItemTag
+
+itemHorizontal :: ProHtmlOpts -> Block -> H.Series H.Inline
+itemHorizontal opts x =
+  case x of
+    BlockTag i | tagName i == "item" -> go $ view content i
+    BlockParagraph i -> go $ pure $ BlockParagraph i
+    y -> H.toInlines $ H.Comment $ show y
+  where
+    go i = H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
+      where
+        spanClasses = mempty
+        spanStyles = mempty
+        spanContent = requireInlineOnly opts i
+
+inlineItemTag :: ProHtmlOpts -> InlineTag -> Maybe (H.Series H.Inline)
+inlineItemTag opts =
+  \case
+    i | tagName i == "item" ->
+        Just $ H.toInlines $ H.Span{ H.spanClasses, H.spanStyles, H.spanContent }
           where
-            opts' = opts & addInlineTag inlineItemTag
+            spanClasses = one "item"
+            spanStyles = mempty
+            spanContent = inlineHtml opts (view content i)
+    _ -> Nothing
 
-inlineItemTag :: ProHtmlOpts -> InlineTag -> Maybe Html
-inlineItemTag opts i
-  | tagName i == "item" = Just $ HTML.span ! Attr.class_ "item" $ inlineHtml opts (view content i)
-  | otherwise = Nothing
-
-inlineHtml :: Foldable series => ProHtmlOpts -> series Inline -> Html
+inlineHtml :: Foldable series => ProHtmlOpts -> series Inline -> H.Series H.Inline
 inlineHtml opts = foldMap (proInlineHtml opts)

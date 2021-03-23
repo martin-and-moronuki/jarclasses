@@ -1,6 +1,5 @@
 module ResourceBuilding where
 
-import BlazeHtmlRendering
 import Control.Lens
 import FileLayout
 import qualified Home
@@ -12,7 +11,12 @@ import Relude
 import Resource
 import StateOfResources
 import StringBuilding
-import qualified Text.Blaze.Html5 as HTML
+
+import qualified Data.Text.Lazy.Builder as Text.Builder
+
+import qualified HtmlBuilding as H
+import qualified HtmlRendering as H
+import qualified HtmlTypes as H
 
 ensureResourceBuilt :: Scheme -> (Text -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt scheme l rs r =
@@ -42,7 +46,7 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                             Nothing -> list Nothing
                             Just t ->
                               case readMaybe @Natural (toString t) of
-                                Nothing -> HTML.stringComment $ "limit must be a Natural, but is" <!> show t
+                                Nothing -> H.toBlocks $ H.Comment $ "limit must be a Natural, but is" <!> show t
                                 Just n -> list (Just n)
                         _ -> Nothing,
                     extraStyle = one [res|style/home.css|]
@@ -59,6 +63,6 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                   }
           | otherwise -> pure defaultOpts
 
-    let f = encodeUtf8 . toText . renderHtml . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
+    let f = encodeUtf8 . Text.Builder.toLazyText . H.renderHtml . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
 
     writeFileLBS (Path.toFilePath fpOut) (f src)

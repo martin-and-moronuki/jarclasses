@@ -42,6 +42,7 @@ languageExtensions =
     "DerivingVia",
     "LambdaCase",
     "MultiWayIf",
+    "NamedFieldPuns",
     "NoImplicitPrelude",
     "OverloadedStrings",
     "QuasiQuotes",

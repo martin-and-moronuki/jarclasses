@@ -6,14 +6,15 @@ import FileLayout
 import qualified Pipes.Prelude as Pipes
 import Relude hiding (head)
 import Resource
-import Text.Blaze.Html (Html, (!))
-import qualified Text.Blaze.Html5 as HTML
 import Title
 
-listOfContent :: Scheme -> IO Html
+import qualified HtmlBuilding as H
+import qualified HtmlTypes as H
+
+listOfContent :: Scheme -> IO (H.Series H.Block)
 listOfContent scheme = fmap displayContent $ getContent scheme
 
-data Content = Content Resource (Maybe Html)
+data Content = Content{ contentResource :: Resource, contentTitle :: Maybe (H.Series H.Inline) }
 
 getContent :: Scheme -> IO [Content]
 getContent scheme = Pipes.toListM (findRecentResources scheme ([res|menus|] `Resource.isPrefixOf`)) >>= traverse (resourceContent scheme)
@@ -21,8 +22,15 @@ getContent scheme = Pipes.toListM (findRecentResources scheme ([res|menus|] `Res
 resourceContent :: Scheme -> Resource -> IO Content
 resourceContent scheme r = Content r <$> resourceTitleHtml scheme r
 
-displayContent :: [Content] -> Html
-displayContent rs = HTML.ul $ traverse_ displayOne rs
+displayContent :: [Content] -> H.Series H.Block
+displayContent = H.toBlocks . H.BulletedList . foldMap (one . displayOne)
 
-displayOne :: Content -> Html
-displayOne (Content r title) = HTML.li $ HTML.p $ HTML.a ! resourceHref r $ fromMaybe (HTML.stringComment "no title") title
+displayOne :: Content -> H.ListItem
+displayOne Content{ contentResource, contentTitle } =
+    H.ListItem $ H.toBlocks $ H.Paragraph{ H.paragraphClasses, H.paragraphContent }
+  where
+    paragraphClasses = mempty
+    paragraphContent = H.toInlines H.Anchor{ H.anchorName, H.anchorHref, H.anchorContent }
+    anchorName = Nothing
+    anchorHref = Just $ resourceUrl contentResource
+    anchorContent = fromMaybe (H.toInlines $ H.Comment "no title") contentTitle
