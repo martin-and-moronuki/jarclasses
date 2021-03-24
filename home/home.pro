@@ -10,8 +10,13 @@ Hello! The #link[to='/posts/2020-12-02-hello']{Canifesto} explains what this is 
 #-h2{Our other websites}
 
 #-list[horizontal]:
-  #-item{#link[to='https://argumatronic.com/']{Julie's blog}}
-  #-item{#link[to='https://chris-martin.org/']{Chris's blog}}
-  #-item{#link[to='https://typeclasses.com/']{Type Classes}}
-  #-item{#link[to='https://joyofhaskell.com/']{Joy of Haskell}}
+
+    #link[to='https://argumatronic.com/']{Julie's blog}
+
+    #link[to='https://chris-martin.org/']{Chris's blog}
+
+    #link[to='https://typeclasses.com/']{Type Classes}
+
+    #link[to='https://joyofhaskell.com/']{Joy of Haskell}
+
 #:
