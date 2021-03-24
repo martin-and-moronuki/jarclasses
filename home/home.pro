@@ -1,6 +1,7 @@
 title: Jar Classes
 ---
-Hello!
+
+Hello! The #link[to='/posts/2020-12-02-hello']{Canifesto} explains what this is all about.
 
 #-h2{Recent posts}
 
