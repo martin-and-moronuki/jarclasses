@@ -9,7 +9,7 @@ import Relude
 type IndentLevel = Natural
 
 indentation :: IndentLevel -> Text.Builder
-indentation il = fold $ replicate (fromIntegral il) $ Text.Builder.fromText "  "
+indentation il = fold $ replicate (fromIntegral il) $ Text.Builder.fromText "\t"
 
 renderHtml :: Document -> Text.Builder
 renderHtml Document {documentLang, documentHead, documentContent} =
