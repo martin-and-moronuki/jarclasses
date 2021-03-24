@@ -1,4 +1,6 @@
 title: On Scientism
+
+draft
 ---
 
 The other day I was making a cake with my younger son. We measured ingredients carefully into the bowl of the KitchenAid mixer, stopping periodically to scrape the bowl because this is a thing KitchenAid mixers are fairly bad at (it does feel blasphemous and ungrateful to say anything negative about the KitchenAid mixer, and yet!). When we got to the end and were pouring batter into the pan, we realized there was some amount of butter and sugar, from the first creaming step, still clinging to the bottom of the bowl, unmixed with the other ingredients. I wondered if we should scrape it out as we scraped the batter into the pan, mixing it in a little as the batter poured; the other alternatives seemed to be to ignore it or to take the batter back out of the cake pan and remix it to get it all in there.
