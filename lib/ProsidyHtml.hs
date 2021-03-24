@@ -54,6 +54,8 @@ proBlockTagHtml opts x =
   case (tagName x) of
     "day" -> h2 opts x
     "h2" -> h2 opts x
+    "head" -> h2 opts x
+    "subhead" -> h3 opts x
     "list" -> proListHtml opts x
     "quote" -> blockQuote opts x
     "blockquote" -> blockQuote opts x
@@ -61,6 +63,9 @@ proBlockTagHtml opts x =
 
 h2 :: ProHtmlOpts -> BlockTag -> H.Series H.Block
 h2 opts = H.toBlocks . H.H H.H2 . requireInlineOnly opts . view content
+
+h3 :: ProHtmlOpts -> BlockTag -> H.Series H.Block
+h3 opts = H.toBlocks . H.H H.H3 . requireInlineOnly opts . view content
 
 blockQuote :: ProHtmlOpts -> BlockTag -> H.Series H.Block
 blockQuote opts = H.toBlocks . H.Quote . foldMap (proBlockHtml opts) . view content

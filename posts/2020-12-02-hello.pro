@@ -1,4 +1,5 @@
 title: The Jarclasses Canifesto
+author: Julie
 ---
 
 Hi, we are Chris and Julie. We live in Montana's beautiful Mission Valley with our two sons, two dogs, and assorted other pets and microlivestock. We moved here in 2019, to get away from the city (Atlanta, which we miss; as cities go, Atlanta is Good) and have our own place. We own and operate a two-person "software consulting" business, mainly focused on producing documentation and educational materials for the Haskell programming language. We homeschool the kids.

@@ -1,4 +1,5 @@
 title: On Scientism
+author: Julie
 
 draft
 ---
