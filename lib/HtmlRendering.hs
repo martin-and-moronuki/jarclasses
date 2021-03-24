@@ -77,7 +77,7 @@ renderBlock il =
     BlockMain (Main x) -> blockNoAttrs "main" x
     BlockQuote (Quote x) -> blockNoAttrs "blockquote" x
     BlockParagraph x -> renderParagraph il x
-    BlockComment (Comment x) -> indentation il <> "<!--" <> Text.Builder.fromText x <> "-->"
+    BlockComment (Comment x) -> indentation il <> "<!--" <> Text.Builder.fromText x <> "-->\n"
     BlockOrderedList (OrderedList x) -> list "ol" x
     BlockBulletedList (BulletedList x) -> list "ul" x
     BlockH x -> renderH il x
@@ -139,7 +139,7 @@ renderListItem :: IndentLevel -> ListItem -> Text.Builder
 renderListItem il =
   \case
     ListItem x -> elBlock il (tag "li") $ foldMap (renderBlock (il + 1)) x
-    ListComment (Comment x) -> indentation il <> "<!--" <> Text.Builder.fromText x <> "-->"
+    ListComment (Comment x) -> indentation il <> "<!--" <> Text.Builder.fromText x <> "-->\n"
 
 renderParagraph :: IndentLevel -> Paragraph -> Text.Builder
 renderParagraph il Paragraph {paragraphClasses, paragraphContent} =
