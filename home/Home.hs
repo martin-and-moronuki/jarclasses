@@ -1,30 +1,41 @@
 module Home where
 
 import Chronology
-import Control.Lens
 import Data.Time
 import FileLayout
 import qualified HtmlBuilding as H
 import qualified HtmlTypes as H
+import Pipes (ListT, (>->))
+import qualified Pipes as Pipes
 import qualified Pipes.Prelude as Pipes
 import Progress
 import Relude hiding (head)
 import Resource
 import Title
 
-listOfContent :: Scheme -> IO (Maybe Natural -> H.Series H.Block)
-listOfContent scheme = fmap (\xs n -> displayContent $ maybe id genericTake n xs) $ getContent scheme
+listOfContent :: Scheme -> Maybe Natural -> IO (H.Series H.Block)
+listOfContent scheme nMay = displayContent $ limit $ getContent scheme
+  where
+    limit =
+      case nMay >>= toIntegralSized of
+        Nothing -> id
+        Just n -> Pipes.Select . (>-> Pipes.take n) . Pipes.enumerate
 
 data Content = Content {contentResource :: Resource, contentTitle :: Maybe (H.Series H.Inline), contentDay :: Maybe Day, contentProgress :: Maybe Progress}
 
-getContent :: Scheme -> IO [Content]
-getContent scheme = Pipes.toListM (findRecentResources scheme (const True)) >>= traverse (resourceContent scheme) >>= return . filter (\r -> contentProgress r == Just Published)
+getContent :: Scheme -> ListT IO Content
+getContent scheme =
+  do
+    r <- findRecentResources scheme (const True)
+    c <- lift $ resourceContent scheme r
+    guard $ contentProgress c == Just Published
+    return c
 
 resourceContent :: Scheme -> Resource -> IO Content
 resourceContent scheme r = Content r <$> resourceTitleHtml scheme r <*> resourceDay scheme r <*> resourceProgress scheme r
 
-displayContent :: [Content] -> H.Series H.Block
-displayContent = H.toBlocks . H.BulletedList . foldMap (one . displayOne)
+displayContent :: Monad m => ListT m Content -> m (H.Series H.Block)
+displayContent = Pipes.fold (<>) mempty (H.toBlocks . H.BulletedList) . Pipes.enumerate . fmap (one . displayOne)
 
 displayOne :: Content -> H.ListItem
 displayOne Content {contentResource, contentTitle, contentDay} =

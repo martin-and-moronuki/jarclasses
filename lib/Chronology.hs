@@ -11,7 +11,7 @@ import Resource
 import qualified Text.Regex.Applicative as RE
 import qualified Text.Regex.Applicative.Common as RE
 
-findRecentResources :: Scheme -> (Resource -> Bool) -> Producer Resource IO ()
+findRecentResources :: Scheme -> (Resource -> Bool) -> ListT IO Resource
 findRecentResources scheme resourcePredicate = Pipes.lift (getResourceDayMap scheme resourcePredicate) >>= yieldFromSetMapDesc
 
 pipeMapMaybeM :: Monad m => (a -> m (Maybe b)) -> Pipe a b m r
@@ -37,8 +37,8 @@ getResourceDayMap scheme resourcePredicate = foldMappings $ findProHtmlResources
         (fmap . fmap) (\d -> (d, proHtmlResourceId r)) (proHtmlResourceDay r)
       | otherwise = pure Nothing
 
-yieldFromSetMapDesc :: Monad m => Map a (Set b) -> Producer b m ()
-yieldFromSetMapDesc = traverse_ (traverse_ yield . Set.toDescList . snd) . Map.toDescList
+yieldFromSetMapDesc :: Monad m => Map a (Set b) -> ListT m b
+yieldFromSetMapDesc = Pipes.Select . traverse_ (traverse_ yield . Set.toDescList . snd) . Map.toDescList
 
 dateFromResourceId :: Resource -> Maybe Day
 dateFromResourceId (ResourceSlashList xs) = viaNonEmpty head (mapMaybe parseDay xs)

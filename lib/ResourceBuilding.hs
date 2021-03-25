@@ -31,47 +31,40 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
 
     src <- readFileBS (Path.toFilePath fpIn)
 
-    opts <-
-      if
-          | r == [res||] ->
-            do
-              list <- Home.listOfContent scheme
-              pure
-                defaultOpts
-                  { extraBlockTags = \_ x ->
-                      case (Prosidy.tagName x) of
-                        "list-of-content" -> Just $
-                          case view (Prosidy.atSetting "limit") x of
-                            Nothing -> list Nothing
-                            Just t ->
-                              case readMaybe @Natural (toString t) of
-                                Nothing -> H.toBlocks $ H.Comment $ "limit must be a Natural, but is" <!> show t
-                                Just n -> list (Just n)
-                        _ -> Nothing,
-                    extraStyle = one [res|style/home.css|]
-                  }
-          | r == [res|menus|] ->
-            do
-              list <- Menus.listOfContent scheme
-              pure
-                defaultOpts
-                  { extraBlockTags = \_ x ->
-                      case (Prosidy.tagName x) of
-                        "list-of-content" -> Just list
-                        _ -> Nothing
-                  }
-          | r == [res|tags|] ->
-            do
-              list <- Tags.listOfTags scheme
-              pure
-                defaultOpts
-                  { extraBlockTags = \_ x ->
-                      case (Prosidy.tagName x) of
-                        "list-of-tags" -> Just list
-                        _ -> Nothing
-                  }
-          | otherwise -> pure defaultOpts
+    let opts :: ProHtmlOpts IO =
+          if
+            | r == [res||] ->
+                  defaultOpts
+                    { extraBlockTags = \_ x ->
+                        case (Prosidy.tagName x) of
+                          "list-of-content" -> Just $
+                            case view (Prosidy.atSetting "limit") x of
+                              Nothing -> Home.listOfContent scheme Nothing
+                              Just t ->
+                                case readMaybe @Natural (toString t) of
+                                  Nothing -> pure $ H.toBlocks $ H.Comment $ "limit must be a Natural, but is" <!> show t
+                                  Just n -> Home.listOfContent scheme (Just n)
+                          _ -> Nothing,
+                      extraStyle = one [res|style/home.css|]
+                    }
+            | r == [res|menus|] ->
+              do
+                  defaultOpts
+                    { extraBlockTags = \_ x ->
+                        case (Prosidy.tagName x) of
+                          "list-of-content" -> Just $ Menus.listOfContent scheme
+                          _ -> Nothing
+                    }
+            | r == [res|tags|] ->
+              do
+                  defaultOpts
+                    { extraBlockTags = \_ x ->
+                        case (Prosidy.tagName x) of
+                          "list-of-tags" -> Just $ Tags.listOfTags scheme
+                          _ -> Nothing
+                    }
+            | otherwise -> defaultOpts
 
-    let f = encodeUtf8 . Text.Builder.toLazyText . H.renderHtml . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
+    let f = fmap (encodeUtf8 . Text.Builder.toLazyText . H.renderHtml) . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
 
-    writeFileLBS (Path.toFilePath fpOut) (f src)
+    writeFileLBS (Path.toFilePath fpOut) =<< f src
