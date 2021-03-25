@@ -21,3 +21,9 @@ There are also a few additional pages:
         Its HTML is written to #output{menus/menus.html}.
         Its URL is #url{/menus}, and it ends up at #deploy{menus/index.html}.
     #:
+
+    #-page:
+        The page for displaying the list of tags is #input{tags/tags.pro}.
+        Its HTML is written to #output{tags/tags.html}.
+        Its URL is #url{/tags}, and it ends up at #deploy{tags/index.html}.
+    #:

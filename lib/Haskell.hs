@@ -25,6 +25,7 @@ hsSourceDirs =
     [reldir|lib|],
     [reldir|menus|],
     [reldir|style|],
+    [reldir|tags|],
     [reldir|test|],
     [reldir|versions|]
   ]

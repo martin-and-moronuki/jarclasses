@@ -15,6 +15,7 @@ import Relude
 import Resource
 import StateOfResources
 import StringBuilding
+import qualified Tags
 
 ensureResourceBuilt :: Scheme -> (Text -> IO ()) -> StateOfResources Resource -> Resource -> IO ()
 ensureResourceBuilt scheme l rs r =
@@ -57,6 +58,16 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
                   { extraBlockTags = \_ x ->
                       case (Prosidy.tagName x) of
                         "list-of-content" -> Just list
+                        _ -> Nothing
+                  }
+          | r == [res|tags|] ->
+            do
+              list <- Tags.listOfTags scheme
+              pure
+                defaultOpts
+                  { extraBlockTags = \_ x ->
+                      case (Prosidy.tagName x) of
+                        "list-of-tags" -> Just list
                         _ -> Nothing
                   }
           | otherwise -> pure defaultOpts
