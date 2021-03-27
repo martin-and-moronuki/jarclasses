@@ -8,19 +8,30 @@ import Relude hiding (head)
 import Resource
 
 data ProHtmlOpts m = ProHtmlOpts
-  { extraBlockTags :: ProHtmlOpts m -> BlockTag -> Maybe (m (H.Series H.Block)),
-    extraInlineTags :: ProHtmlOpts m -> InlineTag -> Maybe (m (H.Series H.Inline)),
+  { extraBlockTags :: BlockTagOpt m,
+    extraInlineTags :: InlineTagOpt m,
     extraStyle :: [Resource]
   }
 
+newtype BlockTagOpt m
+  = BlockTagOpt
+      (ProHtmlOpts m -> BlockTag -> Maybe (m (H.Series H.Block)))
+
+newtype InlineTagOpt m
+  = InlineTagOpt
+      (ProHtmlOpts m -> InlineTag -> Maybe (m (H.Series H.Inline)))
+
 defaultOpts :: ProHtmlOpts m
-defaultOpts = ProHtmlOpts (\_ _ -> Nothing) (\_ _ -> Nothing) []
+defaultOpts = ProHtmlOpts (BlockTagOpt $ \_ _ -> Nothing) (InlineTagOpt $ \_ _ -> Nothing) []
 
-addBlockTag :: (ProHtmlOpts m -> BlockTag -> Maybe (m (H.Series H.Block))) -> ProHtmlOpts m -> ProHtmlOpts m
-addBlockTag f opts = opts {extraBlockTags = \o x -> extraBlockTags opts o x <|> f o x}
+addStyle :: Resource -> Endo (ProHtmlOpts m)
+addStyle r = Endo $ \o -> o {extraStyle = extraStyle o <> one r}
 
-addInlineTag :: (ProHtmlOpts m -> InlineTag -> Maybe (m (H.Series H.Inline))) -> ProHtmlOpts m -> ProHtmlOpts m
-addInlineTag f opts = opts {extraInlineTags = \o x -> extraInlineTags opts o x <|> f o x}
+addBlockTag :: BlockTagOpt m -> Endo (ProHtmlOpts m)
+addBlockTag (BlockTagOpt f) = Endo $ \opts -> opts {extraBlockTags = BlockTagOpt $ \o x -> let BlockTagOpt g = extraBlockTags opts in g o x <|> f o x}
+
+addInlineTag :: InlineTagOpt m -> Endo (ProHtmlOpts m)
+addInlineTag (InlineTagOpt f) = Endo $ \opts -> opts {extraInlineTags = InlineTagOpt $ \o x -> let InlineTagOpt g = extraInlineTags opts in g o x <|> f o x}
 
 proHtml :: Monad m => ProHtmlOpts m -> Either Prosidy.Failure Document -> m H.Document
 proHtml opts doc =
@@ -31,9 +42,10 @@ proHtml opts doc =
     let documentHead = H.utf8htmlMeta <> H.viewportMeta <> title <> css
     documentContent <-
       fmap (one . H.BlockMain . H.Main) $
-        liftA2 (<>)
-            (pure $ foldMap (H.toBlocks . H.H H.H1 . H.toInlines) $ proTitle doc)
-            (either (pure . H.toBlocks . H.Comment . ("\n" <>) . toText . prettyFailure) (foldMapSequence (proBlockHtml opts) . view content) doc)
+        liftA2
+          (<>)
+          (pure $ foldMap (H.toBlocks . H.H H.H1 . H.toInlines) $ proTitle doc)
+          (either (pure . H.toBlocks . H.Comment . ("\n" <>) . toText . prettyFailure) (foldMapSequence (proBlockHtml opts) . view content) doc)
     pure H.Document {H.documentLang, H.documentHead, H.documentContent}
 
 proTitle :: Either Prosidy.Failure Document -> Maybe Text
@@ -60,7 +72,7 @@ proBlockTagHtml opts x =
     "list" -> proListHtml opts x
     "quote" -> blockQuote opts x
     "blockquote" -> blockQuote opts x
-    _ -> fromMaybe (pure $ H.toBlocks $ H.Comment (show x)) (extraBlockTags opts opts x)
+    _ -> fromMaybe (pure $ H.toBlocks $ H.Comment (show x)) (let BlockTagOpt f = extraBlockTags opts in f opts x)
 
 h2 :: Monad m => ProHtmlOpts m -> BlockTag -> m (H.Series H.Block)
 h2 opts = fmap (H.toBlocks . H.H H.H2) . requireInlineOnly opts . view content
@@ -117,7 +129,7 @@ proInlineTagHtml opts x =
         anchorContent <- inlineHtml opts (view content x)
         pure $ H.toInlines $ H.Anchor {H.anchorName, H.anchorHref, H.anchorContent}
       where
-    _ -> fromMaybe (pure $ H.toInlines $ H.Comment (show x)) (extraInlineTags opts opts x)
+    _ -> fromMaybe (pure $ H.toInlines $ H.Comment (show x)) (let InlineTagOpt f = extraInlineTags opts in f opts x)
 
 proListHtml :: Monad m => ProHtmlOpts m -> BlockTag -> m (H.Series H.Block)
 proListHtml opts x =
@@ -146,7 +158,7 @@ itemVertical opts x =
   where
     go i = one . H.ListItem <$> foldMapSequence (proBlockHtml opts') i
       where
-        opts' = opts & addInlineTag inlineItemTag
+        opts' = opts & appEndo (addInlineTag inlineItemTag)
 
 itemHorizontal :: Monad m => ProHtmlOpts m -> Block -> m (H.Series H.Inline)
 itemHorizontal opts x =
@@ -162,8 +174,8 @@ itemHorizontal opts x =
         spanContent <- requireInlineOnly opts i
         pure $ H.toInlines $ H.Span {H.spanClasses, H.spanStyles, H.spanContent}
 
-inlineItemTag :: Monad m => ProHtmlOpts m -> InlineTag -> Maybe (m (H.Series H.Inline))
-inlineItemTag opts =
+inlineItemTag :: Monad m => InlineTagOpt m
+inlineItemTag = InlineTagOpt $ \opts ->
   \case
     i
       | tagName i == "item" -> Just $

@@ -8,9 +8,21 @@ import Pipes (ListT)
 import qualified Pipes as Pipes
 import qualified Pipes.Prelude as Pipes
 import Progress
+import qualified Prosidy
+import ProsidyHtml (BlockTagOpt (..), ProHtmlOpts, addBlockTag)
 import Relude hiding (head)
 import Resource
 import Title
+
+proHtmlOpts :: Scheme -> Endo (ProHtmlOpts IO)
+proHtmlOpts s = addBlockTag (listOfContentTag s)
+
+listOfContentTag :: Scheme -> BlockTagOpt IO
+listOfContentTag s =
+  BlockTagOpt $ \_ x ->
+    case (Prosidy.tagName x) of
+      "list-of-content" -> Just $ listOfContent s
+      _ -> Nothing
 
 listOfContent :: Scheme -> IO (H.Series H.Block)
 listOfContent scheme = displayContent $ getContent scheme

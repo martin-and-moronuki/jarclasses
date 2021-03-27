@@ -33,37 +33,10 @@ buildProHtmlResource scheme l (ProHtmlResource r (InputPath fpIn) (OutputPath fp
 
     let opts :: ProHtmlOpts IO =
           if
-            | r == [res||] ->
-                  defaultOpts
-                    { extraBlockTags = \_ x ->
-                        case (Prosidy.tagName x) of
-                          "list-of-content" -> Just $
-                            case view (Prosidy.atSetting "limit") x of
-                              Nothing -> Home.listOfContent scheme Nothing
-                              Just t ->
-                                case readMaybe @Natural (toString t) of
-                                  Nothing -> pure $ H.toBlocks $ H.Comment $ "limit must be a Natural, but is" <!> show t
-                                  Just n -> Home.listOfContent scheme (Just n)
-                          _ -> Nothing,
-                      extraStyle = one [res|style/home.css|]
-                    }
-            | r == [res|menus|] ->
-              do
-                  defaultOpts
-                    { extraBlockTags = \_ x ->
-                        case (Prosidy.tagName x) of
-                          "list-of-content" -> Just $ Menus.listOfContent scheme
-                          _ -> Nothing
-                    }
-            | r == [res|tags|] ->
-              do
-                  defaultOpts
-                    { extraBlockTags = \_ x ->
-                        case (Prosidy.tagName x) of
-                          "list-of-tags" -> Just $ Tags.listOfTags scheme
-                          _ -> Nothing
-                    }
-            | otherwise -> defaultOpts
+              | r == [res||] -> defaultOpts & appEndo (Home.proHtmlOpts scheme)
+              | r == [res|menus|] -> defaultOpts & appEndo (Menus.proHtmlOpts scheme)
+              | r == [res|tags|] -> defaultOpts & appEndo (Tags.proHtmlOpts scheme)
+              | otherwise -> defaultOpts
 
     let f = fmap (encodeUtf8 . Text.Builder.toLazyText . H.renderHtml) . proHtml opts . Prosidy.parseDocument (toFilePath fpIn) . decodeUtf8
 
