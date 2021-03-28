@@ -8,6 +8,7 @@ import Pipes
 import qualified Pipes.Prelude as Pipes
 import Relude
 import Resource
+import ResourceEnumeration
 import qualified Text.Regex.Applicative as RE
 import qualified Text.Regex.Applicative.Common as RE
 

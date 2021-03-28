@@ -9,6 +9,7 @@ import qualified Pipes.Prelude as Pipes
 import Relude
 import Resource
 import ResourceBuilding
+import ResourceEnumeration
 import Style
 import System.Directory (getCurrentDirectory)
 import qualified Test

@@ -179,17 +179,6 @@ relFileBaseResource file = ResourceSlashList $ f (Path.parent file) `snoc` txtFi
     txtFile = toText . Path.toFilePath
     txtDir = fromMaybe (error "dir should have a trailing slash") . Text.stripSuffix "/" . toText . Path.toFilePath
 
-findProHtmlResources :: Scheme -> Producer ProHtmlResource IO ()
-findProHtmlResources s =
-  do
-    for_ (scheme_otherProHtmlResources s) yield
-    for_ (scheme_proHtmlDirs s) \d ->
-      flip walkDirRel d \_ _ xs ->
-        do
-          for_ xs \x ->
-            for_ (pathAsProHtmlInput s (InputPath (d </> x))) yield
-          pure $ WalkExclude []
-
 test_path :: Scheme -> Path Rel File -> Test
 test_path s x =
   test_pathAsResourceInput s (InputPath x)
