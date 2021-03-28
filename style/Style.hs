@@ -15,8 +15,8 @@ styles =
     ([res|style/home.css|], homeStyle)
   ]
 
-styleResources :: Producer Resource IO ()
-styleResources = traverse_ (yield . fst) styles
+styleResources :: ListT IO Resource
+styleResources = Select $ traverse_ (yield . fst) styles
 
 makeStyles :: Path Abs Dir -> IO ()
 makeStyles d = traverse_ (uncurry (make d)) styles

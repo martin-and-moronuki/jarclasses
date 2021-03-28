@@ -5,7 +5,6 @@ import FileLayoutPro
 import Path
 import Path.IO
 import Pipes
-import qualified Pipes.Prelude as Pipes
 import Relude
 import Resource
 import ResourceBuilding
@@ -31,17 +30,20 @@ main =
 
     writeTestFiles (Test.test scheme) cwd
 
-    runEffect $
-      findProHtmlResources scheme
-        >-> Pipes.mapM_ (buildProHtmlResource scheme putTextLn)
+    runListT $
+      do
+        r <- findProHtmlResources scheme
+        lift $ buildProHtmlResource scheme putTextLn r
 
-    runEffect $
-      ( ( findProHtmlResources scheme
-            >-> Pipes.map (\(ProHtmlResource r _ _ _) -> r)
-        )
-          *> styleResources
-      )
-        >-> Pipes.mapM_ (copyResource scheme)
+    runListT $
+      do
+        ProHtmlResource r _ _ _ <- findProHtmlResources scheme
+        lift $ copyResource scheme r
+
+    runListT $
+      do
+        r <- styleResources
+        lift $ copyResource scheme r
 
 copyResource :: Scheme -> Resource -> IO ()
 copyResource scheme r =
