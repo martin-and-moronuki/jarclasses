@@ -4,8 +4,6 @@ import Control.Lens
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Path
-import Path.IO
-import Pipes
 import Relude
 import Resource
 import StringBuilding
