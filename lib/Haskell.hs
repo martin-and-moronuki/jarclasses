@@ -47,6 +47,7 @@ languageExtensions =
     "NamedFieldPuns",
     "NoImplicitPrelude",
     "OverloadedStrings",
+    "PatternSynonyms",
     "QuasiQuotes",
     "ScopedTypeVariables",
     "TemplateHaskell",
