@@ -41,6 +41,7 @@ languageExtensions =
     "DeriveDataTypeable",
     "DeriveGeneric",
     "DerivingVia",
+    "GeneralizedNewtypeDeriving",
     "LambdaCase",
     "MultiWayIf",
     "NamedFieldPuns",
