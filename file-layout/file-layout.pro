@@ -8,6 +8,8 @@ Most of the content is in these directories:
 
     Miscellaneous blog posts are under #contentDir{posts}.
 
+    Pages describing categories of content are in #contentDir{tags}.
+
 There are also a few additional pages:
 
     #-page:

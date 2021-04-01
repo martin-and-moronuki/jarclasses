@@ -11,9 +11,12 @@ import Relude
 import Text.Show
 
 -- A "resource" is anything that a client might request from our web server, such as an HTML page, a CSS stylesheet, or an image.
-newtype Resource = ResourceSlashList [Text]
+newtype Resource = ResourceSlashList {resourceComponents :: [Text]}
   deriving stock (Eq, Ord, Generic, Data)
   deriving anyclass (Hashable)
+
+resPrefix :: Resource -> Resource -> Maybe [Text]
+resPrefix (ResourceSlashList x) (ResourceSlashList y) = List.stripPrefix x y
 
 instance Show Resource where
   showsPrec _ (ResourceSlashList xs) =
@@ -30,14 +33,22 @@ resourceExp (ResourceSlashList xs) =
         $(liftData $ map toString xs)
     |]
 
+resourcePat :: Resource -> Q Pat
+resourcePat x =
+  pure ViewP
+    <*> [e|(== $(resourceExp x))|]
+    <*> [p|True|]
+
 res :: QuasiQuoter
 res =
   QuasiQuoter
-    { quoteExp = resourceExp . ResourceSlashList . filter (not . T.null) . T.splitOn "/" . toText,
-      quotePat = const $ fail "Cannot be used in a pattern context.",
+    { quoteExp = resourceExp . f,
+      quotePat = resourcePat . f,
       quoteType = const $ fail "Cannot be used in a type context.",
       quoteDec = const $ fail "Cannot be used in a declaration context."
     }
+  where
+    f = ResourceSlashList . filter (not . T.null) . T.splitOn "/" . toText
 
 resourceUrl :: Resource -> Text
 resourceUrl = ("/" <>) . T.intercalate "/" . (\(ResourceSlashList x) -> x)

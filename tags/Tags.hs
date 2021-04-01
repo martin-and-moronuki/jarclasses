@@ -14,6 +14,7 @@ import qualified Pipes.Prelude as Pipes
 import Progress ()
 import qualified Prosidy
 import ProsidyHtml (BlockTagOpt (..), ProHtmlOpts, addBlockTag)
+import qualified ProsidyHtml
 import Relude hiding (head)
 import Resource
 import ResourceEnumeration
@@ -21,7 +22,32 @@ import qualified Text.Regex.Applicative as RE
 import Title (prhTitleHtml)
 
 proHtmlOpts :: Scheme -> Endo (ProHtmlOpts IO)
-proHtmlOpts s = addBlockTag (listOfTagsTag s)
+proHtmlOpts s =
+  addBlockTag (listOfTagsTag s)
+
+optsForTopicPage :: Scheme -> Tag -> Endo (ProHtmlOpts IO)
+optsForTopicPage s t =
+  addBlockTag synopsisTag
+    <> addBlockTag (topicPageContent s t)
+
+topicPageContent :: Scheme -> Tag -> BlockTagOpt IO
+topicPageContent s t = BlockTagOpt $ \_ x ->
+  case (Prosidy.tagName x) of
+    "list-of-content" -> Just $ getListOfContentForTopic s t
+    _ -> Nothing
+
+getListOfContentForTopic :: Scheme -> Tag -> IO (H.Series H.Block)
+getListOfContentForTopic s t =
+  do
+    tm <- getTagMap s
+    let xs = fromMaybe mempty $ HashMap.lookup t tm
+    return $ taggedsHtml xs
+
+synopsisTag :: Monad m => BlockTagOpt m
+synopsisTag = BlockTagOpt $ \o x ->
+  case (Prosidy.tagName x) of
+    "synopsis" -> Just $ ProsidyHtml.foldMapSequence (ProsidyHtml.proBlockHtml o) (view Prosidy.content x)
+    _ -> Nothing
 
 listOfTagsTag :: Scheme -> BlockTagOpt IO
 listOfTagsTag s = BlockTagOpt $ \_ x ->
@@ -42,8 +68,11 @@ tagMapHtml = foldMap f . sortBy (compare `on` (tagText . fst)) . HashMap.toList
     f :: Foldable series => (Tag, series Tagged) -> H.Series H.Block
     f (t, rs) =
       (H.toBlocks $ H.H H.H2 $ H.toInlines $ tagText t)
-        <> foldMap g (sortBy (compare `on` taggedDay) (toList rs))
+        <> taggedsHtml rs
 
+taggedsHtml :: Foldable series => series Tagged -> H.Series H.Block
+taggedsHtml rs = foldMap g (sortBy (compare `on` taggedDay) (toList rs))
+  where
     g :: Tagged -> H.Series H.Block
     g Tagged {taggedTitleHtml, taggedResource} =
       H.toBlocks H.Paragraph {H.paragraphContent, H.paragraphClasses}
